@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\Schema(
  *     schema="status-response",
  *     title="Status response",
- *     required={"status"},
  *     type="object",
  *     @OA\Property(
- *         property="status",
+ *         property="database",
  *         type="boolean",
- *         description="Service status",
+ *         description="Database service status",
+ *         example=true
+ *     ),
+ *     @OA\Property(
+ *         property="api",
+ *         type="boolean",
+ *         description="API service status",
  *         example=true
  *     )
  * )
@@ -72,6 +77,17 @@ class StatusController extends Controller
      */
     public function status()
     {
-        return response()->json(['status' => true]);
+        try {
+            DB::connection()->getPdo();
+        } catch (\Exception $e) {
+            return response()->json([
+                'database' => false,
+                'api' => true
+            ]);
+        }
+        return response()->json([
+            'database' => true,
+            'api' => true
+        ]);
     }
 }
