@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ItemNotFoundException;
 
 class AuthController extends Controller
@@ -15,13 +16,15 @@ class AuthController extends Controller
     {
         try
         {
-            $user = User::where('username', $request['username'])
-                ->where('password', Hash::make($request['password']))
-                ->firstOrFail();
+            $user = User::where('username', $request['username'])->firstOrFail();
 
-            return new UserResource($user);
+            if (Hash::check($request['password'], $user->password)){
+                return new UserResource($user);
+            }
+
+            return response("Incorrect username or password.", 401);
         }
-        catch(ItemNotFoundException)
+        catch (\Exception)
         {
             return response("Incorrect username or password.", 401);
         }

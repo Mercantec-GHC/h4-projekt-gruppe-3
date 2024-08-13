@@ -11,9 +11,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function GetProfile(Request $request)
-    {
-        $user = User::find($request['requested_id'])->first();   
+    public function GetProfile(User $user)
+    {   
         return new UserResource($user);
     }
 
@@ -27,28 +26,22 @@ class UserController extends Controller
         // need family and user relation
     }
 
-    public function Update(Request $request)
+    public function Update(Request $request, User $user)
     {
-        $newUser = User::find($request['id']);
-        $newUser->name = $request['name'];
-        $newUser->profile_picture = $request['profile_picture'];
-        $newUser->email = $request['email'];
-        $newUser->username = $request['username'];
-        $newUser->password = Hash::make($request['password']);
-        $newUser->is_parent = $request['is_parent'];
-        $newUser->save();
+        $user->name = $request['name'];
+        $user->profile_picture = $request['profile_picture'];
+        $user->email = $request['email'];
+        $user->username = $request['username'];
+        $user->password = Hash::make($request['password']);
+        $user->is_parent = $request['is_parent'];
+        $user->save();
 
-        return new UserResource($newUser);
+        return new UserResource($user);
     }
 
-    public function Delete(Request $request)
+    public function Delete(User $user)
     {
-        $user = User::find($request['user_id_to_delete']);
-
-        if ($user) {
-            $user->delete();
-            return response("Successfully deleted", 204);
-        }
-        return response("User not found", 404);
+        $user->delete();
+        return response("Successfully deleted", 204);
     }
 }
