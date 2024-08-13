@@ -4,26 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 
-/**
- * @OA\Schema(
- *     schema="status-response",
- *     title="Status response",
- *     type="object",
- *     @OA\Property(
- *         property="database",
- *         type="boolean",
- *         description="Database service status",
- *         example=true
- *     ),
- *     @OA\Property(
- *         property="api",
- *         type="boolean",
- *         description="API service status",
- *         example=true
- *     )
- * )
- * @namespace App\Http\Controllers\ 
- */
+
 class StatusController extends Controller
 {
     /**
