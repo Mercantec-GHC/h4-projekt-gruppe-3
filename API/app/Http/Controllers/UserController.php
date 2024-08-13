@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function GetOwnProfile(Request $request)
-    {
-        $user = User::find($request['id'])->first();   
-        return new UserResource($user);
-    }
-
     public function GetProfile(Request $request)
     {
         $user = User::find($request['requested_id'])->first();   
