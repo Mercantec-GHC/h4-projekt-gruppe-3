@@ -19,4 +19,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.scribe
-/public/docs
+/public/vendor
+/resources/views/scribe/
