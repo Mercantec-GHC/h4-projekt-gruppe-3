@@ -45,8 +45,16 @@ class UserAuthController extends Controller
             Please try again']);
         }
 
-        $token = auth()->user()->createToken('API Token')->accessToken;
+        $user = auth()->user();
 
-        return response(['user' => auth()->user(), 'token' => $token]);
+        // deletes all access tokens for a given user.
+        $userTokens = $user->tokens;
+        foreach ($userTokens as $token) {
+            $token->revoke();
+        }
+
+        $token = $user->createToken('API Token')->accessToken;
+
+        return response(['user' => $user, 'token' => $token]);
     }
 }
