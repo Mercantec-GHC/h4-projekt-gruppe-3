@@ -6,13 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "doctrine/annotations": "^2.0",
         "laravel/framework": "^11.9",
-        "laravel/tinker": "^2.9",
-        "zircote/swagger-php": "^4.10"
+        "laravel/tinker": "^2.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "knuckleswtf/scribe": "^4.37",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
@@ -50,9 +49,6 @@
         "setup": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate --ansi"
-        ],
-        "generate-api-docs": [
-            "vendor/bin/openapi -l app/Http/Controllers/* --version 3.0.0 -o public/docs/api.yml"
         ]
     },
     "extra": {
