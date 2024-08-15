@@ -39,4 +39,15 @@ class User extends Authenticatable
             'total_points',
         ]);
     }
+
+    public function task() : BelongsToMany
+    {
+        return $this->belongsToMany(Task::class)->withPivot([
+            'completion_picture_path',
+            'geo_location',
+            'approved_by',
+            'completed date',
+            'state',
+        ]);
+    }
 }
