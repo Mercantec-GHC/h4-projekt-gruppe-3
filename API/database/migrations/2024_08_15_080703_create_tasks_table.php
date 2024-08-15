@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('end_date')->useCurrent();
             $table->timestamp('start_date')->useCurrent();
             $table->boolean('recurring');
-            $table->integer('recurring_interval');
+            $table->integer('recurring_interval')->nullable();
             $table->unsignedBigInteger('modified_by')->nullable();
             $table->unsignedBigInteger('family_id');
             $table->boolean('single_completion');

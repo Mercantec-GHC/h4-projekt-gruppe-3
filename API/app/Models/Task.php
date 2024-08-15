@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use User;
 
 class Task extends Model
 {
@@ -16,18 +15,17 @@ class Task extends Model
         'end_date',
         'start_date',
         'recurring',
-        'recurring interval',
+        'recurring_interval',
         'created_at',
-        'created_by',
         'updated_at',
-        'updated_by',
+        'modified_by',
         'family_id',
         'single_completion',
     ];
 
     protected $hidden = [];
-    
-    public function users() : BelongsToMany
+
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot([
             'completion_picture_path',
@@ -36,5 +34,10 @@ class Task extends Model
             'completed date',
             'state',
         ]);
+    }
+
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
     }
 }

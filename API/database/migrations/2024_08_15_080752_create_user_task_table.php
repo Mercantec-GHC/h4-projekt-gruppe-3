@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('user_task', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
             $table->foreignId('task_id')->constrained();
-            $table->string('completion_picture_path');
+            $table->string('completion_picture_path')->nullable();
             $table->double('latitude')->nullable();
             $table->double('longitude')->nullable();
-            $table->unsignedBigInteger('approved_by');
-            $table->timestamp('completed date');
-            $table->string("state");
+            $table->unsignedBigInteger('approved_by')->nullable();
+            $table->timestamp('completed date')->nullable();
+            $table->string("state")->nullable();
             $table->foreign('approved_by')->references('id')->on('users');
         });
     }
