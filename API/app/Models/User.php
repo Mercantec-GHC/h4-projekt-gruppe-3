@@ -40,7 +40,7 @@ class User extends Authenticatable
         ]);
     }
 
-    public function task() : BelongsToMany
+    public function tasks() : BelongsToMany
     {
         return $this->belongsToMany(Task::class)->withPivot([
             'completion_picture_path',
