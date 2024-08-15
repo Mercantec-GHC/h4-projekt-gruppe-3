@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->integer('reward');
-            $table->timestamp('end_date');
-            $table->timestamp('start_date');
+            $table->timestamp('end_date')->useCurrent();
+            $table->timestamp('start_date')->useCurrent();
             $table->boolean('recurring');
             $table->integer('recurring_interval');
             $table->unsignedBigInteger('modified_by')->nullable();
