@@ -11,6 +11,9 @@ use Illuminate\Validation\Rules\Password;
 
 class UserAuthController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -33,6 +36,9 @@ class UserAuthController extends Controller
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
 
+    /**
+     * @unauthenticated
+     */
     public function login(Request $request)
     {
         $data = $request->validate([

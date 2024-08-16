@@ -7,11 +7,17 @@ use Illuminate\Support\Facades\DB;
 
 class StatusController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function ping()
     {
         return response('');
     }
 
+    /**
+     * @unauthenticated
+     */
     public function status()
     {
         try {
