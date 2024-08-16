@@ -13,6 +13,7 @@ class UserAuthController extends Controller
 {
     /**
      * @unauthenticated
+     * @bodyParam password_confirmation string required The password confirmation.
      */
     public function register(Request $request)
     {
