@@ -5,6 +5,7 @@ import '../services/app_state.dart';
 class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<RootAppState>();
     // Access the user from the AppState
     final user = Provider.of<RootAppState>(context).user;
 
@@ -40,14 +41,51 @@ class UserProfilePage extends StatelessWidget {
               ),
               SizedBox(height: 24),
               //edit profile button
-              ElevatedButton(
-                onPressed: () {
-                  // needs to be sendt to the edit page
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: builder)
-                },
-                child: Text('Edit Profile'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // needs to be sendt to the edit page
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: builder)
+                    },
+                    child: Text('Edit Profile'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Confirm deletion
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Confirm Deletion'),
+                          content: Text(
+                              'Are you sure you want to delete this user?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                appState.deleteUser();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text('Delete Account'),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  ),
+                ],
               ),
             ],
           ),
