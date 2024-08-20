@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/main.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -15,13 +13,12 @@ class _LoginState extends State<Login> {
   Color _backgroundColor = Colors.greenAccent;
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  late RootAppState rootAppState;
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
-    RootAppState rootAppState = appState.rootAppState;
-    rootAppState.user = new User('Kasper', 'Password1', 'email@gmail.com');
+    rootAppState.user = new User('Test', 'Password1', 'email@gmail.com');
 
     return Card(
       color: _backgroundColor == Colors.greenAccent ? theme.colorScheme.primary : _backgroundColor,
@@ -36,7 +33,7 @@ class _LoginState extends State<Login> {
             SizedBox(height: 7),
 
             ElevatedButton(
-              onPressed: () { changeBackgroundColor(rootAppState); },
+              onPressed: () { changeBackgroundColor(); },
               child: Text('Login'),
             ),
             
@@ -75,7 +72,7 @@ class _LoginState extends State<Login> {
     return false;
   }
 
-  void changeBackgroundColor(RootAppState rootAppState) {
+  void changeBackgroundColor() {
     setState(() {
       // Change the background color on button press
       _backgroundColor = TryLogin(rootAppState) ? Colors.green.shade300 : Colors.red.shade900;
