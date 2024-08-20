@@ -20,7 +20,10 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     RootAppState rootAppState = Provider.of<RootAppState>(context);
-    rootAppState.user = new User('Test', 'Password1', 'email@gmail.com');
+    if (rootAppState.user == null) 
+    {
+      rootAppState.user = new User('Test', 'Password1', 'email@gmail.com');
+    }
 
     return Card(
       color: _backgroundColor == Colors.greenAccent ? theme.colorScheme.primary : _backgroundColor,
