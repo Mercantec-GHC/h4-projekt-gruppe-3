@@ -3,4 +3,6 @@ enum AppPages {
   favoritesPage,
   userProfile,
   updateUserProfile,
+  login,
+  register,
 }

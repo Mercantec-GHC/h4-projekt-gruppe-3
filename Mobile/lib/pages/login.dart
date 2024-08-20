@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +47,7 @@ class _LoginState extends State<Login> {
             ),
 
             ElevatedButton(
-              onPressed: () { goToRegister(); },
+              onPressed: () { goToRegister(rootAppState); },
               child: Text('Register'),
             ),
           ],
@@ -74,16 +75,18 @@ class _LoginState extends State<Login> {
   }
 
   void changeBackgroundColor(RootAppState rootAppState) {
+    bool succesInLoggingIn = TryLogin(rootAppState);
     setState(() {
       // Change the background color on button press
-      _backgroundColor = TryLogin(rootAppState) ? Colors.green.shade300 : Colors.red.shade900;
+      _backgroundColor = succesInLoggingIn ? Colors.green.shade300 : Colors.red.shade900;
     });
+
+    if (succesInLoggingIn) {
+      rootAppState.switchPage(AppPages.generatorPage);
+    }
   }
-  void goToRegister() {
-    setState(() {
-      // Change the background color on button press
-      _backgroundColor = Colors.yellow.shade300;
-    });
+  void goToRegister(RootAppState rootAppState) {
+    rootAppState.switchPage(AppPages.register);
   }
 }
 

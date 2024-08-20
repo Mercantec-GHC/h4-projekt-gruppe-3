@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/services/app_state.dart';
@@ -51,7 +52,6 @@ class _RegisterState extends State<Register> {
 
   void TryRegister(RootAppState rootAppState) {
     Color fail = Colors.red.shade900;
-    Color succes = Colors.green.shade500;
 
     String password = passwordController.value.text;
     if (password != passwordRepeatController.value.text) {
@@ -64,9 +64,7 @@ class _RegisterState extends State<Register> {
     String name = nameController.value.text;
     String email = usernameController.value.text;
 
-    setState(() {
-     _backgroundColor = succes;
-    });
     rootAppState.user = new User(name, password, email);
+    rootAppState.switchPage(AppPages.generatorPage);
   }
 }
