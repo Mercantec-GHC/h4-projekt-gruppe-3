@@ -74,7 +74,6 @@ class UserProfilePage extends StatelessWidget {
                               onPressed: () {
                                 appState.deleteUser();
                                 Navigator.of(context).pop();
-                                Navigator.of(context).pop();
                               },
                               child: Text('Delete'),
                             ),
