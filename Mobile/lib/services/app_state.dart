@@ -18,4 +18,9 @@ class RootAppState extends ChangeNotifier {
     user = new User(name, password, email);
     notifyListeners();
   }
+
+  void deleteUser() {
+    user = null;
+    notifyListeners();
+  }
 }
