@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
 
 class RootAppState extends ChangeNotifier {
   User? user;
+  AppPages page = AppPages.generatorPage;
+
+  void switchPage(AppPages newPage) {
+    page = newPage;
+    notifyListeners();
+  }
 
   void UpdateUser(String name, String email) {
     if (user == null) {

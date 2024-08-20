@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 
 class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<RootAppState>();
     // Access the user from the AppState
     final user = Provider.of<RootAppState>(context).user;
 
@@ -42,10 +44,7 @@ class UserProfilePage extends StatelessWidget {
               //edit profile button
               ElevatedButton(
                 onPressed: () {
-                  // needs to be sendt to the edit page
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: builder)
+                  appState.switchPage(AppPages.updateUserProfile);
                 },
                 child: Text('Edit Profile'),
               ),
