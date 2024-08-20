@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
@@ -65,18 +67,19 @@ class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    var rootState = context.watch<RootAppState>();
     Widget page;
-    switch (selectedIndex) {
-      case 0:
+    switch (rootState.page) {
+      case AppPages.generatorPage:
         page = GeneratorPage();
-      case 1:
+      case AppPages.favoritesPage:
         page = FavoritesPage();
-      case 2:
+      case AppPages.userProfile:
         page = UserProfilePage();
-      case 3:
+      case AppPages.updateUserProfile:
         page = UpdateUserProfilePage();
       default:
-        throw UnimplementedError('no widget for $selectedIndex');
+        throw UnimplementedError('no widget for ${rootState.page.name}');
     }
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -104,11 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: Text('Update user profiles'),
                   ),
                 ],
-                selectedIndex: selectedIndex,
+                selectedIndex: rootState.page.index,
                 onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
+                  rootState.switchPage(AppPages.values[value]);
                 },
               ),
             ),
