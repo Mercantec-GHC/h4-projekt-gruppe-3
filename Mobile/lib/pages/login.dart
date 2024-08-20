@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
     }
 
     String? username = appState.user?.email;
-    String? password = appState.user?.passowrd;
+    String? password = appState.user?.password;
 
     if (username == null || password == null) {
       return false;
@@ -119,7 +119,7 @@ class LoginInputField extends StatelessWidget {
           obscureText: obscureText,
           enableSuggestions: !obscureText,
           autocorrect: !obscureText,
-          style: TextStyle(color: theme.colorScheme.onSecondary), // Set the typed text color here
+          style: TextStyle(color: theme.colorScheme.onSecondary),
           decoration: InputDecoration(
             enabledBorder: GetBorderStyle(theme),
             focusedBorder: GetBorderStyle(theme),
