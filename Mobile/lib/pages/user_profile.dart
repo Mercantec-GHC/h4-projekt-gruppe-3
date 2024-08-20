@@ -42,11 +42,48 @@ class UserProfilePage extends StatelessWidget {
               ),
               SizedBox(height: 24),
               //edit profile button
-              ElevatedButton(
-                onPressed: () {
-                  appState.switchPage(AppPages.updateUserProfile);
-                },
-                child: Text('Edit Profile'),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      appState.switchPage(AppPages.updateUserProfile);
+                    },
+                    child: Text('Edit Profile'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Confirm deletion
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Confirm Deletion'),
+                          content: Text(
+                              'Are you sure you want to delete this user?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                appState.deleteUser();
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text('Delete Account'),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  ),
+                ],
               ),
             ],
           ),
