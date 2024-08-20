@@ -2,28 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => RootAppState(),
-      child: MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'User Profile Page',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: UserProfilePage(),
-    );
-  }
-}
-
 class UserProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

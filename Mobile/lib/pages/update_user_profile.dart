@@ -35,7 +35,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Opdater Profil'),
+        title: Text('Update profile'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -45,7 +45,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
             children: [
               TextFormField(
                 initialValue: currentUser?.name,
-                decoration: InputDecoration(labelText: 'Navn'),
+                decoration: InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Name is required and cannot be empty';
