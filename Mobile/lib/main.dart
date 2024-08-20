@@ -1,6 +1,8 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/pages/Register.dart';
+import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
@@ -70,6 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
     var rootState = context.watch<RootAppState>();
     Widget page;
     switch (rootState.page) {
+      case AppPages.login:
+        page = Login();
+      case AppPages.register:
+        page = Register();
       case AppPages.generatorPage:
         page = GeneratorPage();
       case AppPages.favoritesPage:
@@ -105,6 +111,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.settings),
                     label: Text('Update user profiles'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.login),
+                    label: Text('Login'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.app_registration),
+                    label: Text('Register'),
                   ),
                 ],
                 selectedIndex: rootState.page.index,

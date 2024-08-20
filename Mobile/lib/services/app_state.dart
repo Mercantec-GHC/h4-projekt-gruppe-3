@@ -4,7 +4,7 @@ import 'package:mobile/models/user.dart';
 
 class RootAppState extends ChangeNotifier {
   User? user;
-  AppPages page = AppPages.generatorPage;
+  AppPages page = AppPages.login;
 
   void switchPage(AppPages newPage) {
     page = newPage;
