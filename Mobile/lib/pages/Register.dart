@@ -17,73 +17,121 @@ class _RegisterState extends State<Register> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordRepeatController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String _name = '';
+  String _email = '';
+  String _password = '';
+  String _password_confirmation = '';
+  late RootAppState _appState;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    RootAppState rootAppState = Provider.of<RootAppState>(context);
-    
+    _appState = Provider.of<RootAppState>(context);
+
     return Card(
-      color: _backgroundColor == Colors.greenAccent ? theme.colorScheme.primary : _backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LoginInputField(text: 'Name', controller: nameController, obscureText: false),
-            SizedBox(height: 5),
-            LoginInputField(text: 'Email', controller: usernameController, obscureText: false),
-            SizedBox(height: 5),
-            LoginInputField(text: 'Password', controller: passwordController, obscureText: true),
-            SizedBox(height: 5),
-            LoginInputField(text: 'Repeat password', controller: passwordRepeatController, obscureText: true),
-            SizedBox(height: 10),
-
-            ElevatedButton(
-              onPressed: () { TryRegister(rootAppState); },
-              child: Text('Register'),
-            )
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Name is required and cannot be empty';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _name = value!;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required and cannot be empty';
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'The entered email is not a valid email';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _email = value!;
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required and cannot be empty';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  _password = value;
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password Confirmation'),
+                obscureText: true,
+                validator: (value) {
+                  if (_password != value) {
+                    return 'Password does not match';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _password_confirmation = value!;
+                },
+              ),
+              SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: TryRegister,
+                child: Text('Save'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void TryRegister(RootAppState rootAppState) {
-    Color fail = Colors.red.shade900;
-
-    String password = passwordController.value.text;
-    if (password != passwordRepeatController.value.text) {
-      setState(() {
-        _backgroundColor = fail;
-      });
-      return;
+  void TryRegister() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _appState.CreateUser(_name, _password, _email, _password_confirmation)
+          .then((value) => {
+                if (value['statusCode'] == 201)
+                  {
+                    _appState.switchPage(AppPages.userProfile),
+                  }
+                else
+                  {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Couldn\'t create user'),
+                        content: Text(value['body']['errors'].toString()),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                        ],
+                      ),
+                    )
+                  }
+              });
     }
-
-    String name = nameController.value.text;
-    String email = usernameController.value.text;
-
-    rootAppState.CreateUser(name, password, email, passwordRepeatController.value.text).then((value) => {
-      if (value['statusCode'] == 201) {
-        rootAppState.switchPage(AppPages.userProfile),
-      }
-      else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Couldn\'t create user'),
-            content: Text(value['body']['errors'].toString()),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Cancel'),
-              ),
-            ],
-          ),
-        )
-      }
-    });
   }
 }
