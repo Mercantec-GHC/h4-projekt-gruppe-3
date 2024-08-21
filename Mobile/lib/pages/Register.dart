@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
-import 'package:mobile/models/user.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ class _RegisterState extends State<Register> {
           children: [
             LoginInputField(text: 'Name', controller: nameController, obscureText: false),
             SizedBox(height: 5),
-            LoginInputField(text: 'Username', controller: usernameController, obscureText: false),
+            LoginInputField(text: 'Email', controller: usernameController, obscureText: false),
             SizedBox(height: 5),
             LoginInputField(text: 'Password', controller: passwordController, obscureText: true),
             SizedBox(height: 5),
@@ -64,7 +63,27 @@ class _RegisterState extends State<Register> {
     String name = nameController.value.text;
     String email = usernameController.value.text;
 
-    rootAppState.user = new User(name, password, email);
-    rootAppState.switchPage(AppPages.generatorPage);
+    rootAppState.CreateUser(name, password, email, passwordRepeatController.value.text).then((value) => {
+      if (value['statusCode'] == 201) {
+        rootAppState.switchPage(AppPages.userProfile),
+      }
+      else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Couldn\'t create user'),
+            content: Text(value['body']['errors'].toString()),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+        )
+      }
+    });
   }
 }
