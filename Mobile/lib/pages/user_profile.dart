@@ -13,9 +13,9 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
-      //color for the entire background
-      backgroundColor: Colors.lightBlue[50],
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/api.dart';
-
 
 class RootAppState extends ChangeNotifier {
   User? user;
@@ -19,7 +17,7 @@ class RootAppState extends ChangeNotifier {
 
   void UpdateUser(String name, String email) {
     if (user == null) {
-      user = new User(name, "Password1!", email);
+      user = new User(0, name, email, '');
     }
 
     user?.name = name;
@@ -27,19 +25,32 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Map<String, dynamic>> CreateUser(String name, String password, String email, String password_confirmation) async {
-    final response = await api.CreateParentUser(name, email, password, password_confirmation);
+  Future<Map<String, dynamic>> CreateUser(String name, String password,
+      String email, String password_confirmation) async {
+    final response = await api.CreateParentUser(
+        name, email, password, password_confirmation);
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 201) {
-      user = new User(jsonData['user']['name'], password, jsonData['user']['email']);
+      user = new User(jsonData['user']['id'], jsonData['user']['name'],
+          jsonData['user']['email'], jsonData['token']);
       notifyListeners();
     }
 
-    return {
-      'statusCode' : response.statusCode,
-      'body': jsonData
-    };
+    return {'statusCode': response.statusCode, 'body': jsonData};
+  }
+
+  Future<Map<String, dynamic>> Login(String username, String password) async {
+    final response = await api.Login(username, password);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      user = new User(jsonData['user']['id'], jsonData['user']['name'],
+          jsonData['user']['email'], jsonData['token']);
+      notifyListeners();
+    }
+
+    return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
   void deleteUser() {

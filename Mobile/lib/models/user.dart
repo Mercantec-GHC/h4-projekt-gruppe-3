@@ -1,7 +1,8 @@
 class User {
-  String? name;
-  String? password;
-  String? email;
+  int id;
+  String name;
+  String email;
+  String? auth_token;
 
-  User(this.name, this.password, this.email);
+  User(this.id, this.name, this.email, this.auth_token);
 }

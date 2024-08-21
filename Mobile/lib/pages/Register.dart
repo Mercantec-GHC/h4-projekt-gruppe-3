@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
-import 'package:mobile/pages/login.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +11,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  Color _backgroundColor = Colors.greenAccent;
-  final nameController = TextEditingController();
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final passwordRepeatController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String _name = '';
   String _email = '';
@@ -26,11 +20,16 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final _theme = Theme.of(context);
     _appState = Provider.of<RootAppState>(context);
 
-    return Card(
-      child: Padding(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Register'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      backgroundColor: _theme.colorScheme.primaryContainer,
+      body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
@@ -49,7 +48,7 @@ class _RegisterState extends State<Register> {
                   _name = value!;
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 10),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
@@ -66,6 +65,7 @@ class _RegisterState extends State<Register> {
                   _email = value!;
                 },
               ),
+              SizedBox(height: 10),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
@@ -79,6 +79,7 @@ class _RegisterState extends State<Register> {
                   _password = value;
                 },
               ),
+              SizedBox(height: 10),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Password Confirmation'),
                 obscureText: true,
@@ -92,9 +93,9 @@ class _RegisterState extends State<Register> {
                   _password_confirmation = value!;
                 },
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 30),
               ElevatedButton(
-                onPressed: TryRegister,
+                onPressed: tryRegister,
                 child: Text('Save'),
               ),
             ],
@@ -104,7 +105,7 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  void TryRegister() {
+  void tryRegister() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _appState.CreateUser(_name, _password, _email, _password_confirmation)
@@ -125,7 +126,7 @@ class _RegisterState extends State<Register> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: Text('Cancel'),
+                            child: Text('Close'),
                           ),
                         ],
                       ),
