@@ -96,7 +96,7 @@ class _LoginState extends State<Login> {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: Text('Couldn\'t login to user'),
-                    content: Text(value['body']['errors'].toString()),
+                    content: Text(value['body']['error_message'].toString()),
                     actions: [
                       TextButton(
                         onPressed: () {

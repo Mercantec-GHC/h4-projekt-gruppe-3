@@ -48,8 +48,7 @@ class UserAuthController extends Controller
         ]);
 
         if (!auth()->attempt($data)) {
-            return response(['error_message' => 'Incorrect Details. 
-            Please try again'], 401);
+            return response(['error_message' => 'Incorrect username or password.'], 401);
         }
 
         $user = auth()->user();
