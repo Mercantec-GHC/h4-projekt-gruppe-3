@@ -13,8 +13,11 @@ class Api {
       },
       body: json.encode({
         'name': name,
+        'is_parent': true,
         'username': email,
+        'email': email,
         'password': password,
+        'password_confirmation': password_confirmation,
       }),
     );
   }
