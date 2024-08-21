@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:mobile/config/general_config.dart';
 
 class Api {
-  final baseUrl = 'https://krc-coding.dk';
   Future<http.Response> CreateParentUser(String name, String email,
       String password, String password_confirmation) async {
     return await http.post(
