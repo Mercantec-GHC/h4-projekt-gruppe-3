@@ -35,33 +35,35 @@ class _NavigationComponentState extends State<NavigationComponent> {
       return Scaffold(
         body: Row(
           children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.person),
-                    label: Text('User profile'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.settings),
-                    label: Text('Update user profiles'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.login),
-                    label: Text('Login'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.app_registration),
-                    label: Text('Register'),
-                  ),
-                ],
-                selectedIndex: rootState.page.index,
-                onDestinationSelected: (value) {
-                  rootState.switchPage(AppPages.values[value]);
-                },
+            if (rootState.page != AppPages.login &&
+                rootState.page != AppPages.register)
+              SafeArea(
+                child: NavigationRail(
+                  extended: constraints.maxWidth >= 600,
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.person),
+                      label: Text('User profile'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings),
+                      label: Text('Update user profiles'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.login),
+                      label: Text('Login'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.app_registration),
+                      label: Text('Register'),
+                    ),
+                  ],
+                  selectedIndex: rootState.page.index,
+                  onDestinationSelected: (value) {
+                    rootState.switchPage(AppPages.values[value]);
+                  },
+                ),
               ),
-            ),
             Expanded(
               child: Container(
                 color: Theme.of(context).colorScheme.primaryContainer,
