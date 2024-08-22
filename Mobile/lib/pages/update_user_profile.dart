@@ -19,12 +19,20 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
     super.initState();
   }
 
-  void _updateUserProfile() {
+  void _updateUserProfile() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      _appState.UpdateUser(
-        _name,
-        _email,
+      String? _auth_token = await _appState.storage.read(key: 'auth_token');
+
+      if (_auth_token == null) {
+        return;
+      }
+
+      await _appState.updateUser(
+        auth_token: _auth_token,
+        name: _name,
+        email: _email,
+        username: _email,
       );
       _appState.switchPage(AppPages.userProfile);
     }
