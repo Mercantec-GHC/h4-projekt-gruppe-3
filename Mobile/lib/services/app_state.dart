@@ -35,7 +35,7 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token'].toString());
+      storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
@@ -49,7 +49,7 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token'].toString());
+      storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
