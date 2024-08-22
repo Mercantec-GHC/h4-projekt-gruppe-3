@@ -16,7 +16,7 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<int> updateUser({
+  Future<Map<String, dynamic>> updateUser({
     required String auth_token,
     String? name,
     String? email,
@@ -36,7 +36,16 @@ class RootAppState extends ChangeNotifier {
     );
     notifyListeners();
 
-    return response.statusCode;
+    if (response.statusCode == 204) {
+      return {
+        'statusCode': response.statusCode,
+      };
+    }
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
   }
 
   Future<Map<String, dynamic>> updateUserPassword({
@@ -52,6 +61,12 @@ class RootAppState extends ChangeNotifier {
       new_password_confirmation: new_password_confirmation,
     );
     notifyListeners();
+
+    if (response.statusCode == 204) {
+      return {
+        'statusCode': response.statusCode,
+      };
+    }
 
     return {
       'statusCode': response.statusCode,

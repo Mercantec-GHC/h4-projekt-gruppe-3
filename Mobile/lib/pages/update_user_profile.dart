@@ -30,13 +30,16 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
         return;
       }
 
-      await _appState.updateUser(
+      var result = await _appState.updateUser(
         auth_token: _auth_token,
         name: _name,
         email: _email,
         username: _email,
       );
-      _appState.switchPage(AppPages.userProfile);
+
+      if (result['statusCode'] == 200) {
+        _appState.switchPage(AppPages.userProfile);
+      }
     }
   }
 

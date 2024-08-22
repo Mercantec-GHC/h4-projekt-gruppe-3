@@ -29,13 +29,14 @@ class UserController extends Controller
 
     public function updateGeneralProfileInfo(Request $request)
     {
+        $user = auth()->user();
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|unique:users,username',
-            'email' => 'sometimes|required|email:rfc,dns|unique:users,email',
+            'username' => 'required|unique:users,username,' . $user->id,
+            'email' => 'sometimes|required|email:rfc,dns|unique:users,email,' . $user->id,
         ]);
 
-        $user = auth()->user();
         $user->name = $request['name'];
         $user->email = $request['email'];
         $user->username = $request['username'];
