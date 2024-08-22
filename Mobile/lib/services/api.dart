@@ -43,7 +43,26 @@ class Api {
 
   void Get() {}
 
-  void Update() {}
+  Future<http.Response> updateUserProfile({
+    required String auth_token,
+    String? name,
+    String? email,
+    String? username,
+  }) async {
+    return await http.put(
+      Uri.parse(baseUrl + '/api/user/profile'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+      body: json.encode({
+        'name': name,
+        'email': email,
+        'username': username,
+      }),
+    );
+  }
 
   Future<http.Response> DeleteUser(int? id, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');

@@ -16,13 +16,24 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void UpdateUser(String name, String email) {
-    if (user == null) {
-      user = new User(0, name, email);
+  Future<void> updateUser({
+    required String auth_token,
+    String? name,
+    String? email,
+    String? username,
+  }) async {
+    if (name != null) {
+      user?.name = name;
     }
-
-    user?.name = name;
-    user?.email = email;
+    if (email != null) {
+      user?.email = email;
+    }
+    await api.updateUserProfile(
+      auth_token: auth_token,
+      name: name,
+      email: email,
+      username: username,
+    );
     notifyListeners();
   }
 
