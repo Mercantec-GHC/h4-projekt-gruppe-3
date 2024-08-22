@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
+import 'package:mobile/pages/home.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
@@ -20,6 +21,9 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
     Widget page;
     switch (rootState.page) {
+      case AppPages.home:
+        page = Home();
+        break;
       case AppPages.login:
         page = Login();
         break;
@@ -46,6 +50,10 @@ class _NavigationComponentState extends State<NavigationComponent> {
                 child: NavigationRail(
                   extended: constraints.maxWidth >= 600,
                   destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
                     NavigationRailDestination(
                       icon: Icon(Icons.person),
                       label: Text('User Profile'),
@@ -78,7 +86,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
                           : rootState.page.index,
                   onDestinationSelected: (value) {
                     if (isLoggedIn) {
-                      if (value == (3 - (!isLoggedIn ? 2 : 0))) {
+                      if (value == (4 - (!isLoggedIn ? 2 : 0))) {
                         // Adjust Logout index based on login/register being hidden
                         rootState.logout();
                         rootState.switchPage(AppPages.login);

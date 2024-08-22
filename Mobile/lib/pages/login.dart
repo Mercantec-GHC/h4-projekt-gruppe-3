@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: _theme.colorScheme.primaryContainer,
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
       body: Padding(
@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
       _appState.Login(_username, _password).then((value) => {
             if (value['statusCode'] == 200)
               {
-                _appState.switchPage(AppPages.userProfile),
+                _appState.switchPage(AppPages.home),
               }
             else
               {
