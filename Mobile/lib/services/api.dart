@@ -64,6 +64,27 @@ class Api {
     );
   }
 
+  Future<http.Response> updateUserPassword({
+    required String auth_token,
+    String? current_password,
+    String? new_password,
+    String? new_password_confirmation,
+  }) async {
+    return await http.put(
+      Uri.parse(baseUrl + '/api/user/password'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+      body: json.encode({
+        'current_password': current_password,
+        'new_password': new_password,
+        'new_password_confirmation': new_password_confirmation,
+      }),
+    );
+  }
+
   Future<http.Response> DeleteUser(int? id, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.delete(

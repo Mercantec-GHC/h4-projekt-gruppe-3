@@ -29,13 +29,14 @@ class UserController extends Controller
 
     public function updateGeneralProfileInfo(Request $request)
     {
+        $user = auth()->user();
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|unique:users,username',
-            'email' => 'sometimes|required|email:rfc,dns|unique:users,email',
+            'username' => 'required|unique:users,username,' . $user->id,
+            'email' => 'sometimes|required|email:rfc,dns|unique:users,email,' . $user->id,
         ]);
 
-        $user = auth()->user();
         $user->name = $request['name'];
         $user->email = $request['email'];
         $user->username = $request['username'];
@@ -47,11 +48,17 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
+            'current_password' => 'required',
+            'new_password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
         ]);
 
         $user = auth()->user();
-        $user->password = Hash::make($request->password);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['current password is not correct'], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
         $user->save();
 
         return response()->json([], 204);

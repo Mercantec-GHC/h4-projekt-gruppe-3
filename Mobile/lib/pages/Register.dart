@@ -96,7 +96,11 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: tryRegister,
-                child: Text('Save'),
+                child: Text('Create account'),
+              ),
+              ElevatedButton(
+                onPressed: () => _appState.switchPage(AppPages.login),
+                child: Text('Allready have an account'),
               ),
             ],
           ),
