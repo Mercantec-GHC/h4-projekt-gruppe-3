@@ -14,6 +14,7 @@ dependencies:
   fl_chart: ^0.36.0
   provider: ^6.1.0
   english_words: ^4.0.0
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:

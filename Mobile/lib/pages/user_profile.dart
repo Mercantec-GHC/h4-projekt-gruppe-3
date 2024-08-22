@@ -10,6 +10,8 @@ class UserProfilePage extends StatelessWidget {
     // Access the user from the AppState
     final user = Provider.of<RootAppState>(context).user;
 
+    // appState.storage.read(key: 'auth_token').then((value) => print(value));
+
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),

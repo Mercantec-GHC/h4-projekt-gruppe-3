@@ -1,11 +1,12 @@
 import 'dart:convert';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/api.dart';
 
 class RootAppState extends ChangeNotifier {
+  final storage = new FlutterSecureStorage();
   User? user;
   Api api = new Api();
   AppPages page = AppPages.login;
@@ -17,7 +18,7 @@ class RootAppState extends ChangeNotifier {
 
   void UpdateUser(String name, String email) {
     if (user == null) {
-      user = new User(0, name, email, '');
+      user = new User(0, name, email);
     }
 
     user?.name = name;
@@ -33,7 +34,8 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email'], jsonData['token']);
+          jsonData['user']['email']);
+      storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
@@ -46,7 +48,8 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email'], jsonData['token']);
+          jsonData['user']['email']);
+      storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
