@@ -14,6 +14,7 @@ class NavigationComponent extends StatefulWidget {
 
 class _NavigationComponentState extends State<NavigationComponent> {
   var selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     var rootState = context.watch<RootAppState>();
@@ -21,14 +22,18 @@ class _NavigationComponentState extends State<NavigationComponent> {
     switch (rootState.page) {
       case AppPages.login:
         page = Login();
+        break; // Add break statements to avoid fall-through
       case AppPages.register:
         page = Register();
+        break;
       case AppPages.userProfile:
         page = UserProfilePage();
+        break;
       case AppPages.updateUserProfile:
         page = UpdateUserProfilePage();
+        break;
       default:
-        throw UnimplementedError('no widget for ${rootState.page.name}');
+        throw UnimplementedError('No widget for ${rootState.page.name}');
     }
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -43,11 +48,11 @@ class _NavigationComponentState extends State<NavigationComponent> {
                   destinations: [
                     NavigationRailDestination(
                       icon: Icon(Icons.person),
-                      label: Text('User profile'),
+                      label: Text('User Profile'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.settings),
-                      label: Text('Update user profiles'),
+                      label: Text('Update User Profile'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.login),
@@ -57,10 +62,20 @@ class _NavigationComponentState extends State<NavigationComponent> {
                       icon: Icon(Icons.app_registration),
                       label: Text('Register'),
                     ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.logout),
+                      label: Text('Logout'),
+                    ),
                   ],
                   selectedIndex: rootState.page.index,
                   onDestinationSelected: (value) {
-                    rootState.switchPage(AppPages.values[value]);
+                    // index need to match logout index
+                    if (value == 4) {
+                      rootState.logout();
+                      rootState.switchPage(AppPages.login);
+                    } else {
+                      rootState.switchPage(AppPages.values[value]);
+                    }
                   },
                 ),
               ),

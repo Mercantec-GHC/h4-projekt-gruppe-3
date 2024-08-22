@@ -67,6 +67,12 @@ class RootAppState extends ChangeNotifier {
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
+  void logout() async {
+    api.Logout();
+    storage.delete(key: 'auth_token');
+    notifyListeners();
+  }
+
   void deleteUser() {
     user = null;
     notifyListeners();
