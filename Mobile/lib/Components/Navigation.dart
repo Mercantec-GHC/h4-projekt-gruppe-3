@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
+import 'package:mobile/pages/home.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
@@ -20,6 +21,9 @@ class _NavigationComponentState extends State<NavigationComponent> {
     var rootState = context.watch<RootAppState>();
     Widget page;
     switch (rootState.page) {
+      case AppPages.home:
+        page = Home();
+        break;
       case AppPages.login:
         page = Login();
         break; // Add break statements to avoid fall-through
@@ -47,6 +51,10 @@ class _NavigationComponentState extends State<NavigationComponent> {
                   extended: constraints.maxWidth >= 600,
                   destinations: [
                     NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
                       icon: Icon(Icons.person),
                       label: Text('User Profile'),
                     ),
@@ -70,7 +78,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
                   selectedIndex: rootState.page.index,
                   onDestinationSelected: (value) {
                     // index need to match logout index
-                    if (value == 4) {
+                    if (value == 5) {
                       rootState.logout();
                       rootState.switchPage(AppPages.login);
                     } else {

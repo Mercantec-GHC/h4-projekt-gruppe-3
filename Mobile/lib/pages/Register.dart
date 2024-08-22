@@ -26,7 +26,7 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Register'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: _theme.colorScheme.primaryContainer,
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
       body: Padding(
@@ -112,7 +112,7 @@ class _RegisterState extends State<Register> {
           .then((value) => {
                 if (value['statusCode'] == 201)
                   {
-                    _appState.switchPage(AppPages.userProfile),
+                    _appState.switchPage(AppPages.home),
                   }
                 else
                   {
