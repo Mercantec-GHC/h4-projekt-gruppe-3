@@ -55,15 +55,19 @@ class RootAppState extends ChangeNotifier {
 
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
-
+void logout() async {
+    api.Logout();
+    storage.delete(key: 'auth_token');
+    notifyListeners();
+  }
   Future<Map<String, dynamic>> deleteUser() async {
     final response = await api.DeleteUser(user?.id, this);
     
     if (response.statusCode == 204) {
       user = null;
+      notifyListeners();
     }
-
-    notifyListeners();
+    
     return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
   }
 }

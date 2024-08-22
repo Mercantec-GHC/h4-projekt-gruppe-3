@@ -37,6 +37,10 @@ class Api {
     );
   }
 
+  void Logout() {
+    http.post(Uri.parse(baseUrl + '/api/logout'));
+  }
+
   void Get() {}
 
   void Update() {}
