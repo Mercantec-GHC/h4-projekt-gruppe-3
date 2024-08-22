@@ -72,7 +72,30 @@ class UserProfilePage extends StatelessWidget {
                             ),
                             TextButton(
                               onPressed: () {
-                                appState.deleteUser();
+                                appState.deleteUser().then((value) => {
+                                  if (value['statusCode'] == 204)
+                                  {
+                                    appState.switchPage(AppPages.login),
+                                  }
+                                  else
+                                  {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text('Couldn\'t delete user'),
+                                        content: Text(value['body'].toString()),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Close'),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  }
+                                });
                                 Navigator.of(context).pop();
                               },
                               child: Text('Delete'),

@@ -64,6 +64,14 @@ class UserController extends Controller
 
     public function Delete(User $user)
     {
+        $user = auth()->user();
+
+        // deletes all access tokens for a given user.
+        $userTokens = $user->tokens;
+        foreach ($userTokens as $token) {
+            $token->revoke();
+        }
+
         $user->delete();
         return response("Successfully deleted", 204);
     }
