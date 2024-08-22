@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ChangePasswordDialog.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -53,48 +54,60 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: currentUser?.name,
-                  decoration: InputDecoration(labelText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Name is required and cannot be empty';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _name = value!;
-                  },
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      initialValue: currentUser?.name,
+                      decoration: InputDecoration(labelText: 'Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Name is required and cannot be empty';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _name = value!;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      initialValue: currentUser?.email,
+                      decoration: InputDecoration(labelText: 'Email'),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required and cannot be empty';
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'The entered email is not a valid email';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _email = value!;
+                      },
+                    ),
+                    SizedBox(height: 32),
+                    ElevatedButton(
+                      onPressed: _updateUserProfile,
+                      child: Text('Save'),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 16),
-                TextFormField(
-                  initialValue: currentUser?.email,
-                  decoration: InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required and cannot be empty';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'The entered email is not a valid email';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    _email = value!;
-                  },
+              ),
+              SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => ChangePasswordDialog(),
                 ),
-                SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _updateUserProfile,
-                  child: Text('Save'),
-                ),
-              ],
-            ),
+                child: Text('Change password'),
+              ),
+            ],
           ),
         ),
       ),

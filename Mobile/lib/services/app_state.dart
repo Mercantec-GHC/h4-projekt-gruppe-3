@@ -16,7 +16,7 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUser({
+  Future<int> updateUser({
     required String auth_token,
     String? name,
     String? email,
@@ -28,13 +28,35 @@ class RootAppState extends ChangeNotifier {
     if (email != null) {
       user?.email = email;
     }
-    await api.updateUserProfile(
+    var response = await api.updateUserProfile(
       auth_token: auth_token,
       name: name,
       email: email,
       username: username,
     );
     notifyListeners();
+
+    return response.statusCode;
+  }
+
+  Future<Map<String, dynamic>> updateUserPassword({
+    required String auth_token,
+    String? current_password,
+    String? new_password,
+    String? new_password_confirmation,
+  }) async {
+    var response = await api.updateUserPassword(
+      auth_token: auth_token,
+      current_password: current_password,
+      new_password: new_password,
+      new_password_confirmation: new_password_confirmation,
+    );
+    notifyListeners();
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
   }
 
   Future<Map<String, dynamic>> CreateUser(String name, String password,
@@ -66,19 +88,21 @@ class RootAppState extends ChangeNotifier {
 
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
-void logout() async {
+
+  void logout() async {
     api.Logout();
     storage.delete(key: 'auth_token');
     notifyListeners();
   }
+
   Future<Map<String, dynamic>> deleteUser() async {
     final response = await api.DeleteUser(user?.id, this);
-    
+
     if (response.statusCode == 204) {
       user = null;
       notifyListeners();
     }
-    
+
     return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
   }
 }
