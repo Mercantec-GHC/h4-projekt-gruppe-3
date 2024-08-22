@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
+import 'package:mobile/services/app_state.dart';
 
 class Api {
   Future<http.Response> CreateParentUser(String name, String email,
@@ -40,5 +41,15 @@ class Api {
 
   void Update() {}
 
-  void Delete() {}
+  Future<http.Response> DeleteUser(int? id, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.delete(
+      Uri.parse(baseUrl + '/api/user/' + id.toString()),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+    );
+  }
 }

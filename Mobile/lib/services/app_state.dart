@@ -35,7 +35,7 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token']);
+      storage.write(key: 'auth_token', value: jsonData['token'].toString());
       notifyListeners();
     }
 
@@ -49,15 +49,21 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token']);
+      storage.write(key: 'auth_token', value: jsonData['token'].toString());
       notifyListeners();
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
-  void deleteUser() {
-    user = null;
+  Future<Map<String, dynamic>> deleteUser() async {
+    final response = await api.DeleteUser(user?.id, this);
+    
+    if (response.statusCode == 204) {
+      user = null;
+    }
+
     notifyListeners();
+    return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
   }
 }
