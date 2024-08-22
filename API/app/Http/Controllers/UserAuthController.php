@@ -52,15 +52,20 @@ class UserAuthController extends Controller
         }
 
         $user = auth()->user();
-
-        // deletes all access tokens for a given user.
-        $userTokens = $user->tokens;
-        foreach ($userTokens as $token) {
-            $token->revoke();
-        }
+        $this->logout(); // revokes all the users tokens
 
         $token = $user->createToken('API Token')->accessToken;
 
         return response(['user' => $user, 'token' => $token]);
+    }
+
+    // revokes all tokens
+    public function logout()
+    {
+        $user = auth()->user();
+        $userTokens = $user->tokens;
+        foreach ($userTokens as $token) {
+            $token->revoke();
+        }
     }
 }
