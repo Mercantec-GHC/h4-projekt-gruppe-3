@@ -25,6 +25,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
       String? _auth_token = await _appState.storage.read(key: 'auth_token');
 
       if (_auth_token == null) {
+        _appState.switchPage(AppPages.login);
         return;
       }
 
