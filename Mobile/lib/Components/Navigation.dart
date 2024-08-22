@@ -13,16 +13,16 @@ class NavigationComponent extends StatefulWidget {
 }
 
 class _NavigationComponentState extends State<NavigationComponent> {
-  var selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     var rootState = context.watch<RootAppState>();
+    bool isLoggedIn = rootState.isLoggedInSync();
+
     Widget page;
     switch (rootState.page) {
       case AppPages.login:
         page = Login();
-        break; // Add break statements to avoid fall-through
+        break;
       case AppPages.register:
         page = Register();
         break;
@@ -54,27 +54,39 @@ class _NavigationComponentState extends State<NavigationComponent> {
                       icon: Icon(Icons.settings),
                       label: Text('Update User Profile'),
                     ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.login),
-                      label: Text('Login'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.app_registration),
-                      label: Text('Register'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.logout),
-                      label: Text('Logout'),
-                    ),
+                    if (!isLoggedIn) // Only show Login if not logged in
+                      NavigationRailDestination(
+                        icon: Icon(Icons.login),
+                        label: Text('Login'),
+                      ),
+                    if (!isLoggedIn) // Only show Register if not logged in
+                      NavigationRailDestination(
+                        icon: Icon(Icons.app_registration),
+                        label: Text('Register'),
+                      ),
+                    if (isLoggedIn) // Only show Logout if logged in
+                      NavigationRailDestination(
+                        icon: Icon(Icons.logout),
+                        label: Text('Logout'),
+                      ),
                   ],
-                  selectedIndex: rootState.page.index,
+                  selectedIndex: isLoggedIn
+                      ? rootState.page.index // Use actual index
+                      : (rootState.page == AppPages.login ||
+                              rootState.page == AppPages.register)
+                          ? 2 // Adjust index if only showing login/register
+                          : rootState.page.index,
                   onDestinationSelected: (value) {
-                    // index need to match logout index
-                    if (value == 4) {
-                      rootState.logout();
-                      rootState.switchPage(AppPages.login);
+                    if (isLoggedIn) {
+                      if (value == (3 - (!isLoggedIn ? 2 : 0))) {
+                        // Adjust Logout index based on login/register being hidden
+                        rootState.logout();
+                        rootState.switchPage(AppPages.login);
+                      } else {
+                        rootState.switchPage(AppPages.values[value]);
+                      }
                     } else {
-                      rootState.switchPage(AppPages.values[value]);
+                      rootState.switchPage(AppPages.values[value + 2]);
                     }
                   },
                 ),
