@@ -56,6 +56,7 @@ class _HomeState extends State<Home> {
                           ),
                           child: SingleChildScrollView(
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 for (var i = 0; i < 10; i++)
                                   TaskCard(
