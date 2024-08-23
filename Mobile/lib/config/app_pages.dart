@@ -1,4 +1,5 @@
 enum AppPages {
+  none,
   home,
   userProfile,
   updateUserProfile,

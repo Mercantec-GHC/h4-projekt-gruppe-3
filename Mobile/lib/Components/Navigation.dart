@@ -16,32 +16,19 @@ class NavigationComponent extends StatefulWidget {
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   RootAppState? appState;
-  List<Title> _getTitles() =>
-  [
-    Title('Home', AppPages.home, Icons.home),
-    Title('Profile', AppPages.userProfile, Icons.person),
-    Title('Edit Profile', AppPages.updateUserProfile, Icons.settings),
-    Title('Logout', AppPages.login, Icons.logout, Logout),
-  ];
-
-  Widget _getSelectedPage() {
-    switch (appState?.page) {
-      case AppPages.home:
-        return Home();
-      case AppPages.login:
-        return Login();
-      case AppPages.register:
-        return Register();
-      case AppPages.userProfile:
-        return UserProfilePage();
-      case AppPages.updateUserProfile:
-        return UpdateUserProfilePage();
-      default:
-        throw UnimplementedError('No widget for ${appState?.page.name}');
-    }
+  
+  Map<AppPages, Title> _getTitles() {
+    return {
+      AppPages.home: Title('Home', Icons.home, Home()),
+      AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
+      AppPages.updateUserProfile: Title('Edit Profile', Icons.settings, UpdateUserProfilePage()),
+      AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
+      AppPages.login: Title('Logout', Icons.logout, Login(), false),
+      AppPages.register: Title('Logout', Icons.logout, Register(), false), 
+    };
   }
   
-  void Logout() {
+  void _logout() {
     appState?.logout();
     _onItemTapped(AppPages.login);
   }
@@ -63,8 +50,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
     if (appState == null) {
       appState = context.watch<RootAppState>();
     }
-    List<Title> titles = _getTitles();
-    
+    Map<AppPages, Title> titles = _getTitles();
     bool? isLoggedIn = appState?.isLoggedInSync();
 
     return Scaffold(
@@ -105,27 +91,28 @@ class _NavigationComponentState extends State<NavigationComponent> {
                 ],
               ),
             ),
-            for (Title title in titles)
-              ListTile(
-                leading: Icon(title.icon, color: _getSelectedColor(title.destination)),
-                title: Text(
-                  title.title,
-                  style: TextStyle(color: _getSelectedColor(title.destination)),
+            for (var title in titles.entries)
+              if(title.value.show)
+                ListTile(
+                  leading: Icon(title.value.icon, color: _getSelectedColor(title.key)),
+                  title: Text(
+                    title.value.title,
+                    style: TextStyle(color: _getSelectedColor(title.key)),
+                  ),
+                  onTap: () => {
+                    if (title.value.action == null){
+                      _onItemTapped(title.key)
+                    }
+                    else {
+                      title.value.action?.call(),
+                    }
+                  } 
                 ),
-                onTap: () => {
-                  if (title.action == null){
-                    _onItemTapped(title.destination)
-                  }
-                  else {
-                    title.action?.call(),
-                  }
-                } 
-              ),
           ],
         ),
       ),
       body: Center(
-        child: _getSelectedPage(),
+        child: titles[appState?.page]?.page,
       ),
     );
   }
@@ -133,9 +120,10 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
 class Title {
   String title;
-  AppPages destination;
   IconData icon;
+  bool show = true;
+  StatefulWidget page;
   VoidCallback? action;
 
-  Title(this.title, this.destination, this.icon, [ this.action ]);
+  Title(this.title, this.icon, this.page, [ this.show = true, this.action ]);
 }
