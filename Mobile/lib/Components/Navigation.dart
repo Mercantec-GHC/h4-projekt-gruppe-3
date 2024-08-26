@@ -53,6 +53,14 @@ class _NavigationComponentState extends State<NavigationComponent> {
     Map<AppPages, Title> titles = _getTitles();
     bool? isLoggedIn = appState?.isLoggedInSync();
 
+    if (!(isLoggedIn ?? false)) {
+      return Scaffold(
+        body: Center(
+          child: titles[appState?.page]?.page
+        ),
+      );
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       // if not logged in or root app state is null don't add drawer. 
