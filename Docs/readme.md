@@ -1,1 +1,61 @@
 # Docs - Dokumentation af H4
+
+
+
+# Scrum roller:
+
+__uge 1:__
+
+SM: Kasper K.
+
+PO: Jonas J.
+
+KC: Kasper R.
+
+__uge 2:__
+
+PO: Kasper K.
+
+SM: Kasper R.
+
+KC: Jonas
+ 
+__uge 3:__
+
+PO: Kasper R.
+
+SM: Jonas
+
+KC: Kasper K.
+ 
+__uge 4:__
+
+PO: Jonas
+
+SM: Kasper K.
+
+KC: Kasper R.
+ 
+__uge 5:__
+
+PO: Kasper K.
+
+SM: Kasper R.
+
+KC: Jonas
+ 
+__uge 6:__
+
+PO: Kasper R.
+
+SM: Jonas
+
+KC: Kasper K.
+ 
+__uge 7:__
+
+PO: Jonas
+
+SM: Kasper K.
+
+KC: Kasper R.
