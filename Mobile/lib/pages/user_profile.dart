@@ -3,7 +3,14 @@ import 'package:mobile/config/app_pages.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
+  const UserProfilePage({super.key});
+
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<RootAppState>();

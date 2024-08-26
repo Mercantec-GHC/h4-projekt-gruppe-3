@@ -107,6 +107,7 @@ class RootAppState extends ChangeNotifier {
   void logout() async {
     api.Logout();
     storage.delete(key: 'auth_token');
+    user = null;
     notifyListeners();
   }
 

@@ -14,100 +14,124 @@ class NavigationComponent extends StatefulWidget {
 }
 
 class _NavigationComponentState extends State<NavigationComponent> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  RootAppState? appState;
+  
+  Map<AppPages, Title> _getTitles() {
+    return {
+      AppPages.home: Title('Home', Icons.home, Home()),
+      AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
+      AppPages.updateUserProfile: Title('Edit Profile', Icons.settings, UpdateUserProfilePage()),
+      AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
+      AppPages.login: Title('Logout', Icons.logout, Login(), false),
+      AppPages.register: Title('Logout', Icons.logout, Register(), false), 
+    };
+  }
+  
+  void _logout() {
+    appState?.logout();
+    _onItemTapped(AppPages.login);
+  }
+
+  Color? _getSelectedColor(AppPages index) {
+    return appState?.page == index ? Colors.blue : null;
+  }
+
+  void _onItemTapped(AppPages appPage) {
+    setState(() {
+      appState?.switchPage(appPage);
+    });
+    // Close the drawer after selecting an item
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var rootState = context.watch<RootAppState>();
-    bool isLoggedIn = rootState.isLoggedInSync();
-
-    Widget page;
-    switch (rootState.page) {
-      case AppPages.home:
-        page = Home();
-        break;
-      case AppPages.login:
-        page = Login();
-        break;
-      case AppPages.register:
-        page = Register();
-        break;
-      case AppPages.userProfile:
-        page = UserProfilePage();
-        break;
-      case AppPages.updateUserProfile:
-        page = UpdateUserProfilePage();
-        break;
-      default:
-        throw UnimplementedError('No widget for ${rootState.page.name}');
+    if (appState == null) {
+      appState = context.watch<RootAppState>();
     }
+    Map<AppPages, Title> titles = _getTitles();
+    bool? isLoggedIn = appState?.isLoggedInSync();
 
-    return LayoutBuilder(builder: (context, constraints) {
+    if (!(isLoggedIn ?? false)) {
       return Scaffold(
-        body: Row(
-          children: [
-            if (rootState.page != AppPages.login &&
-                rootState.page != AppPages.register)
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.person),
-                      label: Text('User Profile'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.settings),
-                      label: Text('Update User Profile'),
-                    ),
-                    if (!isLoggedIn) // Only show Login if not logged in
-                      NavigationRailDestination(
-                        icon: Icon(Icons.login),
-                        label: Text('Login'),
-                      ),
-                    if (!isLoggedIn) // Only show Register if not logged in
-                      NavigationRailDestination(
-                        icon: Icon(Icons.app_registration),
-                        label: Text('Register'),
-                      ),
-                    if (isLoggedIn) // Only show Logout if logged in
-                      NavigationRailDestination(
-                        icon: Icon(Icons.logout),
-                        label: Text('Logout'),
-                      ),
-                  ],
-                  selectedIndex: isLoggedIn
-                      ? rootState.page.index // Use actual index
-                      : (rootState.page == AppPages.login ||
-                              rootState.page == AppPages.register)
-                          ? 2 // Adjust index if only showing login/register
-                          : rootState.page.index,
-                  onDestinationSelected: (value) {
-                    if (isLoggedIn) {
-                      if (value == (4 - (!isLoggedIn ? 2 : 0))) {
-                        // Adjust Logout index based on login/register being hidden
-                        rootState.logout();
-                        rootState.switchPage(AppPages.login);
-                      } else {
-                        rootState.switchPage(AppPages.values[value]);
-                      }
-                    } else {
-                      rootState.switchPage(AppPages.values[value + 2]);
-                    }
-                  },
-                ),
-              ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
-            ),
-          ],
+        body: Center(
+          child: titles[appState?.page]?.page
         ),
       );
-    });
+    }
+
+    return Scaffold(
+      key: _scaffoldKey,
+      // if not logged in or root app state is null don't add drawer. 
+      appBar: !(isLoggedIn ?? false) ? null : AppBar(
+        title: Text('Title'),
+        actions: <Widget>[
+            // maybe use this for user profile -_-
+            // IconButton(
+            //   icon: Icon(Icons.menu),
+            //   onPressed: () {
+            //     _scaffoldKey.currentState?.openDrawer();
+            //   },
+            // ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Icon(Icons.account_circle, size: 80.0, color: Colors.white),
+                  SizedBox(height: 16.0),
+                  Text(
+                    appState?.user?.name.toString() ?? 'No user logged in',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            for (var title in titles.entries)
+              if(title.value.show)
+                ListTile(
+                  leading: Icon(title.value.icon, color: _getSelectedColor(title.key)),
+                  title: Text(
+                    title.value.title,
+                    style: TextStyle(color: _getSelectedColor(title.key)),
+                  ),
+                  onTap: () => {
+                    if (title.value.action == null){
+                      _onItemTapped(title.key)
+                    }
+                    else {
+                      title.value.action?.call(),
+                    }
+                  } 
+                ),
+          ],
+        ),
+      ),
+      body: Center(
+        child: titles[appState?.page]?.page,
+      ),
+    );
   }
+}
+
+class Title {
+  String title;
+  IconData icon;
+  bool show = true;
+  StatefulWidget page;
+  VoidCallback? action;
+
+  Title(this.title, this.icon, this.page, [ this.show = true, this.action ]);
 }
