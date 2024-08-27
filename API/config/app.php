@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | File upload hash
+    |--------------------------------------------------------------------------
+    |
+    | This hash string is used to generate a file hash of the uploaded file.
+    |
+    */
+    'upload_hash' => env('UPLOAD_HASH'),
 ];

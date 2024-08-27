@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{family}/{user}/points', [UserController::class, 'GetPoints']);
         Route::put('/profile', [UserController::class, 'updateGeneralProfileInfo']);
         Route::put('/password', [UserController::class, 'updatePassword']);
+        Route::post('/profile/picture', [UserController::class, 'updateProfilePicture']);
         Route::delete('/{user}', [UserController::class, 'Delete']);
     });
 });

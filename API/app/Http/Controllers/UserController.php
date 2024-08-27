@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Models\Media;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
 use Nette\NotImplementedException;
 
@@ -64,9 +68,44 @@ class UserController extends Controller
         return response()->json([], 204);
     }
 
-    public function updateProfilePicture()
+    public function updateProfilePicture(Request $request)
     {
-        throw new NotImplementedException();
+        Log::debug('hit update profile picture endpoint');
+        Log::debug('profile photo:', [$request->profile_photo]);
+
+        $request->validate([
+            'profile_photo' => ['required', File::image()->max('15mb')],
+        ]);
+        Log::debug('parsed validation');
+
+        $file = $request->file('profile_photo');
+        $name = $file->hashName();
+
+        if (Storage::put("avatars/{$name}", $file)) {
+            Log::debug('saved file');
+            $media = Media::query()->create(
+                attributes: [
+                    'name' => "{$name}",
+                    'file_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getClientMimeType(),
+                    'path' => "avatars/{$name}",
+                    'disk' => config('filesystems.default'),
+                    'file_hash' => hash_file(
+                        config('app.upload_hash'),
+                        storage_path(
+                            path: "avatars/{$name}",
+                        ),
+                    ),
+                    'collection' => 'avatars',
+                    'size' => $file->getSize(),
+                ],
+            );
+
+            $user = auth()->user();
+            $user->profilePicture()->attach($media);
+        }
+
+        return response()->json([], 204);
     }
 
     public function Delete(User $user)
