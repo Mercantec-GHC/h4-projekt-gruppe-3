@@ -99,17 +99,6 @@ class _RegisterState extends State<Register> {
                 onPressed: tryRegister,
                 child: Text('Create account'),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-                child: Text('Allready have an account'),
-              ),
             ],
           ),
         ),
