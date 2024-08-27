@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/pages/login.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +100,14 @@ class _RegisterState extends State<Register> {
                 child: Text('Create account'),
               ),
               ElevatedButton(
-                onPressed: () => _appState.switchPage(AppPages.login),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Login(),
+                    ),
+                  );
+                },
                 child: Text('Allready have an account'),
               ),
             ],
