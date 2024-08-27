@@ -28,6 +28,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
 
       if (_auth_token == null) {
         _appState.switchPage(AppPages.login);
+        Navigator.pop(context);
         return;
       }
 
@@ -39,7 +40,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
       );
 
       if (result['statusCode'] == 200) {
-        _appState.switchPage(AppPages.userProfile);
+        Navigator.pop(context);
       }
     }
   }
@@ -50,6 +51,10 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
     final currentUser = _appState.user;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit profile'),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      ),
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
         child: Column(
@@ -145,7 +150,8 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            _appState.switchPage(AppPages.userProfile);
+                            Navigator.pop(context);
+                            // _appState.switchPage(AppPages.userProfile);
                           },
                           child: Text(
                             'Cancel',

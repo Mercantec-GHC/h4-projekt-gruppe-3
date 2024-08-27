@@ -36,6 +36,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
       if (result['statusCode'] == 204) {
         Navigator.of(context).pop();
+        Navigator.of(context).pop();
         _appState.logout();
         _appState.switchPage(AppPages.login);
         return;
