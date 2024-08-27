@@ -37,8 +37,8 @@ class Api {
     );
   }
 
-  void Logout() {
-    http.post(Uri.parse(baseUrl + '/api/logout'));
+  Future<void> Logout() async {
+    await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
   void Get() {}

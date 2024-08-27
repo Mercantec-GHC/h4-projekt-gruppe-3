@@ -128,7 +128,7 @@ class _TaskCreationState extends State<TaskCreation> {
                   controller: _endDatetimestampController,
                   onTap: () => _selectDateTime(context),
                   validator: (value) {
-                    if (endDate == null) {
+                    if (value == null) {
                       return 'Please select an end date and time';
                     }
                     return null;

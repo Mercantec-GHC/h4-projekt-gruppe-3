@@ -104,8 +104,8 @@ class RootAppState extends ChangeNotifier {
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
-  void logout() async {
-    api.Logout();
+  Future<void> logout() async {
+    await api.Logout();
     storage.delete(key: 'auth_token');
     user = null;
     notifyListeners();

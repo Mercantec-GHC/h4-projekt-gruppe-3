@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 
 Route::post('/login', [UserAuthController::class, 'login']);
 Route::post('/register', [UserAuthController::class, 'register']);
+Route::post('/logout', [UserAuthController::class, 'logout']);
 Route::get('/ping', [StatusController::class, 'ping']);
 Route::get('/status', [StatusController::class, 'status']);
 
