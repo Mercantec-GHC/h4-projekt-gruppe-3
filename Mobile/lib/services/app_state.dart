@@ -125,4 +125,10 @@ class RootAppState extends ChangeNotifier {
   bool isLoggedInSync() {
     return user != null;
   }
+
+  Future<Map<String, dynamic>> createTask(String title, String description, int reward, 
+    DateTime? endDate, bool recurring, int recurringInterval, bool singleCompletion) async {
+    final response = await api.createTask(title, description, reward, endDate, recurring, recurringInterval, singleCompletion, this);
+    return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
+  }
 }
