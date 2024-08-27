@@ -16,18 +16,19 @@ class NavigationComponent extends StatefulWidget {
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   RootAppState? appState;
-  
+
   Map<AppPages, Title> _getTitles() {
     return {
       AppPages.home: Title('Home', Icons.home, Home()),
       AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
-      AppPages.updateUserProfile: Title('Edit Profile', Icons.settings, UpdateUserProfilePage()),
+      AppPages.updateUserProfile:
+          Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
       AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
-      AppPages.register: Title('Logout', Icons.logout, Register(), false), 
+      AppPages.register: Title('Logout', Icons.logout, Register(), false),
     };
   }
-  
+
   void _logout() {
     appState?.logout();
     _onItemTapped(AppPages.login);
@@ -55,27 +56,27 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
     if (!(isLoggedIn ?? false)) {
       return Scaffold(
-        body: Center(
-          child: titles[appState?.page]?.page
-        ),
+        body: Center(child: titles[appState?.page]?.page),
       );
     }
 
     return Scaffold(
       key: _scaffoldKey,
-      // if not logged in or root app state is null don't add drawer. 
-      appBar: !(isLoggedIn ?? false) ? null : AppBar(
-        title: Text('Title'),
-        actions: <Widget>[
-            // maybe use this for user profile -_-
-            // IconButton(
-            //   icon: Icon(Icons.menu),
-            //   onPressed: () {
-            //     _scaffoldKey.currentState?.openDrawer();
-            //   },
-            // ),
-        ],
-      ),
+      // if not logged in or root app state is null don't add drawer.
+      appBar: !(isLoggedIn ?? false)
+          ? null
+          : AppBar(
+              title: Text('Title'),
+              actions: <Widget>[
+                // maybe use this for user profile -_-
+                // IconButton(
+                //   icon: Icon(Icons.menu),
+                //   onPressed: () {
+                //     _scaffoldKey.currentState?.openDrawer();
+                //   },
+                // ),
+              ],
+            ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -100,22 +101,22 @@ class _NavigationComponentState extends State<NavigationComponent> {
               ),
             ),
             for (var title in titles.entries)
-              if(title.value.show)
+              if (title.value.show)
                 ListTile(
-                  leading: Icon(title.value.icon, color: _getSelectedColor(title.key)),
-                  title: Text(
-                    title.value.title,
-                    style: TextStyle(color: _getSelectedColor(title.key)),
-                  ),
-                  onTap: () => {
-                    if (title.value.action == null){
-                      _onItemTapped(title.key)
-                    }
-                    else {
-                      title.value.action?.call(),
-                    }
-                  } 
-                ),
+                    leading: Icon(title.value.icon,
+                        color: _getSelectedColor(title.key)),
+                    title: Text(
+                      title.value.title,
+                      style: TextStyle(color: _getSelectedColor(title.key)),
+                    ),
+                    onTap: () => {
+                          if (title.value.action == null)
+                            {_onItemTapped(title.key)}
+                          else
+                            {
+                              title.value.action?.call(),
+                            }
+                        }),
           ],
         ),
       ),
@@ -133,5 +134,5 @@ class Title {
   StatefulWidget page;
   VoidCallback? action;
 
-  Title(this.title, this.icon, this.page, [ this.show = true, this.action ]);
+  Title(this.title, this.icon, this.page, [this.show = true, this.action]);
 }
