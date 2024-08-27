@@ -37,8 +37,8 @@ class Api {
     );
   }
 
-  void Logout() {
-    http.post(Uri.parse(baseUrl + '/api/logout'));
+  Future<void> Logout() async {
+    await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
   void Get() {}
@@ -94,6 +94,31 @@ class Api {
         'Accept': 'application/json',
         'Authorization': 'Bearer ' + jwt.toString(),
       },
+    );
+  }
+
+  Future<http.Response> createTask(String title, String description, int reward, 
+    DateTime? endDate, bool recurring, int recurringInterval, bool singleCompletion, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.post(
+      Uri.parse(baseUrl + '/api/task/create'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+      body: json.encode({
+        'title': title,
+        'description': description,
+        'reward': reward,
+        'end_date': endDate.toString(),
+        'start_date': DateTime.now().toString(),
+        'recurring': recurring,
+        'recurring_interval': recurringInterval,
+        'modified_by': appState.user?.id,
+        'family_id': 1,
+        'single_completion': singleCompletion,
+      })
     );
   }
 }
