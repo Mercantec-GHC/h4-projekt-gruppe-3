@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/pages/Register.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -72,7 +73,14 @@ class _LoginState extends State<Login> {
                 margin: EdgeInsets.symmetric(vertical: 8),
               ),
               ElevatedButton(
-                onPressed: () => _appState.switchPage(AppPages.register),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Register(),
+                    ),
+                  );
+                },
                 child: Text('Register'),
               ),
             ],
