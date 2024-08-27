@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
+import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
 
 class Api {
@@ -97,8 +98,7 @@ class Api {
     );
   }
 
-  Future<http.Response> createTask(String title, String description, int reward, 
-    DateTime? endDate, bool recurring, int recurringInterval, bool singleCompletion, RootAppState appState) async {
+  Future<http.Response> createTask(Task task, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.post(
       Uri.parse(baseUrl + '/api/task/create'),
@@ -108,17 +108,48 @@ class Api {
         'Authorization': 'Bearer ' + jwt.toString(),
       },
       body: json.encode({
-        'title': title,
-        'description': description,
-        'reward': reward,
-        'end_date': endDate.toString(),
+        'title': task.title,
+        'description': task.description,
+        'reward': task.reward,
+        'end_date': task.endDate.toString(),
         'start_date': DateTime.now().toString(),
-        'recurring': recurring,
-        'recurring_interval': recurringInterval,
+        'recurring': task.recurring,
+        'recurring_interval': task.recurringInterval,
         'modified_by': appState.user?.id,
         'family_id': 1,
-        'single_completion': singleCompletion,
+        'single_completion': task.singleCompletion,
       })
+    );
+  }
+  Future<http.Response> updateTask(Task task, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.put(
+      Uri.parse(baseUrl + '/api/task/${task.id}'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+      body: json.encode({
+        'title': task.title,
+        'description': task.description,
+        'reward': task.reward,
+        'end_date': task.endDate.toString(),
+        'start_date': DateTime.now().toString(),
+        'recurring': task.recurring,
+        'recurring_interval': task.recurringInterval,
+        'single_completion': task.singleCompletion,
+      })
+    );
+  }
+  Future<http.Response> deleteTask(int id, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.delete(Uri.parse(baseUrl + '/api/task/${id}'),
+    headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
     );
   }
 }

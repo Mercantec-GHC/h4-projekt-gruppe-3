@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/TaskEdit.dart';
+import 'package:mobile/models/task.dart';
+import 'package:mobile/services/app_state.dart';
+import 'package:provider/provider.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
-    required this.taskId,
-    required this.title,
-    required this.description
+    required this.task,
   });
-
-  final int taskId;
-  final String title;
-  final String description;
+  
+  final Task task;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class TaskCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  isTextOverflowing(context, title),
+                  isTextOverflowing(context, task.title),
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -38,7 +38,7 @@ class TaskCard extends StatelessWidget {
                 ),
                 SizedBox(height: 7.5),
                 Text(
-                  isTextOverflowing(context, description),
+                  isTextOverflowing(context, task.description),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.black54,
@@ -56,8 +56,8 @@ class TaskCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(description),
+        title: Text(task.title),
+        content: Text(task.description),
         actions: [
           TextButton(
             onPressed: () {
@@ -65,12 +65,25 @@ class TaskCard extends StatelessWidget {
             },
             child: Text('Close'),
           ),
+          TextButton(
+            onPressed: () {
+              OpenEditTask(context);
+            },
+            child: Text('Edit'),
+          ),
         ],
       ),
     );
   }
 
-   String isTextOverflowing(BuildContext context, String text) {
+  void OpenEditTask(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => TaskEdit(task: task),
+    );
+  }
+
+  String isTextOverflowing(BuildContext context, String text) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(
         text: text,
