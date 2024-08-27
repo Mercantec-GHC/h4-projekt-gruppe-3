@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ChangePasswordDialog.dart';
+import 'package:mobile/Components/FormInputField.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -49,37 +50,62 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
     final currentUser = _appState.user;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Update profile'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      ),
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Form(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              width: 300,
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(15),
+                ),
+              ),
+              child: Text(
+                "User profile",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+              width: 300,
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(15),
+                ),
+              ),
+              child: Form(
                 key: _formKey,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextFormField(
+                    // Name Field
+                    FormInputField(
+                      fieldLabel: 'Name',
+                      placeholder: 'Fullname',
                       initialValue: currentUser?.name,
-                      decoration: InputDecoration(labelText: 'Name'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Name is required and cannot be empty';
                         }
                         return null;
                       },
-                      onSaved: (value) {
+                      onSave: (value) {
                         _name = value!;
                       },
                     ),
-                    SizedBox(height: 16),
-                    TextFormField(
+                    SizedBox(height: 20),
+
+                    // Email Field
+                    FormInputField(
+                      fieldLabel: 'Email',
+                      placeholder: 'example@example.com',
                       initialValue: currentUser?.email,
-                      decoration: InputDecoration(labelText: 'Email'),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -90,28 +116,58 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
+                      onSave: (value) {
                         _email = value!;
                       },
                     ),
-                    SizedBox(height: 32),
+                    SizedBox(height: 20),
+
+                    // Change Password Button
                     ElevatedButton(
-                      onPressed: _updateUserProfile,
-                      child: Text('Save'),
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => ChangePasswordDialog(),
+                      ),
+                      child: Text('Change Password'),
+                    ),
+                    SizedBox(height: 10),
+
+                    // Change Photo Button
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text('Change Photo'),
+                    ),
+                    SizedBox(height: 20),
+
+                    // Cancel and Save Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            _appState.switchPage(AppPages.userProfile);
+                          },
+                          child: Text(
+                            'Cancel',
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Color(0xFFF06E51),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: _updateUserProfile,
+                          child: Text('Save'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF89D56B),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 50),
-              ElevatedButton(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => ChangePasswordDialog(),
-                ),
-                child: Text('Change password'),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
