@@ -71,10 +71,10 @@ class UserController extends Controller
     public function updateProfilePicture(Request $request)
     {
         Log::debug('hit update profile picture endpoint');
-        Log::debug('profile photo:', [$request->profile_photo]);
+        // Log::debug('profile photo:', [$request->profile_photo]);
 
         $request->validate([
-            'profile_photo' => ['required', File::image()->max('15mb')],
+            'profile_photo' => ['required', 'file', File::image()->max('15mb')],
         ]);
         Log::debug('parsed validation');
 

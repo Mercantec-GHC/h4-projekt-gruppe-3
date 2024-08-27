@@ -21,18 +21,16 @@ class Userprofilecard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _appState = context.watch<RootAppState>();
     return GestureDetector(
       onTap: () {
         // Navigate to UpdateUserProfilePage when the card is tapped
-        _appState.switchPage(AppPages.updateUserProfile);
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => UpdateUserProfilePage(),
-        //     fullscreenDialog: true,
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UpdateUserProfilePage(),
+            fullscreenDialog: true,
+          ),
+        );
       },
       child: Card(
         margin: EdgeInsets.all(10.0),
