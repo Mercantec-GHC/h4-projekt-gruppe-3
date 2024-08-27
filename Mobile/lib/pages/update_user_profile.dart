@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ChangePasswordDialog.dart';
 import 'package:mobile/Components/FormInputField.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UpdateUserProfilePage extends StatefulWidget {
   @override
@@ -42,6 +44,18 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
         _appState.switchPage(AppPages.userProfile);
       }
     }
+  }
+
+  void _updateProfilePicture(XFile file) async {
+    final Api api = new Api();
+    String? _auth_token = await _appState.storage.read(key: 'auth_token');
+
+    if (_auth_token == null) {
+      _appState.switchPage(AppPages.login);
+      return;
+    }
+
+    api.updateUserProfilePicture(auth_token: _auth_token, file: file);
   }
 
   @override
@@ -134,7 +148,15 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
 
                     // Change Photo Button
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        var file = await picker.pickImage(
+                          source: ImageSource.gallery,
+                        );
+                        if (file != null) {
+                          _updateProfilePicture(file);
+                        }
+                      },
                       child: Text('Change Photo'),
                     ),
                     SizedBox(height: 20),

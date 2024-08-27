@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/services/app_state.dart';
@@ -95,5 +98,25 @@ class Api {
         'Authorization': 'Bearer ' + jwt.toString(),
       },
     );
+  }
+
+  void updateUserProfilePicture({
+    required String auth_token,
+    required XFile file,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(baseUrl + '/api/user/profile/picture'),
+    );
+    request.headers['Authorization'] = 'Bearer ' + auth_token;
+    request.headers['Accept'] = 'application/json';
+    request.headers['Content-Type'] = 'multipart/form-data';
+    request.files.add(
+      await http.MultipartFile.fromBytes(
+        'profile_photo',
+        await file.readAsBytes(),
+      ),
+    );
+    var response = await request.send();
   }
 }

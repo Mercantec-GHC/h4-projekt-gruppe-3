@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/services/app_state.dart';
+import 'package:provider/provider.dart';
 
 class Userprofilecard extends StatelessWidget {
   const Userprofilecard({
@@ -18,15 +21,18 @@ class Userprofilecard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _appState = context.watch<RootAppState>();
     return GestureDetector(
       onTap: () {
         // Navigate to UpdateUserProfilePage when the card is tapped
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UpdateUserProfilePage(),
-          ),
-        );
+        _appState.switchPage(AppPages.updateUserProfile);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => UpdateUserProfilePage(),
+        //     fullscreenDialog: true,
+        //   ),
+        // );
       },
       child: Card(
         margin: EdgeInsets.all(10.0),
