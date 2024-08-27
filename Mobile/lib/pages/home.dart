@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskCard.dart';
+import 'package:mobile/Components/taskCreationDialog.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,11 +19,24 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Home'),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () =>
+              showDialog(
+                context: context,
+                builder: (context) => TaskCreation(),
+              )
+          ),
+        ],
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            SizedBox(
+              height: 575,
               child: Card(
                 elevation: 4,
                 margin: EdgeInsets.all(16.0),
@@ -39,9 +53,7 @@ class _HomeState extends State<Home> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Active Tasks',
-                            ),
+                            Text('Active Tasks'),
                           ],
                         ),
                       ),
@@ -76,6 +88,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-      );
+      ),
+    );
   }
 }
