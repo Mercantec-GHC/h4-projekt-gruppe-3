@@ -26,8 +26,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{task}', [TaskController::class, 'getTask']);
         Route::get('/{family}', [TaskController::class, 'getTasks']);
         Route::get('available/{family}', [TaskController::class, 'getAvailableTasks']);
-        Route::get('assigned/{family}', [TaskController::class, 'getAssignedTasks']);
-        Route::get('completed/{family}', [TaskController::class, 'getCompletedTasks']);
+        Route::get('assigned/{user}', [TaskController::class, 'getAssignedTasks']);
+        Route::get('completed/{user}', [TaskController::class, 'getCompletedTasks']);
         Route::get('pending/{family}', [TaskController::class, 'getPendingTasks']);
         Route::put('/{task}', [TaskController::class, 'updateTask']);
         Route::put('/{task}/{user}', [TaskController::class, 'assignUserToTask']);

@@ -40,18 +40,17 @@ class TaskController extends Controller
         return response()->json($tasks->toArray());
     }
 
-    public function getAssignedTasks(Family $family)
+    public function getAssignedTasks(User $user)
     {
-        abort(501);
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
+
+        $tasks = $user->tasks()->wherePivot('state', '!=', 'done')->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
     }
 
-    public function getCompletedTasks(Family $family)
+    public function getCompletedTasks(User $user)
     {
-        abort(501);
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
+        $tasks = $user->tasks()->wherePivot('state', '=', 'done')->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
     }
