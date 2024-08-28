@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
-import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
