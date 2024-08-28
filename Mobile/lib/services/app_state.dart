@@ -134,18 +134,18 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       List<Task> newTasks = [];
-      var singleTask = jsonData['data'];
-      newTasks.add(new Task(
-        // singleTask['id'],
-        1,
-        singleTask['title'], 
-        singleTask['description'], 
-        singleTask['reward'], 
-        DateTime.parse(singleTask['end_date']), 
-        _getBool(singleTask['recurring']), 
-        singleTask['recurring_interval'], 
-        _getBool(singleTask['single_completion'])
-      ));
+      for (var task in jsonData) {
+        newTasks.add(new Task(
+          task['id'],
+          task['title'], 
+          task['description'], 
+          task['reward'], 
+          DateTime.parse(task['end_date']), 
+          _getBool(task['recurring']), 
+          task['recurring_interval'], 
+          _getBool(task['single_completion'])
+        ));
+      }
 
       return { 'statusCode': response.statusCode, 'tasks': newTasks };
     }

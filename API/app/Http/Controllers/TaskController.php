@@ -28,8 +28,8 @@ class TaskController extends Controller
 
     public function getTasks(Family $family)
     {
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
-
+        $tasks = $family->tasks()->get();
+        
         return response()->json($tasks->toArray());
     }
 
