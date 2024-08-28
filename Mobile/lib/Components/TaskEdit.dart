@@ -74,7 +74,6 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
-      _appState.switchPage(_appState.page);
     }
     else {
       showDialog(
@@ -209,7 +208,7 @@ class _TaskEditState extends State<TaskEdit> {
                     }
       
                     if (double.tryParse(value) == null) {
-                      return 'Please enter a hold number';
+                      return 'Please enter a whole number';
                     }
       
                     if (int.tryParse(value) == null) {
@@ -252,8 +251,17 @@ class _TaskEditState extends State<TaskEdit> {
                   onChanged: (value) => recurringInterval = value,
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select an end date and time';
+                      return 'Please select a recurring interval';
                     }
+
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a whole number';
+                    }
+      
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+
                     return null;
                   },
                 ),

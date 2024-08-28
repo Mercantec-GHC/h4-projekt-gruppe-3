@@ -109,7 +109,7 @@ class _TaskCreationState extends State<TaskCreation> {
                     }
       
                     if (double.tryParse(value) == null) {
-                      return 'Please enter a hold number';
+                      return 'Please enter a whole number';
                     }
       
                     if (int.tryParse(value) == null) {
@@ -157,7 +157,7 @@ class _TaskCreationState extends State<TaskCreation> {
                     }
       
                     if (double.tryParse(value) == null) {
-                      return 'Please enter a hold number';
+                      return 'Please enter a whole number';
                     }
       
                     if (int.tryParse(value) == null) {
