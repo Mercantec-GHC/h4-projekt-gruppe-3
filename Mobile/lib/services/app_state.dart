@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/api.dart';
 
@@ -122,13 +123,19 @@ class RootAppState extends ChangeNotifier {
     return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
   }
 
-  bool isLoggedInSync() {
-    return user != null;
+  Future<int> createTask(Task task) async {
+    return (await api.createTask(task, this)).statusCode;
   }
 
-  Future<Map<String, dynamic>> createTask(String title, String description, int reward, 
-    DateTime? endDate, bool recurring, int recurringInterval, bool singleCompletion) async {
-    final response = await api.createTask(title, description, reward, endDate, recurring, recurringInterval, singleCompletion, this);
-    return {'statusCode': response.statusCode, 'body': 'Something went wrong.'};
+  Future<int> updateTask(Task task) async {
+    return (await api.updateTask(task, this)).statusCode;
+  }
+
+  Future<int> deleteTask(int id) async {
+    return (await api.deleteTask(id, this)).statusCode;
+  }
+
+  bool isLoggedInSync() {
+    return user != null;
   }
 }

@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/Components/taskCreationDialog.dart';
+import 'package:mobile/models/task.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -72,9 +73,10 @@ class _HomeState extends State<Home> {
                               children: [
                                 for (var i = 0; i < 10; i++)
                                   TaskCard(
-                                    taskId: i, 
-                                    title: WordPair.random().toString(), 
-                                    description: 'This is the description of the card. It provides more details about the content or purpose of the card.'
+                                    task: new Task(i, WordPair.random().toString(), 
+                                      'This is the description of the card. It provides more details about the content or purpose of the card.', 
+                                      100, DateTime.now(), false, 1, true
+                                    ),
                                   )
                               ],
                             ),
