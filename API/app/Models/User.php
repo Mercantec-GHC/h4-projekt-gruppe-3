@@ -44,9 +44,10 @@ class User extends Authenticatable
 
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class)->withPivot([
+        return $this->belongsToMany(Task::class, 'user_task')->withPivot([
             'completion_picture_path',
-            'geo_location',
+            'latitude',
+            'longitude',
             'approved_by',
             'completed date',
             'state',
