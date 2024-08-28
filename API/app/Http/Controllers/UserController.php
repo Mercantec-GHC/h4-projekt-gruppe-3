@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Models\Family;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 use Nette\NotImplementedException;
 
 class UserController extends Controller
@@ -17,14 +19,29 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function GetProfiles(Request $request)
+    public function GetProfiles(Family $family)
     {
-        // need family
+        $users = DB::table('user_family')
+            ->where('family_id', $family->id)
+            ->Join('users', 'user_family.user_id', '=', 'users.id')
+            ->get()
+            ->mapInto(UserResource::class);
+
+        return response()->json($users->toArray());
     }
 
-    public function GetPoints()
+    public function GetPoints(Family $family)
     {
-        // need family and user relation
+        $user = auth()->user();
+
+        $userPoints = DB::table('user_family')
+            ->join('users', 'user_family.user_id', '=', 'users.id')
+            ->where('family_id', $family->id)
+            ->where('user_id', '=', $user->id)
+            ->get()
+            ->mapInto(UserResource::class);
+
+        return response()->json($userPoints);
     }
 
     public function updateGeneralProfileInfo(Request $request)
