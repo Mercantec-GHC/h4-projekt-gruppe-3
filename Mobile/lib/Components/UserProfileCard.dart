@@ -28,7 +28,6 @@ class Userprofilecard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => UpdateUserProfilePage(),
-            fullscreenDialog: true,
           ),
         );
       },
