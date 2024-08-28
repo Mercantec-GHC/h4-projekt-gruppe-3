@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/update_user_profile.dart';
-import 'package:mobile/models/user.dart';
-import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class Userprofilecard extends StatelessWidget {
   const Userprofilecard({
