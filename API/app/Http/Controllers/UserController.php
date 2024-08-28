@@ -6,8 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Models\Family;
+use App\Models\Media;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\DB;
 use Nette\NotImplementedException;
 
 class UserController extends Controller
@@ -17,14 +22,29 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function GetProfiles(Request $request)
+    public function GetProfiles(Family $family)
     {
-        // need family
+        $users = DB::table('user_family')
+            ->where('family_id', $family->id)
+            ->Join('users', 'user_family.user_id', '=', 'users.id')
+            ->get()
+            ->mapInto(UserResource::class);
+
+        return response()->json($users->toArray());
     }
 
-    public function GetPoints()
+    public function GetPoints(Family $family)
     {
-        // need family and user relation
+        $user = auth()->user();
+
+        $userPoints = DB::table('user_family')
+            ->join('users', 'user_family.user_id', '=', 'users.id')
+            ->where('family_id', $family->id)
+            ->where('user_id', '=', $user->id)
+            ->get()
+            ->mapInto(UserResource::class);
+
+        return response()->json($userPoints);
     }
 
     public function updateGeneralProfileInfo(Request $request)
@@ -64,9 +84,34 @@ class UserController extends Controller
         return response()->json([], 204);
     }
 
-    public function updateProfilePicture()
+    public function updateProfilePicture(Request $request)
     {
-        throw new NotImplementedException();
+        $request->validate([
+            'profile_photo' => ['required', 'file', File::image()->max('15mb')],
+        ]);
+
+        $file = $request->file('profile_photo');
+        $name = $file->hashName();
+        $user = auth()->user();
+
+        if (Storage::put("avatars/{$user->id}", $file)) {
+            $media = Media::query()->create(
+                attributes: [
+                    'name' => "{$name}",
+                    'file_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getClientMimeType(),
+                    'path' => "avatars/{$name}",
+                    'disk' => config('filesystems.default'),
+                    'collection' => 'avatars',
+                    'size' => $file->getSize(),
+                ],
+            );
+
+            $user->profile_picture_id = $media->id;
+            $user->save();
+        }
+
+        return response()->json([], 204);
     }
 
     public function Delete(User $user)

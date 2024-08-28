@@ -7,6 +7,7 @@ use App\Models\Family;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
 class TaskController extends Controller
@@ -34,24 +35,40 @@ class TaskController extends Controller
 
     public function getAvailableTasks(Family $family)
     {
-        abort(501);
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
+        $tasks = DB::table('tasks')
+            ->where('family_id', $family->id)
+            ->leftJoin('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->whereNull('user_task.task_id')
+            ->orWhere('tasks.single_completion', 0)
+            ->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
     }
 
     public function getAssignedTasks(Family $family)
     {
-        abort(501);
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
+        $user = auth()->user();
+
+        $tasks = DB::table('tasks')
+            ->where('family_id', $family->id)
+            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->where('user_task.user_id', '=', $user->id)
+            ->Where('user_task.state', '!=', 'done')
+            ->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
     }
 
     public function getCompletedTasks(Family $family)
     {
-        abort(501);
-        $tasks = $family->tasks()->get()->mapInto(TaskResource::class);
+        $user = auth()->user();
+
+        $tasks = DB::table('tasks')
+            ->where('family_id', $family->id)
+            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->where('user_task.user_id', '=', $user->id)
+            ->Where('user_task.state', '!=', 'done')
+            ->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
     }
