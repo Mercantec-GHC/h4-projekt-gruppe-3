@@ -18,7 +18,6 @@ class TaskEdit extends StatefulWidget {
 
 class _TaskEditState extends State<TaskEdit> {
   final _formKey = GlobalKey<FormState>();
-  final Selectdatetime selectdatetime = new Selectdatetime();
   final TextEditingController _endDatetimestampController = TextEditingController();
   late RootAppState _appState;
   
@@ -121,7 +120,7 @@ class _TaskEditState extends State<TaskEdit> {
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
-    DateTime? newDateTime = await selectdatetime.SelectDateTime(context);
+    DateTime? newDateTime = await Selectdatetime.SelectDateTime(context);
 
     if(newDateTime != null) {
       setState(() {
