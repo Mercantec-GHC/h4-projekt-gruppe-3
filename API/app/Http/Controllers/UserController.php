@@ -8,11 +8,9 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Models\Media;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
-use Nette\NotImplementedException;
 
 class UserController extends Controller
 {
@@ -70,19 +68,15 @@ class UserController extends Controller
 
     public function updateProfilePicture(Request $request)
     {
-        Log::debug('hit update profile picture endpoint');
-        // Log::debug('profile photo:', [$request->profile_photo]);
-
         $request->validate([
             'profile_photo' => ['required', 'file', File::image()->max('15mb')],
         ]);
-        Log::debug('parsed validation');
 
         $file = $request->file('profile_photo');
         $name = $file->hashName();
+        $user = auth()->user();
 
-        if (Storage::put("avatars/{$name}", $file)) {
-            Log::debug('saved file');
+        if (Storage::put("avatars/{$user->id}", $file)) {
             $media = Media::query()->create(
                 attributes: [
                     'name' => "{$name}",
@@ -90,19 +84,13 @@ class UserController extends Controller
                     'mime_type' => $file->getClientMimeType(),
                     'path' => "avatars/{$name}",
                     'disk' => config('filesystems.default'),
-                    'file_hash' => hash_file(
-                        config('app.upload_hash'),
-                        storage_path(
-                            path: "avatars/{$name}",
-                        ),
-                    ),
                     'collection' => 'avatars',
                     'size' => $file->getSize(),
                 ],
             );
 
-            $user = auth()->user();
-            $user->profilePicture()->attach($media);
+            $user->profile_picture_id = $media->id;
+            $user->save();
         }
 
         return response()->json([], 204);
