@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use App\Models\Media;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
-use Nette\NotImplementedException;
 
 class UserController extends Controller
 {
@@ -64,9 +66,34 @@ class UserController extends Controller
         return response()->json([], 204);
     }
 
-    public function updateProfilePicture()
+    public function updateProfilePicture(Request $request)
     {
-        throw new NotImplementedException();
+        $request->validate([
+            'profile_photo' => ['required', 'file', File::image()->max('15mb')],
+        ]);
+
+        $file = $request->file('profile_photo');
+        $name = $file->hashName();
+        $user = auth()->user();
+
+        if (Storage::put("avatars/{$user->id}", $file)) {
+            $media = Media::query()->create(
+                attributes: [
+                    'name' => "{$name}",
+                    'file_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getClientMimeType(),
+                    'path' => "avatars/{$name}",
+                    'disk' => config('filesystems.default'),
+                    'collection' => 'avatars',
+                    'size' => $file->getSize(),
+                ],
+            );
+
+            $user->profile_picture_id = $media->id;
+            $user->save();
+        }
+
+        return response()->json([], 204);
     }
 
     public function Delete(User $user)

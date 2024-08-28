@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
@@ -98,6 +99,27 @@ class Api {
     );
   }
 
+  Future<http.Response> updateUserProfilePicture({
+    required String auth_token,
+    required XFile file,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(baseUrl + '/api/user/profile/picture'),
+    );
+    request.headers['Authorization'] = 'Bearer ' + auth_token;
+    request.headers['Accept'] = 'application/json';
+    request.headers['Content-Type'] = 'multipart/form-data';
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'profile_photo',
+        file.path,
+      ),
+    );
+    var response = await request.send();
+    return http.Response.fromStream(response);
+  }
+
   Future<http.Response> createTask(Task task, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.post(
@@ -118,9 +140,10 @@ class Api {
         'modified_by': appState.user?.id,
         'family_id': 1,
         'single_completion': task.singleCompletion,
-      })
+      }),
     );
   }
+
   Future<http.Response> updateTask(Task task, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.put(
@@ -139,13 +162,15 @@ class Api {
         'recurring': task.recurring,
         'recurring_interval': task.recurringInterval,
         'single_completion': task.singleCompletion,
-      })
+      }),
     );
   }
+
   Future<http.Response> deleteTask(int id, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
-    return await http.delete(Uri.parse(baseUrl + '/api/task/${id}'),
-    headers: {
+    return await http.delete(
+      Uri.parse(baseUrl + '/api/task/${id}'),
+      headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
         'Authorization': 'Bearer ' + jwt.toString(),
