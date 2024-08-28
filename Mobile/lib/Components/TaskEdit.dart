@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 
 class TaskEdit extends StatefulWidget {
   final Task task;
-  
+
   const TaskEdit({
     super.key,
-    required this.task
+    required this.task,
   });
 
   @override
@@ -21,7 +21,7 @@ class _TaskEditState extends State<TaskEdit> {
   final TextEditingController _endDatetimestampController = TextEditingController();
   late RootAppState _appState;
   
-  late Task oldTask;
+  late int id;
   late String title;
   late String description;
   late String reward;
@@ -33,7 +33,8 @@ class _TaskEditState extends State<TaskEdit> {
   @override
   void initState() {
     super.initState();
-    oldTask = widget.task;
+    Task oldTask = widget.task;
+    id = oldTask.id;
     title = oldTask.title;
     description = oldTask.description;
     reward = oldTask.reward.toString();
@@ -46,80 +47,46 @@ class _TaskEditState extends State<TaskEdit> {
   }
 
   void _deleteTaskConfimation() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete task: ' + oldTask.title),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-          TextButton(
-            onPressed: _deleteTask,
-            child: Text('Confirm'),
-          ),
-        ],
-      ),
-    );
+    _openCustomPopup('Delete task', contentText: 'Are you sure you want to delete this task?');
   }
 
   void _deleteTask() async {
-    int statusCode = await _appState.deleteTask(oldTask.id);
+    int statusCode = await _appState.deleteTask(id);
     if (statusCode == 204) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
+      Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
-      ); 
+      _openCustomPopup('Something went wrong.');
     }
   }
 
   void _updateTask() async {
-    int reward = int.parse(this.reward);
-    int recurringInterval = int.parse(this.recurringInterval);
-    Task task = new Task(oldTask.id, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
-    int response = await _appState.updateTask(task);
-    if(response == 200) {
-      // Closes both alert dialog.
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-    }
-    else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
-      );
+    if (_formKey.currentState!.validate()) {
+      int reward = int.parse(this.reward);
+      int recurringInterval = int.parse(this.recurringInterval);
+      Task task = new Task(id, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
+      
+      int response = await _appState.updateTask(task);
+      if(response == 200) {
+        setState(() {
+          // Can't override task because it is a final
+          widget.task.title = title;
+          widget.task.description = description;
+          widget.task.reward = reward;
+          widget.task.endDate = endDate;
+          widget.task.recurring = recurring;
+          widget.task.recurringInterval = recurringInterval;
+          widget.task.singleCompletion = singleCompletion;
+        });
+        Navigator.of(context).pop({'action': 'update', 'task': widget.task});
+      }
+      else {
+        _openCustomPopup('Something went wrong.');
+      }
     }
   }
 
-  Future<void> _selectDateTime(BuildContext context) async {
+  Future<void> _selectDateTime() async {
     DateTime? newDateTime = await Selectdatetime.SelectDateTime(context);
 
     if(newDateTime != null) {
@@ -145,7 +112,6 @@ class _TaskEditState extends State<TaskEdit> {
           ),
         ],
       ), 
-      // Text('Edit task'),
       actions: [
         TextButton(
           onPressed: () {
@@ -219,7 +185,7 @@ class _TaskEditState extends State<TaskEdit> {
                 SizedBox(height: 16),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'End Date & Time'),
-                  onTap: () => _selectDateTime(context),
+                  onTap: _selectDateTime,
                   controller: _endDatetimestampController,
                   validator: (value) {
                     if (value == null) {
@@ -245,9 +211,14 @@ class _TaskEditState extends State<TaskEdit> {
                 SizedBox(height: 16),
                 TextFormField(
                   enabled: recurring,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Recurring Interval'),
                   onChanged: (value) => recurringInterval = value,
                   validator: (value) {
+                    if (!recurring) {
+                      return null;
+                    }
+
                     if (value == null) {
                       return 'Please select a recurring interval';
                     }
@@ -280,6 +251,32 @@ class _TaskEditState extends State<TaskEdit> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  void _openCustomPopup(String title, { String contentText = "" }) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: contentText.isNotEmpty ? Text(contentText) : null,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Close'),
+          ),
+          if (contentText.isNotEmpty)
+            TextButton(
+              onPressed: () => {
+                Navigator.of(context).pop(),
+                _deleteTask(),
+              },
+              child: Text('Confirm'),
+            ),
         ],
       ),
     );

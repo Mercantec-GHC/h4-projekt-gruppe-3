@@ -5,7 +5,12 @@ import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
 class TaskCreation extends StatefulWidget {
-  const TaskCreation({super.key});
+  const TaskCreation({
+    super.key,
+    required this.onCreateTask,
+  });
+
+  final Function(Task) onCreateTask;
 
   @override
   State<TaskCreation> createState() => _TaskCreationState();
@@ -33,6 +38,7 @@ class _TaskCreationState extends State<TaskCreation> {
       Task task = new Task(0, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
       int response = await _appState.createTask(task);
       if (response == 201) {
+        widget.onCreateTask(task);
         Navigator.of(context).pop();
       }
       else {
