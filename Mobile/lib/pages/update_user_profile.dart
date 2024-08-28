@@ -53,6 +53,7 @@ class _UpdateUserProfilePageState extends State<UpdateUserProfilePage> {
 
     if (_auth_token == null) {
       _appState.switchPage(AppPages.login);
+      Navigator.pop(context);
       return;
     }
 
