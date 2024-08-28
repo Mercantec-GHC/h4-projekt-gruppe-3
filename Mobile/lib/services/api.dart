@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
@@ -100,7 +101,7 @@ class Api {
     );
   }
 
-  void updateUserProfilePicture({
+  Future<http.Response> updateUserProfilePicture({
     required String auth_token,
     required XFile file,
   }) async {
@@ -112,12 +113,13 @@ class Api {
     request.headers['Accept'] = 'application/json';
     request.headers['Content-Type'] = 'multipart/form-data';
     request.files.add(
-      await http.MultipartFile.fromBytes(
+      await http.MultipartFile.fromPath(
         'profile_photo',
-        await file.readAsBytes(),
+        file.path,
       ),
     );
     var response = await request.send();
+    return http.Response.fromStream(response);
   }
 
   Future<http.Response> createTask(
