@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: _theme.colorScheme.primaryContainer,
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -53,11 +53,6 @@ class _HomeState extends State<Home> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Tasklist(listType: TasklistType.All),
-            Tasklist(listType: TasklistType.Available),
-            Tasklist(listType: TasklistType.Assigned),
-            Tasklist(listType: TasklistType.Completed),
-            Tasklist(listType: TasklistType.Family),
-            Tasklist(listType: TasklistType.Pending),
           ],
         ),
       ),

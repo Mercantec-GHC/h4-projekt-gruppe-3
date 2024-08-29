@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 enum TasklistType {
   All,
   Available,
-  Family,
   Assigned,
   Completed,
   Pending,
@@ -20,6 +19,16 @@ class Tasklist extends StatefulWidget {
     super.key,
     required this.listType,
   });
+  
+  static String getTitle(TasklistType type) {
+    return switch (type) {
+      TasklistType.All => 'All tasks',
+      TasklistType.Available => 'Available tasks',
+      TasklistType.Assigned => 'Assigned tasks',
+      TasklistType.Completed => 'Completed tasks',
+      TasklistType.Pending => 'Pending tasks',
+    };
+  }
 
   @override
   State<Tasklist> createState() => _TasklistState();
@@ -34,47 +43,23 @@ class _TasklistState extends State<Tasklist> {
   void initState() {
     super.initState();
     appState = Provider.of<RootAppState>(context, listen: false);
-    listTitle = _getTitle();
+    listTitle = Tasklist.getTitle(widget.listType);
     tasks = [];
     _getTasks();
   }
-
-  String _getTitle() {
-    switch (widget.listType){
-      case TasklistType.All:
-        return 'All tasks';
-      case TasklistType.Available:
-        return 'Available tasks';
-      case TasklistType.Family:
-        return 'All the family tasks';
-      case TasklistType.Assigned:
-        return 'Assigned tasks';
-      case TasklistType.Completed:
-        return 'Completed tasks';
-      case TasklistType.Pending:
-        return 'Pending tasks';
-      default:
-        return 'This type is not supported';
-    }
-  }
   
   Future<Map<String, dynamic>> _contactServer() async {
-    switch (widget.listType){
-      case TasklistType.All:
-        return await appState.getAvailableTasks(1);
-      case TasklistType.Available:
-        return await appState.getAvailableTasks(1);
-      case TasklistType.Family:
-        return await appState.getAvailableTasks(1);
-      case TasklistType.Assigned:
-        return await appState.getAvailableTasks(1);
-      case TasklistType.Completed:
-        return await appState.getAvailableTasks(1);
-      case TasklistType.Pending:
-        return await appState.getAvailableTasks(1);
-      default:
-        return { 'statusCode': '404', 'message': 'This functionality is not implemented.'};
-    }
+    int familyId = 1;
+    return switch (widget.listType) {
+      TasklistType.All => await appState.getTasks('/all/${familyId}'),
+      TasklistType.Available => await appState.getTasks('/available/${familyId}'),
+      TasklistType.Assigned => await appState.getTasks('/assigned/${familyId}'),
+      TasklistType.Completed => await appState.getTasks('/completed/${familyId}'),
+      // TasklistType.Pending => await appState.getTasks('/api/task/pending/${familyId}'),
+
+      // to get something, it need to replaced with the one above.
+      TasklistType.Pending => await appState.getTasks('/api/task/all/${familyId}'),
+    };
   }
 
   Future<List<Task>> _readServerData() async {
@@ -83,7 +68,7 @@ class _TasklistState extends State<Tasklist> {
       return response['tasks'];
     }
     else {
-      _openErrorPopup(response['message']);
+      _openErrorPopup(response['Error']);
       return [];
     }
   }
@@ -186,7 +171,7 @@ class _TasklistState extends State<Tasklist> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Something went wrong'),
-        content: Text(_errorText),
+        content: _errorText.isNotEmpty ? Text(_errorText) : null,
         actions: [
           TextButton(
             onPressed: () {
