@@ -5,4 +5,5 @@ enum AppPages {
   updateUserProfile,
   login,
   register,
+  AssignedTasks,
 }
