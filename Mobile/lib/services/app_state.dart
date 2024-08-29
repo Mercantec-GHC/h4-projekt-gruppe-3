@@ -85,7 +85,7 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token']);
+      await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
@@ -99,7 +99,7 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
-      storage.write(key: 'auth_token', value: jsonData['token']);
+      await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
 
@@ -136,21 +136,19 @@ class RootAppState extends ChangeNotifier {
       List<Task> newTasks = [];
       for (var task in jsonData) {
         newTasks.add(new Task(
-          task['id'],
-          task['title'], 
-          task['description'], 
-          task['reward'], 
-          DateTime.parse(task['end_date']), 
-          _getBool(task['recurring']), 
-          task['recurring_interval'], 
-          _getBool(task['single_completion'])
-        ));
+            task['id'],
+            task['title'],
+            task['description'],
+            task['reward'],
+            DateTime.parse(task['end_date']),
+            _getBool(task['recurring']),
+            task['recurring_interval'],
+            _getBool(task['single_completion'])));
       }
 
-      return { 'statusCode': response.statusCode, 'tasks': newTasks };
-    }
-    else {
-      return { 'statusCode': response.statusCode, 'Error': jsonData['Error'] };
+      return {'statusCode': response.statusCode, 'tasks': newTasks};
+    } else {
+      return {'statusCode': response.statusCode, 'Error': jsonData};
     }
   }
 
@@ -165,6 +163,7 @@ class RootAppState extends ChangeNotifier {
   bool isLoggedInSync() {
     return user != null;
   }
+
   bool _getBool(int value) {
     return value == 1;
   }
