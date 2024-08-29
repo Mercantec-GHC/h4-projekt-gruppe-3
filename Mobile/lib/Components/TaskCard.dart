@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
-import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.task,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
   });
   
   final Task task;
+  final Function(Task) onDeleteTask;
+  final Function(Task) onUpdateTask;
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +68,7 @@ class TaskCard extends StatelessWidget {
             child: Text('Close'),
           ),
           TextButton(
-            onPressed: () {
-              OpenEditTask(context);
-            },
+            onPressed: () => _editTask(context),
             child: Text('Edit'),
           ),
         ],
@@ -76,11 +76,24 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  void OpenEditTask(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => TaskEdit(task: task),
+  void _editTask(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TaskEdit(task: task)),
     );
+
+    if (result != null) {
+      final action = result['action'];
+      final updatedTask = result['task'] as Task;
+
+      if (action == 'update') {
+        onUpdateTask(updatedTask);
+      } else if (action == 'delete') {
+        onDeleteTask(updatedTask);
+      }
+      
+      Navigator.of(context).pop();
+    }
   }
 
   String isTextOverflowing(BuildContext context, String text) {

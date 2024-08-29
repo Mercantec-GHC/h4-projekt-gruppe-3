@@ -25,15 +25,15 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('/task')->group(function () {
         Route::post('/create', [TaskController::class, 'createTask']);
         Route::get('/{task}', [TaskController::class, 'getTask']);
-        Route::get('/{family}', [TaskController::class, 'getTasks']);
+        Route::get('/all/{family}', [TaskController::class, 'getTasks']);
         Route::get('available/{family}', [TaskController::class, 'getAvailableTasks']);
         Route::get('assigned/{family}', [TaskController::class, 'getAssignedTasks']);
         Route::get('completed/{family}', [TaskController::class, 'getCompletedTasks']);
         Route::get('pending/{family}', [TaskController::class, 'getPendingTasks']);
         Route::put('/{task}', [TaskController::class, 'updateTask']);
-        Route::put('/{task}/{user}', [TaskController::class, 'assignUserToTask']);
-        Route::put('/{task}/{user}', [TaskController::class, 'unassignUserToTask']);
         Route::put('/{task}/state', [TaskController::class, 'updateTaskState']);
+        Route::put('/assign/{task}/{user}', [TaskController::class, 'assignUserToTask']);
+        Route::put('/unassign/{task}/{user}', [TaskController::class, 'unassignUserToTask']);
         Route::delete('/{task}', [TaskController::class, 'deleteTask']);
     });
 });

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
@@ -127,6 +128,32 @@ class RootAppState extends ChangeNotifier {
     return (await api.createTask(task, this)).statusCode;
   }
 
+  Future<Map<String, dynamic>> getAvailableTasks(int familyId) async {
+    final response = await api.getAvailableTasks(familyId, this);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<Task> newTasks = [];
+      for (var task in jsonData) {
+        newTasks.add(new Task(
+          task['id'],
+          task['title'], 
+          task['description'], 
+          task['reward'], 
+          DateTime.parse(task['end_date']), 
+          _getBool(task['recurring']), 
+          task['recurring_interval'], 
+          _getBool(task['single_completion'])
+        ));
+      }
+
+      return { 'statusCode': response.statusCode, 'tasks': newTasks };
+    }
+    else {
+      return { 'statusCode': response.statusCode, 'Error': jsonData };
+    }
+  }
+
   Future<int> updateTask(Task task) async {
     return (await api.updateTask(task, this)).statusCode;
   }
@@ -137,5 +164,8 @@ class RootAppState extends ChangeNotifier {
 
   bool isLoggedInSync() {
     return user != null;
+  }
+  bool _getBool(int value) {
+    return value == 1;
   }
 }

@@ -1,8 +1,9 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/TaskCard.dart';
+import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/taskCreationDialog.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/services/app_state.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,8 +13,67 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  late RootAppState _appState;
+  List<Task> tasks = [];
+
+  void createTask(Task newTask) {
+    setState(() {
+      _getTasks();
+    });
+  }
+
+  void updateTask(Task updatedTask) {
+    setState(() {
+      int index = tasks.indexWhere((t) => t.id == updatedTask.id);
+      if (index != -1) {
+        tasks[index] = updatedTask;
+      }
+    });
+  }
+  
+  void _deleteTask(Task taskToDelete) {
+    setState(() {
+      tasks.removeWhere((t) => t.id == taskToDelete.id);
+    });
+  }
+
+  Future<void> _getTasks() async {
+    Map<String, dynamic> response = await _appState.getAvailableTasks(1);
+    if (response['statusCode'] == 200) {
+      setState(() {
+        tasks.clear();
+        tasks.addAll(response['tasks']);
+      });
+    }
+    else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Something went wrong'),
+          content: Text(response['Error']['message']),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _appState = Provider.of<RootAppState>(context, listen: false);
+    _getTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
 
     return Scaffold(
@@ -26,7 +86,7 @@ class _HomeState extends State<Home> {
             onPressed: () =>
               showDialog(
                 context: context,
-                builder: (context) => TaskCreation(),
+                builder: (context) => TaskCreation(onCreateTask: createTask,),
               )
           ),
         ],
@@ -36,58 +96,7 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: 575,
-              child: Card(
-                elevation: 4,
-                margin: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        padding: EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Active Tasks'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: _theme.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                for (var i = 0; i < 10; i++)
-                                  TaskCard(
-                                    task: new Task(i, WordPair.random().toString(), 
-                                      'This is the description of the card. It provides more details about the content or purpose of the card.', 
-                                      100, DateTime.now(), false, 1, true
-                                    ),
-                                  )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            TaskList(listTitle: 'Active Tasks', tasks: tasks, onUpdateTask: updateTask, onDeleteTask: _deleteTask,),
           ],
         ),
       ),
