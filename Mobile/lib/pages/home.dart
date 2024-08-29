@@ -13,67 +13,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late RootAppState _appState;
-  List<Task> tasks = [];
+  // late RootAppState _appState;
 
   void createTask(Task newTask) {
-    setState(() {
-      _getTasks();
-    });
-  }
-
-  void updateTask(Task updatedTask) {
-    setState(() {
-      int index = tasks.indexWhere((t) => t.id == updatedTask.id);
-      if (index != -1) {
-        tasks[index] = updatedTask;
-      }
-    });
-  }
-  
-  void _deleteTask(Task taskToDelete) {
-    setState(() {
-      tasks.removeWhere((t) => t.id == taskToDelete.id);
-    });
-  }
-
-  Future<void> _getTasks() async {
-    Map<String, dynamic> response = await _appState.getAvailableTasks(1);
-    if (response['statusCode'] == 200) {
-      setState(() {
-        tasks.clear();
-        tasks.addAll(response['tasks']);
-      });
-    }
-    else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
-          content: Text(response['Error']['message']),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
-      );
-    }
+  //   setState(() {
+  //     _getTasks();
+  //   });
   }
 
   @override
   void initState() {
     super.initState();
-    _appState = Provider.of<RootAppState>(context, listen: false);
-    _getTasks();
+    // _appState = Provider.of<RootAppState>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    _appState = context.watch<RootAppState>();
+    // RootAppState _appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
 
     return Scaffold(
@@ -86,7 +42,7 @@ class _HomeState extends State<Home> {
             onPressed: () =>
               showDialog(
                 context: context,
-                builder: (context) => TaskCreation(onCreateTask: createTask,),
+                builder: (context) => TaskCreation(onCreateTask: createTask),
               )
           ),
         ],
@@ -96,7 +52,12 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TaskList(listTitle: 'Active Tasks', tasks: tasks, onUpdateTask: updateTask, onDeleteTask: _deleteTask,),
+            Tasklist(listType: TasklistType.All),
+            Tasklist(listType: TasklistType.Available),
+            Tasklist(listType: TasklistType.Assigned),
+            Tasklist(listType: TasklistType.Completed),
+            Tasklist(listType: TasklistType.Family),
+            Tasklist(listType: TasklistType.Pending),
           ],
         ),
       ),

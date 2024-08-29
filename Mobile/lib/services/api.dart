@@ -147,7 +147,7 @@ class Api {
   Future<http.Response> getAvailableTasks(int familyId, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.get(
-      Uri.parse(baseUrl + '/api/task/all/${familyId}}'),
+      Uri.parse(baseUrl + '/api/task/all/${familyId}'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',

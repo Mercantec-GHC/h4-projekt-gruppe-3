@@ -150,7 +150,7 @@ class RootAppState extends ChangeNotifier {
       return { 'statusCode': response.statusCode, 'tasks': newTasks };
     }
     else {
-      return { 'statusCode': response.statusCode, 'Error': jsonData };
+      return { 'statusCode': response.statusCode, 'Error': jsonData['Error'] };
     }
   }
 
