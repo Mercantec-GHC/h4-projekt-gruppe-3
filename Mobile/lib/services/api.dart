@@ -143,8 +143,9 @@ class Api {
       }),
     );
   }
-  
-  Future<http.Response> getAvailableTasks(int familyId, RootAppState appState) async {
+
+  Future<http.Response> getAvailableTasks(
+      int familyId, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.get(
       Uri.parse(baseUrl + '/api/task/all/${familyId}}'),
@@ -155,7 +156,7 @@ class Api {
       },
     );
   }
-  
+
   Future<http.Response> updateTask(Task task, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.put(
@@ -188,5 +189,26 @@ class Api {
         'Authorization': 'Bearer ' + jwt.toString(),
       },
     );
+  }
+
+  Future<http.Response> uploadTaskCompletionInfo({
+    required String auth_token,
+    required XFile file,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(baseUrl + '/api/user/profile/picture'),
+    );
+    request.headers['Authorization'] = 'Bearer ' + auth_token;
+    request.headers['Accept'] = 'application/json';
+    request.headers['Content-Type'] = 'multipart/form-data';
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'photo',
+        file.path,
+      ),
+    );
+    var response = await request.send();
+    return http.Response.fromStream(response);
   }
 }
