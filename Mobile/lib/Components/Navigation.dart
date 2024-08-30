@@ -7,6 +7,7 @@ import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/pages/assigned_tasks.dart';
 
 class NavigationComponent extends StatefulWidget {
   @override
@@ -23,6 +24,8 @@ class _NavigationComponentState extends State<NavigationComponent> {
       AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
       AppPages.updateUserProfile:
           Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
+      AppPages.AssignedTasks:
+          Title('Assigned Tasks', Icons.list, AssignedTasks()),
       AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
       AppPages.register: Title('Logout', Icons.logout, Register(), false),
