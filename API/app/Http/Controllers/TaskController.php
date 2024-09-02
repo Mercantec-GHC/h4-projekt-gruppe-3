@@ -230,8 +230,7 @@ class TaskController extends Controller
                 ],
             );
 
-            $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude,])->up;
-            $user->save();
+            $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude, 'state' => 'pending', 'media_id' => $media->id]);
         }
 
         return response()->json([], 204);
