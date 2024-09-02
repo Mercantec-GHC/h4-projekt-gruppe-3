@@ -79,7 +79,6 @@ class _TaskCompletionDialogState extends State<TaskCompletionDialog> {
                 setState(() {
                   confirmationPhoto = file;
                 });
-                // confirmationPhoto = file;
               }
             },
             child: Text('Select completion photo'),
