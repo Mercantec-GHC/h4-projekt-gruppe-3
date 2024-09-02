@@ -196,10 +196,13 @@ class Api {
     required String auth_token,
     required XFile file,
     required Position location,
+    required int task_id,
   }) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse(baseUrl + '/api/user/profile/picture'),
+      Uri.parse(
+        baseUrl + '/api/task/' + task_id.toString() + '/add/completion-info',
+      ),
     );
     request.headers['Authorization'] = 'Bearer ' + auth_token;
     request.headers['Accept'] = 'application/json';
