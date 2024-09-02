@@ -107,55 +107,54 @@ class _TasklistState extends State<Tasklist> {
   @override
   Widget build(BuildContext context) {
     appState = context.watch<RootAppState>();
-    final _theme = Theme.of(context);
     return SizedBox(
-      height: 575,
+      height: 600,
       child: Card(
         elevation: 4,
         margin: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: _theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(10.0),
+            Container(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(245, 197, 58, 1),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
                 ),
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(listTitle),
-                  ],
-                ),
+              ),
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(listTitle),
+                ],
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: _theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(10.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color.fromRGBO(217, 217, 217, 1),
+                    borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (tasks.isNotEmpty)
-                          for (Task task in tasks)
-                            TaskCard(task: task, onUpdateTask: updateTask, onDeleteTask: _deleteTask),
-                        
-                        if (tasks.isEmpty) 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                              child: Text('There are no tasks here. ^_^'),
-                            ),
-                          )
-                      ],
-                    ),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (tasks.isNotEmpty)
+                        for (Task task in tasks)
+                          TaskCard(task: task, onUpdateTask: updateTask, onDeleteTask: _deleteTask),
+                      
+                      if (tasks.isEmpty) 
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text('There are no tasks here.'),
+                          ),
+                        )
+                    ],
                   ),
                 ),
               ),
