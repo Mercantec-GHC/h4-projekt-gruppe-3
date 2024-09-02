@@ -205,31 +205,32 @@ class TaskController extends Controller
         return response()->json([], 204);
     }
 
-    public function addTaskCompletionInfo(Request $request)
+    public function addTaskCompletionInfo(Request $request, Task $task)
     {
         $request->validate([
             'photo' => ['required', 'file', File::image()->max('15mb')],
-
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
         ]);
 
-        $file = $request->file('profile_photo');
+        $file = $request->file('photo');
         $name = $file->hashName();
         $user = auth()->user();
 
-        if (Storage::put("avatars/{$user->id}", $file)) {
+        if (Storage::put("task/completion/{$user->id}", $file)) {
             $media = Media::query()->create(
                 attributes: [
                     'name' => "{$name}",
                     'file_name' => $file->getClientOriginalName(),
                     'mime_type' => $file->getClientMimeType(),
-                    'path' => "avatars/{$name}",
+                    'path' => "task/completion/{$name}",
                     'disk' => config('filesystems.default'),
-                    'collection' => 'avatars',
+                    'collection' => 'tasks',
                     'size' => $file->getSize(),
                 ],
             );
 
-            $user->profile_picture_id = $media->id;
+            $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude,])->up;
             $user->save();
         }
 
