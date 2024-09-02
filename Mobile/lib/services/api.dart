@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -194,6 +195,7 @@ class Api {
   Future<http.Response> uploadTaskCompletionInfo({
     required String auth_token,
     required XFile file,
+    required Position location,
   }) async {
     var request = http.MultipartRequest(
       'POST',
@@ -208,6 +210,8 @@ class Api {
         file.path,
       ),
     );
+    request.fields['latitude'] = location.latitude.toString();
+    request.fields['longitude'] = location.longitude.toString();
     var response = await request.send();
     return http.Response.fromStream(response);
   }
