@@ -6,4 +6,7 @@ enum AppPages {
   login,
   register,
   AssignedTasks,
+  AvailableTasks,
+  CompletedTasks,
+  PendingTasks,
 }
