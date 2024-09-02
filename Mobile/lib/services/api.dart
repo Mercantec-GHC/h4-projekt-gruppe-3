@@ -190,4 +190,17 @@ class Api {
       },
     );
   }
+
+  Future<http.Response> getLeaderboard(
+      int familyId, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.get(
+      Uri.parse(baseUrl + '/api/user/family/${familyId}/profiles'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+    );
+  }
 }

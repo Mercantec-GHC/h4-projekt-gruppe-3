@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/api.dart';
@@ -166,5 +167,28 @@ class RootAppState extends ChangeNotifier {
 
   bool _getBool(int value) {
     return value == 1;
+  }
+
+  Future<Map<String, dynamic>> getLeaderboard(int familyId) async {
+    final response = await api.getLeaderboard(familyId, this);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<UserProfile> newUsers = [];
+      for (var user in jsonData) {
+        newUsers.add(new UserProfile(
+            user['name'],
+            user['Email'],
+            user['username'],
+            user['is_parrent'] ?? false,
+            user['points'],
+            user['total_points']));
+      }
+      newUsers.sort((a, b) => b.total_points.compareTo(a.total_points));
+
+      return {'statusCode': response.statusCode, 'users': newUsers};
+    } else {
+      return {'statusCode': response.statusCode, 'Error': jsonData};
+    }
   }
 }
