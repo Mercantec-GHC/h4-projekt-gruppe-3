@@ -217,7 +217,7 @@ class TaskController extends Controller
         $name = $file->hashName();
         $user = auth()->user();
 
-        if (Storage::put("task/completion/{$user->id}", $file)) {
+        if (Storage::put("task/completion/", $file)) {
             $media = Media::query()->create(
                 attributes: [
                     'name' => "{$name}",
