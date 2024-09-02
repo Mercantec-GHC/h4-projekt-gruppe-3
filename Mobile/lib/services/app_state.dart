@@ -129,15 +129,20 @@ class RootAppState extends ChangeNotifier {
     return (await api.createTask(task, this)).statusCode;
   }
 
-  Future<Map<String, dynamic>> getAvailableTasks(int familyId) async {
-    final response = await api.getAvailableTasks(familyId, this);
+  Future<Map<String, dynamic>> getTasks(String path) async {
+    final response = await api.getTasks('/api/task' + path, this);
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       List<Task> newTasks = [];
+      if (jsonData.isEmpty) {
+        return {'statusCode': response.statusCode, 'tasks': newTasks};
+      }
+
       for (var task in jsonData) {
         newTasks.add(new Task(
-            task['id'],
+            // task['id'],
+            1, // i don't know what happen but i don't get the id with the task 😭
             task['title'],
             task['description'],
             task['reward'],
@@ -149,7 +154,7 @@ class RootAppState extends ChangeNotifier {
 
       return {'statusCode': response.statusCode, 'tasks': newTasks};
     } else {
-      return {'statusCode': response.statusCode, 'Error': jsonData};
+      return {'statusCode': response.statusCode, 'Error': jsonData['message']};
     }
   }
 
