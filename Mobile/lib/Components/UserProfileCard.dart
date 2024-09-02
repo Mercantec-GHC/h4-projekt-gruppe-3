@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/update_user_profile.dart';
 
@@ -10,6 +12,11 @@ class Userprofilecard extends StatelessWidget {
     this.profileImageUrl, // Optional profile image URL
     required this.page,
     this.points,
+    this.colorScheme = const [
+      Color.fromRGBO(194, 232, 255, 77),
+      Color.fromRGBO(137, 213, 107, 1),
+      Color.fromRGBO(240, 110, 81, 1),
+    ],
   });
 
   final int? userId;
@@ -18,6 +25,13 @@ class Userprofilecard extends StatelessWidget {
   final String? profileImageUrl;
   final String page;
   final int? points;
+  final List<Color> colorScheme;
+
+  Color _getRandomColor() {
+    final random = Random();
+    int index = random.nextInt(colorScheme.length);
+    return colorScheme[index];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +48,7 @@ class Userprofilecard extends StatelessWidget {
             }
           : null,
       child: Card(
+        color: _getRandomColor(),
         margin: EdgeInsets.all(10.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
