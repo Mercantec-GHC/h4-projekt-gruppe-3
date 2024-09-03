@@ -34,7 +34,7 @@ class TaskController extends Controller
         return response()->json($tasks->toArray());
     }
 
-    public function getUserByTask(Task $task) 
+    public function getUsersByTask(Task $task) 
     {
         $users = DB::table('tasks')
             ->where('tasks.id', $task->id)

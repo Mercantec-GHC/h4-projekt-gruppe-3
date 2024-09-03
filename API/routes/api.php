@@ -26,7 +26,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/create', [TaskController::class, 'createTask']);
         Route::get('/{task}', [TaskController::class, 'getTask']);
         Route::get('/all/{family}', [TaskController::class, 'getTasks']);
-        Route::get('/users/{task}', [TaskController::class, 'getUserByTask']);
+        Route::get('/users/{task}', [TaskController::class, 'getUsersByTask']);
         Route::get('/available/{family}', [TaskController::class, 'getAvailableTasks']);
         Route::get('/assigned/{family}', [TaskController::class, 'getAssignedTasks']);
         Route::get('/completed/{family}', [TaskController::class, 'getCompletedTasks']);
