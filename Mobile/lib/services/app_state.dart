@@ -85,7 +85,7 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email'], _getBool(jsonData['user']['is_parent']));
+          jsonData['user']['email'], jsonData['user']['is_parent']);
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
