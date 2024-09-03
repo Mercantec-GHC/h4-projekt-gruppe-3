@@ -140,6 +140,7 @@ class RootAppState extends ChangeNotifier {
             task['title'],
             task['description'],
             task['reward'],
+            DateTime.parse(task['start_date']),
             DateTime.parse(task['end_date']),
             _getBool(task['recurring']),
             task['recurring_interval'],

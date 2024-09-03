@@ -64,7 +64,7 @@ class _TaskEditState extends State<TaskEdit> {
     if (_formKey.currentState!.validate()) {
       int reward = int.parse(this.reward);
       int recurringInterval = int.parse(this.recurringInterval);
-      Task task = new Task(id, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
+      Task task = new Task(id, title, description, reward, widget.task.startDate, endDate, recurring, recurringInterval, singleCompletion);
       
       int response = await _appState.updateTask(task);
       if(response == 200) {

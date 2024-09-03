@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/TaskDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
 
@@ -54,46 +55,11 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  void OpenDetailedDescription(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(task.title),
-        content: Text(task.description),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-          TextButton(
-            onPressed: () => _editTask(context),
-            child: Text('Edit'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _editTask(BuildContext context) async {
-    final result = await Navigator.push(
+  void OpenDetailedDescription(BuildContext context) async {
+    await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TaskEdit(task: task)),
+      MaterialPageRoute(builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask)),
     );
-
-    if (result != null) {
-      final action = result['action'];
-      final updatedTask = result['task'] as Task;
-
-      if (action == 'update') {
-        onUpdateTask(updatedTask);
-      } else if (action == 'delete') {
-        onDeleteTask(updatedTask);
-      }
-      
-      Navigator.of(context).pop();
-    }
   }
 
   String isTextOverflowing(BuildContext context, String text) {
