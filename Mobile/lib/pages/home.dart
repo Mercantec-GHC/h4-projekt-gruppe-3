@@ -13,23 +13,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // late RootAppState _appState;
-
-  void createTask(Task newTask) {
-  //   setState(() {
-  //     _getTasks();
-  //   });
-  }
+  void createTask(Task newTask) {}
 
   @override
   void initState() {
     super.initState();
-    // _appState = Provider.of<RootAppState>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // RootAppState _appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
 
     return Scaffold(
@@ -38,13 +30,12 @@ class _HomeState extends State<Home> {
         backgroundColor: _theme.colorScheme.primaryContainer,
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () =>
-              showDialog(
-                context: context,
-                builder: (context) => TaskCreation(onCreateTask: createTask),
-              )
-          ),
+              icon: Icon(Icons.add),
+              onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) =>
+                        TaskCreation(onCreateTask: createTask),
+                  )),
         ],
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
