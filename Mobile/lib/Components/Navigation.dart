@@ -9,6 +9,7 @@ import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/pages/leaderboard.dart';
 
 class NavigationComponent extends StatefulWidget {
   @override
@@ -25,14 +26,16 @@ class _NavigationComponentState extends State<NavigationComponent> {
       AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
       AppPages.updateUserProfile:
           Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
-      AppPages.AssignedTasks:
-          Title('Assigned Tasks', Icons.list, TaskSelectedList(type: TasklistType.Assigned)),
-      AppPages.AvailableTasks:
-          Title('Available Tasks', Icons.list, TaskSelectedList(type: TasklistType.Available)),
-      AppPages.CompletedTasks:
-          Title('Completed Tasks', Icons.list, TaskSelectedList(type: TasklistType.Completed)),
-      AppPages.PendingTasks:
-          Title('Pending Tasks', Icons.list, TaskSelectedList(type: TasklistType.Pending)),
+      AppPages.leaderboard:
+          Title('Leaderboard', Icons.leaderboard, LeaderboardPage()),
+      AppPages.AssignedTasks: Title('Assigned Tasks', Icons.list,
+          TaskSelectedList(type: TasklistType.Assigned)),
+      AppPages.AvailableTasks: Title('Available Tasks', Icons.list,
+          TaskSelectedList(type: TasklistType.Available)),
+      AppPages.CompletedTasks: Title('Completed Tasks', Icons.list,
+          TaskSelectedList(type: TasklistType.Completed)),
+      AppPages.PendingTasks: Title('Pending Tasks', Icons.list,
+          TaskSelectedList(type: TasklistType.Pending)),
       AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
       AppPages.register: Title('Logout', Icons.logout, Register(), false),
