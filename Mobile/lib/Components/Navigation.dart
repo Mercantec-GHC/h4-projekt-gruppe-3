@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/TaskList.dart';
+import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
@@ -7,7 +9,6 @@ import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
-import 'package:mobile/pages/assigned_tasks.dart';
 
 class NavigationComponent extends StatefulWidget {
   @override
@@ -25,7 +26,13 @@ class _NavigationComponentState extends State<NavigationComponent> {
       AppPages.updateUserProfile:
           Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
       AppPages.AssignedTasks:
-          Title('Assigned Tasks', Icons.list, AssignedTasks()),
+          Title('Assigned Tasks', Icons.list, TaskSelectedList(type: TasklistType.Assigned)),
+      AppPages.AvailableTasks:
+          Title('Available Tasks', Icons.list, TaskSelectedList(type: TasklistType.Available)),
+      AppPages.CompletedTasks:
+          Title('Completed Tasks', Icons.list, TaskSelectedList(type: TasklistType.Completed)),
+      AppPages.PendingTasks:
+          Title('Pending Tasks', Icons.list, TaskSelectedList(type: TasklistType.Pending)),
       AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
       AppPages.register: Title('Logout', Icons.logout, Register(), false),

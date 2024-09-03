@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
+import 'dart:math';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
@@ -9,11 +10,23 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
+    this.colorScheme = const [
+      Color.fromRGBO(194, 232, 255, 77),
+      Color.fromRGBO(137, 213, 107, 1),
+      Color.fromRGBO(240, 110, 81, 1),
+    ],
   });
   
   final Task task;
   final Function(Task) onDeleteTask;
   final Function(Task) onUpdateTask;
+  final List<Color> colorScheme;
+
+  Color _getRandomColor() {
+    final random = Random();
+    int index = random.nextInt(colorScheme.length);
+    return colorScheme[index];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +34,14 @@ class TaskCard extends StatelessWidget {
       onTap: () => OpenDetailedDescription(context),
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.all(10.0),
+        margin: EdgeInsets.all(6),
         child: Card(
+          color: _getRandomColor(),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(17.5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -80,7 +94,7 @@ class TaskCard extends StatelessWidget {
         text: text.substring(0, endIndex) + '...',
         style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
       );
-      textPainter.layout(maxWidth: MediaQuery.of(context).size.width);
+      textPainter.layout(maxWidth: MediaQuery.of(context).size.width - 15);
     }
 
     return text.substring(0, endIndex) + (endIndex < text.length ? '...' : '');
