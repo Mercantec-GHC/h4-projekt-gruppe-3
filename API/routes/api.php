@@ -41,10 +41,10 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('/family')->group(function () {
         Route::post('/create', [FamilyController::class, 'createFamily']);
         Route::post('/add/{user}/{family}', [FamilyController::class, 'addUserToFamily']);
-        Route::get('/{family}', [FamilyController::class, 'getFamily']);
-        Route::get('/all/{user}', [FamilyController::class, 'getUserFamilies']);
+        Route::get('/all', [FamilyController::class, 'getUserFamilies']);
         Route::put('/edit/{family}', [FamilyController::class, 'editFamily']);
         Route::put('/switchOwner/{family}', [FamilyController::class, 'switchOwner']);
+        Route::get('/{family}', [FamilyController::class, 'getFamily']);
         Route::delete('/remove/{user}/{family}', [FamilyController::class, 'removeUserToFamily']);
         Route::delete('/delete/{family}', [FamilyController::class, 'deleteFamily']);
     });
