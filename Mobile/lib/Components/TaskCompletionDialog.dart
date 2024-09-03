@@ -31,6 +31,9 @@ class _TaskCompletionDialogState extends State<TaskCompletionDialog> {
   void _uploadTaskCompletionInfo() async {
     String? _auth_token = await _appState.storage.read(key: 'auth_token');
 
+    if (confirmationPhoto == null) {
+      return;
+    }
     _currentLocation = await _geoLocationService.getCurrentLocation();
 
     var result = await _api.uploadTaskCompletionInfo(
@@ -50,7 +53,8 @@ class _TaskCompletionDialogState extends State<TaskCompletionDialog> {
   Widget build(BuildContext context) {
     _appState = context.watch<RootAppState>();
     return AlertDialog(
-      title: Text('Mark task as completed'),
+      backgroundColor: Color(0xFF89D56B),
+      title: Text(widget.task.title),
       actions: [
         TextButton(
           onPressed: () {
@@ -60,16 +64,17 @@ class _TaskCompletionDialogState extends State<TaskCompletionDialog> {
         ),
         TextButton(
           onPressed: _uploadTaskCompletionInfo,
-          child: Text('Confirm'),
+          child: Text('Mark as complete'),
         ),
       ],
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (confirmationPhoto != null)
-            Image.file(File(confirmationPhoto!.path)),
           // select completion photo
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFF5C53A),
+            ),
             onPressed: () async {
               final ImagePicker picker = ImagePicker();
               var file = await picker.pickImage(
@@ -83,6 +88,11 @@ class _TaskCompletionDialogState extends State<TaskCompletionDialog> {
             },
             child: Text('Select completion photo'),
           ),
+          SizedBox(
+            height: 15,
+          ),
+          if (confirmationPhoto != null)
+            Image.file(File(confirmationPhoto!.path)),
         ],
       ),
     );
