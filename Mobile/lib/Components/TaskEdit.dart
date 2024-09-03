@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ErrorPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -46,8 +47,8 @@ class _TaskEditState extends State<TaskEdit> {
     _endDatetimestampController.text = endDate.toString();
   }
 
-  void _deleteTaskConfimation() {
-    _openCustomPopup('Delete task', contentText: 'Are you sure you want to delete this task?');
+  void _deleteTaskConfirmation() {
+    _openDeleteTaskConfirmation('Delete task', contentText: 'Are you sure you want to delete this task?');
   }
 
   void _deleteTask() async {
@@ -56,7 +57,7 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      _openCustomPopup('Something went wrong.');
+      CustomErrorPopup.openErrorPopup(context, '');
     }
   }
 
@@ -81,7 +82,7 @@ class _TaskEditState extends State<TaskEdit> {
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
       }
       else {
-        _openCustomPopup('Something went wrong.');
+        CustomErrorPopup.openErrorPopup(context, '');
       }
     }
   }
@@ -107,7 +108,7 @@ class _TaskEditState extends State<TaskEdit> {
           Text('Edit task'),
           Spacer(),
           TextButton(
-            onPressed: _deleteTaskConfimation,
+            onPressed: _deleteTaskConfirmation,
             child: Text('Delete'),
           ),
         ],
@@ -256,7 +257,7 @@ class _TaskEditState extends State<TaskEdit> {
     );
   }
 
-  void _openCustomPopup(String title, { String contentText = "" }) {
+  void _openDeleteTaskConfirmation(String title, { String contentText = "" }) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

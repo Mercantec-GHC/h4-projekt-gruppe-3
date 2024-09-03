@@ -120,6 +120,18 @@ class Api {
     return http.Response.fromStream(response);
   }
 
+  Future<http.Response> getUsersAssignToTask(int taskId, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.get(
+      Uri.parse(baseUrl + "/api/task/users/${taskId}"),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+    );
+  }
+
   Future<http.Response> createTask(Task task, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.post(

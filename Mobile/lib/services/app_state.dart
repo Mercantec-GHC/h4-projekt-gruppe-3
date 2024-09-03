@@ -84,7 +84,7 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 201) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email']);
+          jsonData['user']['email'], _getBool(jsonData['user']['is_parent']));
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
@@ -98,7 +98,7 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email']);
+          jsonData['user']['email'], _getBool(jsonData['user']['is_parent']));
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
@@ -128,6 +128,30 @@ class RootAppState extends ChangeNotifier {
     return (await api.createTask(task, this)).statusCode;
   }
 
+  Future<Map<String, dynamic>> getuserAssignedToTask(int taskId) async {
+    final response = await api.getUsersAssignToTask(taskId, this);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<User> newTasks = [];
+      if (jsonData.isEmpty) {
+        return {'statusCode': response.statusCode, 'tasks': newTasks};
+      }
+      for (var user in jsonData) {
+        newTasks.add(new User(
+            // user['id'],
+            1,
+            user['name'],
+            user['email'],
+            _getBool(user['is_parent'])
+          ));
+      }
+      return {'statusCode': response.statusCode, 'tasks': newTasks};
+    } else {
+      return {'statusCode': response.statusCode, 'Error': jsonData['message']};
+    }
+  }
+
   Future<Map<String, dynamic>> getTasks(String path) async {
     final response = await api.getTasks('/api/task' + path, this);
 
@@ -140,16 +164,17 @@ class RootAppState extends ChangeNotifier {
 
       for (var task in jsonData) {
         newTasks.add(new Task(
-            // task['id'],
-            1, // i don't know what happen but i don't get the id with the task 😭
-            task['title'],
-            task['description'],
-            task['reward'],
-            DateTime.parse(task['start_date']),
-            DateTime.parse(task['end_date']),
-            _getBool(task['recurring']),
-            task['recurring_interval'],
-            _getBool(task['single_completion'])));
+          // task['id'],
+          7, // i don't know what happen but i don't get the id with the task 😭
+          task['title'],
+          task['description'],
+          task['reward'],
+          DateTime.parse(task['start_date']),
+          DateTime.parse(task['end_date']),
+          _getBool(task['recurring']),
+          task['recurring_interval'],
+          _getBool(task['single_completion'])
+        ));
       }
 
       return {'statusCode': response.statusCode, 'tasks': newTasks};

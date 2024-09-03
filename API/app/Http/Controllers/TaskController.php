@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserResource;
 use App\Models\Family;
 use App\Models\Task;
 use App\Models\User;
@@ -31,6 +32,17 @@ class TaskController extends Controller
         $tasks = $family->tasks()->get();
         
         return response()->json($tasks->toArray());
+    }
+
+    public function getUserByTask(Task $task) 
+    {
+        $users = DB::table('tasks')
+            ->where('tasks.id', $task->id)
+            ->join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->join('users', 'user_task.user_id', '=', 'users.id')
+            ->get()->mapInto(UserResource::class);
+
+        return response()->json($users->toArray());
     }
 
     public function getAvailableTasks(Family $family)

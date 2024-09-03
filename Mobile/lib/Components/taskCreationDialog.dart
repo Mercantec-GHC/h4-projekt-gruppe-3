@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ErrorPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -42,20 +43,7 @@ class _TaskCreationState extends State<TaskCreation> {
         Navigator.of(context).pop();
       }
       else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Something went wrong'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Close'),
-              ),
-            ],
-          ),
-        );
+        CustomErrorPopup.openErrorPopup(context, '');
       }
     }
   }
