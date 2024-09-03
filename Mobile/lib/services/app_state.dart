@@ -6,11 +6,13 @@ import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/models/family.dart';
 import 'package:mobile/services/api.dart';
 
 class RootAppState extends ChangeNotifier {
   final storage = new FlutterSecureStorage();
   User? user;
+  Family? family;
   Api api = new Api();
   AppPages page = AppPages.login;
 
@@ -101,6 +103,39 @@ class RootAppState extends ChangeNotifier {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
           jsonData['user']['email']);
       await storage.write(key: 'auth_token', value: jsonData['token']);
+      notifyListeners();
+    }
+
+    return {'statusCode': response.statusCode, 'body': jsonData};
+  }
+  
+  Future<Map<String, dynamic>> GetFamilies(User user) async {
+    final response = await api.GetFamilies(user);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<Family> newFamilies = [];
+      for (var returnedFamily in jsonData) {
+        newFamilies.add(new Family(
+            returnedFamily['id'],
+            returnedFamily['name'],
+            ));
+      }
+      //return {'statusCode': response.statusCode, 'users': newFamilies};
+      //thise 2 lines below need to be removed and the line above need to be instated when we have a page to choose family
+      family = newFamilies[1];
+      notifyListeners();
+    }
+
+    return {'statusCode': response.statusCode, 'body': jsonData};
+  }
+  
+  Future<Map<String, dynamic>> GetFamily(Family family) async {
+    final response = await api.GetFamily(family);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      family = new Family(jsonData['family']['id'], jsonData['family']['name']);
       notifyListeners();
     }
 

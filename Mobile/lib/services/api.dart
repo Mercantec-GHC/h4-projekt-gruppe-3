@@ -2,7 +2,9 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
+import 'package:mobile/models/family.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 
 class Api {
@@ -41,6 +43,22 @@ class Api {
 
   Future<void> Logout() async {
     await http.post(Uri.parse(baseUrl + '/logout'));
+  }
+
+  Future<http.Response> GetFamilies(User user) async {
+    return await http.post(Uri.parse(baseUrl + '/api/family/all/${user}'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json'
+        });
+  }
+
+  Future<http.Response> GetFamily(Family family) async {
+    return await http.post(Uri.parse(baseUrl + '/api/family/${family}'),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json'
+        });
   }
 
   void Get() {}
