@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
@@ -229,6 +230,11 @@ class TaskController extends Controller
                     'size' => $file->getSize(),
                 ],
             );
+
+            $relationExists = $user->tasks()->where('task_id', $task->id)->exists();
+            if (!$relationExists) {
+                $user->tasks()->attach($task);
+            }
 
             $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude, 'state' => 'pending', 'media_id' => $media->id]);
         }
