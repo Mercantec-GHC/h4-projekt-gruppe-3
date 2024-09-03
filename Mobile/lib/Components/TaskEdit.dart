@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/ErrorPopup.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -48,7 +48,7 @@ class _TaskEditState extends State<TaskEdit> {
   }
 
   void _deleteTaskConfirmation() {
-    _openDeleteTaskConfirmation('Delete task', contentText: 'Are you sure you want to delete this task?');
+    CustomPopup.openDeleteTaskConfirmation(context, _deleteTask);
   }
 
   void _deleteTask() async {
@@ -57,7 +57,7 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      CustomErrorPopup.openErrorPopup(context, '');
+      CustomPopup.openErrorPopup(context, '');
     }
   }
 
@@ -82,7 +82,7 @@ class _TaskEditState extends State<TaskEdit> {
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
       }
       else {
-        CustomErrorPopup.openErrorPopup(context, '');
+        CustomPopup.openErrorPopup(context, '');
       }
     }
   }
@@ -252,32 +252,6 @@ class _TaskEditState extends State<TaskEdit> {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  void _openDeleteTaskConfirmation(String title, { String contentText = "" }) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: contentText.isNotEmpty ? Text(contentText) : null,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-          if (contentText.isNotEmpty)
-            TextButton(
-              onPressed: () => {
-                Navigator.of(context).pop(),
-                _deleteTask(),
-              },
-              child: Text('Confirm'),
-            ),
         ],
       ),
     );

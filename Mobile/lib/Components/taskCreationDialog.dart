@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/ErrorPopup.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -43,7 +43,7 @@ class _TaskCreationState extends State<TaskCreation> {
         Navigator.of(context).pop();
       }
       else {
-        CustomErrorPopup.openErrorPopup(context, '');
+        CustomPopup.openErrorPopup(context, '');
       }
     }
   }

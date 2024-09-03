@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
-import 'package:mobile/Components/ErrorPopup.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
@@ -44,7 +44,7 @@ class _TaskdialogState extends State<Taskdialog> {
       return response['tasks'];
     }
     else {
-      CustomErrorPopup.openErrorPopup(context, response['Error']);
+      CustomPopup.openErrorPopup(context, response['Error']);
       return [];
     }
   }
@@ -59,7 +59,6 @@ class _TaskdialogState extends State<Taskdialog> {
   @override
   Widget build(BuildContext context) {
     RootAppState appState = context.watch<RootAppState>();
-    Color backgroundColor = CustomColorScheme.getRandomColor();
 
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
@@ -72,7 +71,7 @@ class _TaskdialogState extends State<Taskdialog> {
             return Container(
               width: constraints.maxWidth,
               child: AlertDialog(
-                backgroundColor: backgroundColor,
+                backgroundColor: CustomColorScheme.getRandomColor(),
                 scrollable: true,
                 actions: [
                   TextButton(

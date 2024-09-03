@@ -166,7 +166,7 @@ class RootAppState extends ChangeNotifier {
       for (var task in jsonData) {
         newTasks.add(new Task(
           // task['id'],
-          7, // i don't know what happen but i don't get the id with the task 😭
+          1, // i don't know what happen but i don't get the id with the task 😭
           task['title'],
           task['description'],
           task['reward'],

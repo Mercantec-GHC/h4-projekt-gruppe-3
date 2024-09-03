@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/ErrorPopup.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -69,7 +69,7 @@ class _TasklistState extends State<Tasklist> {
       return response['tasks'];
     }
     else {
-      CustomErrorPopup.openErrorPopup(context, response['Error']);
+      CustomPopup.openErrorPopup(context, response['Error']);
       return [];
     }
   }
