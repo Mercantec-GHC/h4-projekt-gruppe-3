@@ -68,10 +68,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           child: FractionallySizedBox(
                             widthFactor: 1,
                             child: Userprofilecard(
-                              userId: user!.id,
-                              email: user.email,
-                              name: user.name,
-                            ),
+                                userId: user!.id,
+                                email: user.email,
+                                name: user.name,
+                                page: 'user_profile'),
                           ),
                         ),
                       ),

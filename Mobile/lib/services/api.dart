@@ -215,6 +215,19 @@ class Api {
     request.fields['latitude'] = location.latitude.toString();
     request.fields['longitude'] = location.longitude.toString();
     var response = await request.send();
-    return http.Response.fromStream(response);
+    return await http.Response.fromStream(response);
+  }
+
+  Future<http.Response> getLeaderboard(
+      int familyId, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.get(
+      Uri.parse(baseUrl + '/api/user/family/${familyId}/profiles'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+    );
   }
 }
