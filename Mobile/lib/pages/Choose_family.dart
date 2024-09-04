@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/FamilyCard.dart';
 import 'package:mobile/models/family.dart';
 import 'package:provider/provider.dart';
+import '../Components/FamilyCreation.dart';
 import '../services/app_state.dart';
-import 'package:mobile/Components/FamilyCreationDialog.dart';
 
 class ChooseFamilyPage extends StatefulWidget {
   const ChooseFamilyPage({super.key});
@@ -23,24 +23,19 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
     _getFamilies();
   }
 
-  createFamily() {}
   @override
   Widget build(BuildContext context) {
     final _theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
-          title: Text('Families'),
-          backgroundColor: _theme.colorScheme.primaryContainer,
-          actions: [
-            IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) =>
-                          FamilyCreation(onCreateFamily: createFamily()),
-                    )),
-          ]),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => openCreateFamily(context)),
+        ],
+        title: Text('Families'),
+        backgroundColor: _theme.colorScheme.primaryContainer,
+      ),
       backgroundColor: _theme.colorScheme.primaryContainer,
       body: Column(
         children: [
@@ -111,14 +106,15 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
     if (response['statusCode'] == 200) {
       setState(() {
         families.clear();
-        families.addAll(response['families']);
+        families.addAll(response['family']);
       });
+      print(families[0].name);
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Something went wrong'),
-          content: Text(response['Error']['message']),
+          content: Text(response['error']['message']),
           actions: [
             TextButton(
               onPressed: () {
@@ -130,5 +126,9 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
         ),
       );
     }
+  }
+
+  static void openCreateFamily(BuildContext context) {
+    showDialog(context: context, builder: (context) => Familycreation());
   }
 }
