@@ -13,8 +13,8 @@ class CustomColorScheme {
 
   static List<Color> taskCardColorSheme = [
     primary,
-    randomColor,
-    randomColorTwo,
+    limeGreen,
+    tangerineOrange,
   ];
 
 
