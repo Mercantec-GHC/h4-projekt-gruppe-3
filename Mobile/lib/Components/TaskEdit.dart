@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -46,8 +47,8 @@ class _TaskEditState extends State<TaskEdit> {
     _endDatetimestampController.text = endDate.toString();
   }
 
-  void _deleteTaskConfimation() {
-    _openCustomPopup('Delete task', contentText: 'Are you sure you want to delete this task?');
+  void _deleteTaskConfirmation() {
+    CustomPopup.openDeleteTaskConfirmation(context, _deleteTask);
   }
 
   void _deleteTask() async {
@@ -56,7 +57,7 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      _openCustomPopup('Something went wrong.');
+      CustomPopup.openErrorPopup(context, '');
     }
   }
 
@@ -64,7 +65,7 @@ class _TaskEditState extends State<TaskEdit> {
     if (_formKey.currentState!.validate()) {
       int reward = int.parse(this.reward);
       int recurringInterval = int.parse(this.recurringInterval);
-      Task task = new Task(id, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
+      Task task = new Task(id, title, description, reward, widget.task.startDate, endDate, recurring, recurringInterval, singleCompletion);
       
       int response = await _appState.updateTask(task);
       if(response == 200) {
@@ -81,7 +82,7 @@ class _TaskEditState extends State<TaskEdit> {
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
       }
       else {
-        _openCustomPopup('Something went wrong.');
+        CustomPopup.openErrorPopup(context, '');
       }
     }
   }
@@ -107,7 +108,7 @@ class _TaskEditState extends State<TaskEdit> {
           Text('Edit task'),
           Spacer(),
           TextButton(
-            onPressed: _deleteTaskConfimation,
+            onPressed: _deleteTaskConfirmation,
             child: Text('Delete'),
           ),
         ],
@@ -251,32 +252,6 @@ class _TaskEditState extends State<TaskEdit> {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  void _openCustomPopup(String title, { String contentText = "" }) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: contentText.isNotEmpty ? Text(contentText) : null,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-          if (contentText.isNotEmpty)
-            TextButton(
-              onPressed: () => {
-                Navigator.of(context).pop(),
-                _deleteTask(),
-              },
-              child: Text('Confirm'),
-            ),
         ],
       ),
     );

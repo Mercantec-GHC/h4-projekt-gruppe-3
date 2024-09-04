@@ -3,6 +3,7 @@ class Task {
   String title;
   String description;
   int reward;
+  DateTime startDate;
   DateTime endDate;
   bool recurring;
   int recurringInterval;
@@ -13,6 +14,7 @@ class Task {
     this.title,
     this.description,
     this.reward,
+    this.startDate,
     this.endDate,
     this.recurring,
     this.recurringInterval,
