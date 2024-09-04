@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/config/app_pages.dart';
@@ -18,7 +19,7 @@ class NavigationComponent extends StatefulWidget {
 
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  RootAppState? appState;
+  late RootAppState appState;
 
   Map<AppPages, Title> _getTitles() {
     return {
@@ -43,17 +44,17 @@ class _NavigationComponentState extends State<NavigationComponent> {
   }
 
   void _logout() {
-    appState?.logout();
+    appState.logout();
     _onItemTapped(AppPages.login);
   }
 
   Color? _getSelectedColor(AppPages index) {
-    return appState?.page == index ? Colors.blue : null;
+    return appState.page == index ? Colors.blue : null;
   }
 
   void _onItemTapped(AppPages appPage) {
     setState(() {
-      appState?.switchPage(appPage);
+      appState.switchPage(appPage);
     });
     // Close the drawer after selecting an item
     Navigator.pop(context);
@@ -61,34 +62,49 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
   @override
   Widget build(BuildContext context) {
-    if (appState == null) {
-      appState = context.watch<RootAppState>();
-    }
+    appState = context.watch<RootAppState>();
     Map<AppPages, Title> titles = _getTitles();
-    bool? isLoggedIn = appState?.isLoggedInSync();
-
-    if (!(isLoggedIn ?? false)) {
+    bool? isLoggedIn = appState.isLoggedInSync();
+  
+    if (!isLoggedIn) {
       return Scaffold(
-        body: Center(child: titles[appState?.page]?.page),
+        body: Center(child: titles[appState.page]?.page),
       );
     }
 
     return Scaffold(
       key: _scaffoldKey,
       // if not logged in or root app state is null don't add drawer.
-      appBar: !(isLoggedIn ?? false)
+      appBar: !isLoggedIn
           ? null
           : AppBar(
-              title: Text('Title'),
-              actions: <Widget>[
-                // maybe use this for user profile -_-
-                // IconButton(
-                //   icon: Icon(Icons.menu),
-                //   onPressed: () {
-                //     _scaffoldKey.currentState?.openDrawer();
-                //   },
-                // ),
-              ],
+              backgroundColor: CustomColorScheme.secondary,
+              title: appState.user?.isParent ?? false ?
+                null : Card(
+                  color: Colors.green,
+                  child: Row(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(appState.points.toString() + 'p'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              // actions: <Widget>[
+              //   // maybe use this for user profile -_-
+              //   IconButton(
+              //     icon: Icon(Icons.menu),
+              //     onPressed: () {
+              //       _scaffoldKey.currentState?.openDrawer();
+              //     },
+              //   ),
+              // ],
             ),
       drawer: Drawer(
         child: ListView(
@@ -104,7 +120,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
                   Icon(Icons.account_circle, size: 80.0, color: Colors.white),
                   SizedBox(height: 16.0),
                   Text(
-                    appState?.user?.name.toString() ?? 'No user logged in',
+                    appState.user?.name.toString() ?? 'No user logged in',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24.0,
@@ -134,7 +150,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
         ),
       ),
       body: Center(
-        child: titles[appState?.page]?.page,
+        child: titles[appState.page]?.page,
       ),
     );
   }

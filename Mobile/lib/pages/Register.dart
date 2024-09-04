@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -109,30 +110,19 @@ class _RegisterState extends State<Register> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _appState.CreateUser(_name, _password, _email, _password_confirmation)
-          .then((value) => {
-                if (value['statusCode'] == 201)
-                  {
-                    _appState.switchPage(AppPages.home),
-                  }
-                else
-                  {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Couldn\'t create user'),
-                        content: Text(value['body']['errors'].toString()),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Close'),
-                          ),
-                        ],
-                      ),
-                    )
-                  }
-              });
+        .then((value) => {
+          if (value['statusCode'] == 201)
+            {
+              _appState.switchPage(AppPages.home),
+            }
+          else
+          {
+            CustomPopup.openErrorPopup(context, 
+              value['body']['errors'].toString(), 
+              title: 'Couldn\'t create user'
+            ),
+          }
+        });
     }
   }
 }
