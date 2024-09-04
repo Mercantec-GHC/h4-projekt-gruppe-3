@@ -57,9 +57,9 @@ class TaskCard extends StatelessWidget {
   }
 
   void OpenDetailedDescription(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask)),
+    showDialog(
+      context: context,
+      builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask),      
     );
   }
 
