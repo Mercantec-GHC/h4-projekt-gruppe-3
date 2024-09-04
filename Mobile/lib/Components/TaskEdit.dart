@@ -211,6 +211,7 @@ class _TaskEditState extends State<TaskEdit> {
                 ),
                 SizedBox(height: 16),
                 TextFormField(
+                  initialValue: recurringInterval,
                   enabled: recurring,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Recurring Interval'),

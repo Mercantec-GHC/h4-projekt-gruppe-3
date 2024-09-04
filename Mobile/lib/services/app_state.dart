@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
@@ -12,11 +13,17 @@ class RootAppState extends ChangeNotifier {
   final storage = new FlutterSecureStorage();
   User? user;
   int points = 0;
+  List<Task> taskList = [];
   Api api = new Api();
   AppPages page = AppPages.login;
 
   void switchPage(AppPages newPage) {
     page = newPage;
+    notifyListeners();
+  }
+
+  void AddTask(Task task) {
+    taskList.add(task);
     notifyListeners();
   }
 
