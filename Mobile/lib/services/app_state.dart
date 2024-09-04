@@ -134,20 +134,19 @@ class RootAppState extends ChangeNotifier {
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
-      List<User> newTasks = [];
+      List<User> newUsers = [];
       if (jsonData.isEmpty) {
-        return {'statusCode': response.statusCode, 'tasks': newTasks};
+        return {'statusCode': response.statusCode, 'tasks': newUsers};
       }
       for (var user in jsonData) {
-        newTasks.add(new User(
-            // user['id'],
-            1,
+        newUsers.add(new User(
+            user['id'],
             user['name'],
             user['email'],
             _getBool(user['is_parent'])
           ));
       }
-      return {'statusCode': response.statusCode, 'tasks': newTasks};
+      return {'statusCode': response.statusCode, 'tasks': newUsers};
     } else {
       return {'statusCode': response.statusCode, 'Error': jsonData['message']};
     }
@@ -165,8 +164,7 @@ class RootAppState extends ChangeNotifier {
 
       for (var task in jsonData) {
         newTasks.add(new Task(
-          // task['id'],
-          1, // i don't know what happen but i don't get the id with the task 😭
+          task['id'],
           task['title'],
           task['description'],
           task['reward'],
