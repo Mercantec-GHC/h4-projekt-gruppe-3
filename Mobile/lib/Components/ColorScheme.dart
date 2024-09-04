@@ -5,7 +5,7 @@ class CustomColorScheme {
   static final random = Random();
   
   static List<Color> colorScheme = const [
-    Color.fromRGBO(194, 232, 255, 77),
+    Color.fromRGBO(194, 232, 255, 1),
     Color.fromRGBO(137, 213, 107, 1),
     Color.fromRGBO(240, 110, 81, 1),
   ];
