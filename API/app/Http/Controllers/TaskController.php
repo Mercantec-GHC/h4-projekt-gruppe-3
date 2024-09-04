@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserResource;
 use App\Models\Family;
+use App\Models\Media;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\File;
 
 class TaskController extends Controller
 {
@@ -29,8 +34,19 @@ class TaskController extends Controller
     public function getTasks(Family $family)
     {
         $tasks = $family->tasks()->get();
-        
+
         return response()->json($tasks->toArray());
+    }
+
+    public function getUsersByTask(Task $task) 
+    {
+        $users = DB::table('tasks')
+            ->where('tasks.id', $task->id)
+            ->join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->join('users', 'user_task.user_id', '=', 'users.id')
+            ->get()->mapInto(UserResource::class);
+
+        return response()->json($users->toArray());
     }
 
     public function getAvailableTasks(Family $family)
@@ -199,6 +215,42 @@ class TaskController extends Controller
     {
         $this->checkIfParent();
         $task->delete();
+        return response()->json([], 204);
+    }
+
+    public function addTaskCompletionInfo(Request $request, Task $task)
+    {
+        $request->validate([
+            'photo' => ['required', 'file', File::image()->max('15mb')],
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
+        $file = $request->file('photo');
+        $name = $file->hashName();
+        $user = auth()->user();
+
+        if (Storage::put("task/completion/", $file)) {
+            $media = Media::query()->create(
+                attributes: [
+                    'name' => "{$name}",
+                    'file_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getClientMimeType(),
+                    'path' => "task/completion/{$name}",
+                    'disk' => config('filesystems.default'),
+                    'collection' => 'tasks',
+                    'size' => $file->getSize(),
+                ],
+            );
+
+            $relationExists = $user->tasks()->where('task_id', $task->id)->exists();
+            if (!$relationExists) {
+                $user->tasks()->attach($task);
+            }
+
+            $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude, 'state' => 'pending', 'media_id' => $media->id]);
+        }
+
         return response()->json([], 204);
     }
 }
