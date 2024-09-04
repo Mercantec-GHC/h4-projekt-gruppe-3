@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -68,7 +69,7 @@ class _TasklistState extends State<Tasklist> {
       return response['tasks'];
     }
     else {
-      _openErrorPopup(response['Error']);
+      CustomPopup.openErrorPopup(context, response['Error']);
       return [];
     }
   }
@@ -161,24 +162,6 @@ class _TasklistState extends State<Tasklist> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _openErrorPopup(String _errorText) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Something went wrong'),
-        content: _errorText.isNotEmpty ? Text(_errorText) : null,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-        ],
       ),
     );
   }

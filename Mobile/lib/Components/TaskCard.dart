@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/TaskEdit.dart';
+import 'package:mobile/Components/ColorScheme.dart';
+import 'package:mobile/Components/TaskDialog.dart';
 import 'package:mobile/models/task.dart';
-import 'dart:math';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
@@ -9,23 +9,11 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
-    this.colorScheme = const [
-      Color.fromRGBO(194, 232, 255, 77),
-      Color.fromRGBO(137, 213, 107, 1),
-      Color.fromRGBO(240, 110, 81, 1),
-    ],
   });
   
   final Task task;
   final Function(Task) onDeleteTask;
   final Function(Task) onUpdateTask;
-  final List<Color> colorScheme;
-
-  Color _getRandomColor() {
-    final random = Random();
-    int index = random.nextInt(colorScheme.length);
-    return colorScheme[index];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +23,7 @@ class TaskCard extends StatelessWidget {
         width: double.infinity,
         margin: EdgeInsets.all(6),
         child: Card(
-          color: _getRandomColor(),
+          color: CustomColorScheme.getRandomColor(),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -68,46 +56,11 @@ class TaskCard extends StatelessWidget {
     );
   }
 
-  void OpenDetailedDescription(BuildContext context) {
+  void OpenDetailedDescription(BuildContext context) async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(task.title),
-        content: Text(task.description),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Close'),
-          ),
-          TextButton(
-            onPressed: () => _editTask(context),
-            child: Text('Edit'),
-          ),
-        ],
-      ),
+      builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask),      
     );
-  }
-
-  void _editTask(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TaskEdit(task: task)),
-    );
-
-    if (result != null) {
-      final action = result['action'];
-      final updatedTask = result['task'] as Task;
-
-      if (action == 'update') {
-        onUpdateTask(updatedTask);
-      } else if (action == 'delete') {
-        onDeleteTask(updatedTask);
-      }
-      
-      Navigator.of(context).pop();
-    }
   }
 
   String isTextOverflowing(BuildContext context, String text) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
@@ -35,27 +36,14 @@ class _TaskCreationState extends State<TaskCreation> {
     if (_formKey.currentState!.validate()) {
       int reward = int.parse(this.reward);
       int recurringInterval = int.tryParse(this.recurringInterval) ?? 0;
-      Task task = new Task(0, title, description, reward, endDate, recurring, recurringInterval, singleCompletion);
+      Task task = new Task(0, title, description, reward, DateTime.now(), endDate, recurring, recurringInterval, singleCompletion);
       int response = await _appState.createTask(task);
       if (response == 201) {
         widget.onCreateTask(task);
         Navigator.of(context).pop();
       }
       else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Something went wrong'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Close'),
-              ),
-            ],
-          ),
-        );
+        CustomPopup.openErrorPopup(context, '');
       }
     }
   }
