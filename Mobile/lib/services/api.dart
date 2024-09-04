@@ -46,8 +46,8 @@ class Api {
     await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
-  Future<http.Response> GetFamilies(User user) async {
-    return await http.post(Uri.parse(baseUrl + '/api/family/all/${user}'),
+  Future<http.Response> GetFamilies() async {
+    return await http.post(Uri.parse(baseUrl + '/api/family/all/'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json'
@@ -60,6 +60,21 @@ class Api {
           'Content-Type': 'application/json; charset=UTF-8',
           'Accept': 'application/json'
         });
+  }
+
+  Future<http.Response> createFamily(Family family, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.post(
+      Uri.parse(baseUrl + '/api/family/create'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+      body: json.encode({
+        'title': family.name,
+      }),
+    );
   }
 
   void Get() {}

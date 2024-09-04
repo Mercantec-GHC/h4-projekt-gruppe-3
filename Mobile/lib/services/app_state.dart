@@ -109,8 +109,8 @@ class RootAppState extends ChangeNotifier {
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
   
-  Future<Map<String, dynamic>> GetFamilies(User user) async {
-    final response = await api.GetFamilies(user);
+  Future<Map<String, dynamic>> GetFamilies() async {
+    final response = await api.GetFamilies();
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
