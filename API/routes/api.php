@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/pending/{family}', [TaskController::class, 'getPendingTasks']);
         Route::put('/{task}', [TaskController::class, 'updateTask']);
         Route::put('/{task}/state', [TaskController::class, 'updateTaskState']);
+        Route::post('/{task}/add/completion-info', [TaskController::class, 'addTaskCompletionInfo']);
         Route::put('/assign/{task}/{user}', [TaskController::class, 'assignUserToTask']);
         Route::put('/unassign/{task}/{user}', [TaskController::class, 'unassignUserToTask']);
         Route::delete('/{task}', [TaskController::class, 'deleteTask']);
