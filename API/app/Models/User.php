@@ -23,6 +23,7 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+        'tokens',
     ];
 
     protected function casts(): array
