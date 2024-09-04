@@ -112,7 +112,18 @@ class RootAppState extends ChangeNotifier {
     await api.Logout();
     storage.delete(key: 'auth_token');
     user = null;
+    points = 0;
     notifyListeners();
+  }
+
+  void GetUserPoints() async {
+    int familyId = 1; // still don't know where i can get it
+    final response = await api.GetUserPoints(user?.id ?? 0, familyId, this);
+    if (response.statusCode == 200) {
+      var jsonData = json.decode(response.body);
+      points = jsonData[0]['points']; // you get the whole user?? and more users the more families you have
+      notifyListeners();
+    }
   }
 
   Future<Map<String, dynamic>> deleteUser() async {

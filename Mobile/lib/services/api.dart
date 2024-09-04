@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 
 class Api {
@@ -44,7 +45,17 @@ class Api {
     await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
-  void Get() {}
+  Future<http.Response> GetUserPoints(int userId, int familyId, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.get(
+      Uri.parse(baseUrl + '/api/user/${familyId}/${userId}/points'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+    );
+  }
 
   Future<http.Response> updateUserProfile({
     required String auth_token,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/config/app_pages.dart';
@@ -77,7 +78,8 @@ class _NavigationComponentState extends State<NavigationComponent> {
       appBar: !isLoggedIn
           ? null
           : AppBar(
-              title: appState.user?.email.isNotEmpty ?? false ?
+              backgroundColor: CustomColorScheme.secondary,
+              title: appState.user?.isParent ?? false ?
                 null : Card(
                   color: Colors.green,
                   child: Row(
@@ -94,15 +96,15 @@ class _NavigationComponentState extends State<NavigationComponent> {
                     ],
                   ),
                 ),
-              actions: <Widget>[
-                // maybe use this for user profile -_-
-                IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                ),
-              ],
+              // actions: <Widget>[
+              //   // maybe use this for user profile -_-
+              //   IconButton(
+              //     icon: Icon(Icons.menu),
+              //     onPressed: () {
+              //       _scaffoldKey.currentState?.openDrawer();
+              //     },
+              //   ),
+              // ],
             ),
       drawer: Drawer(
         child: ListView(
