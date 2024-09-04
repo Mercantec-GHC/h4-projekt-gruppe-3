@@ -11,6 +11,7 @@ import 'package:mobile/services/api.dart';
 class RootAppState extends ChangeNotifier {
   final storage = new FlutterSecureStorage();
   User? user;
+  int points = 0;
   Api api = new Api();
   AppPages page = AppPages.login;
 
@@ -99,7 +100,7 @@ class RootAppState extends ChangeNotifier {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email']);
+          (jsonData['user']['email'] ?? ""));
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
     }
