@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -206,6 +207,33 @@ class Api {
         'Authorization': 'Bearer ' + jwt.toString(),
       },
     );
+  }
+
+  Future<http.Response> uploadTaskCompletionInfo({
+    required String auth_token,
+    required XFile file,
+    required Position location,
+    required int task_id,
+  }) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+        baseUrl + '/api/task/' + task_id.toString() + '/add/completion-info',
+      ),
+    );
+    request.headers['Authorization'] = 'Bearer ' + auth_token;
+    request.headers['Accept'] = 'application/json';
+    request.headers['Content-Type'] = 'multipart/form-data';
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'photo',
+        file.path,
+      ),
+    );
+    request.fields['latitude'] = location.latitude.toString();
+    request.fields['longitude'] = location.longitude.toString();
+    var response = await request.send();
+    return await http.Response.fromStream(response);
   }
 
   Future<http.Response> getLeaderboard(
