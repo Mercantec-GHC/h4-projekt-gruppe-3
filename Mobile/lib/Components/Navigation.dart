@@ -80,6 +80,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
           ? null
           : AppBar(
               title: Text('Title'),
+              backgroundColor: Color(0xFFF5C53A),
               actions: <Widget>[
                 // maybe use this for user profile -_-
                 // IconButton(
