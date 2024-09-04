@@ -94,7 +94,7 @@ class _TaskdialogState extends State<Taskdialog> {
               ),
             ),
             OutlinedText(
-              text: "Reward:" + widget.task.reward.toString(),
+              text: "Reward: " + widget.task.reward.toString(),
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
           ],
