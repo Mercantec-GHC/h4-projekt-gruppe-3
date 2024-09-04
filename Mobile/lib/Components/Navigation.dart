@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
+import 'package:mobile/NavigationComponents/NavigationDrawer.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
@@ -91,49 +92,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
                 // ),
               ],
             ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Icon(Icons.account_circle, size: 80.0, color: Colors.white),
-                  SizedBox(height: 16.0),
-                  Text(
-                    appState?.user?.name.toString() ?? 'No user logged in',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            for (var title in titles.entries)
-              if (title.value.show)
-                ListTile(
-                    leading: Icon(title.value.icon,
-                        color: _getSelectedColor(title.key)),
-                    title: Text(
-                      title.value.title,
-                      style: TextStyle(color: _getSelectedColor(title.key)),
-                    ),
-                    onTap: () => {
-                          if (title.value.action == null)
-                            {_onItemTapped(title.key)}
-                          else
-                            {
-                              title.value.action?.call(),
-                            }
-                        }),
-          ],
-        ),
-      ),
+      drawer: NavDrawer(),
       body: Center(
         child: titles[appState?.page]?.page,
       ),
