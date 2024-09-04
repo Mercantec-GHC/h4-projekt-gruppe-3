@@ -111,7 +111,6 @@ class _TaskdialogState extends State<Taskdialog> {
             OutlinedText(text: "End date: " + widget.task.endDate.toString()),
             SizedBox(height: 20),
             OutlinedText(text: "Recurring: " + (widget.task.recurring ? "Yes" : "No")),
-            // SizedBox(height: 5),
             OutlinedText(text: "Recurring Interval: " + widget.task.recurringInterval.toString() + " day(s)"),
             SizedBox(height: 20),
             OutlinedText(text: "Single Completion: " + (widget.task.singleCompletion ? "Yes" : "No")),
