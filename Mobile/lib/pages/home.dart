@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
-import 'package:mobile/Components/taskCreationDialog.dart';
-import 'package:mobile/models/task.dart';
-import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,8 +9,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void createTask(Task newTask) {}
-
   @override
   void initState() {
     super.initState();
@@ -28,15 +22,6 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Home'),
         backgroundColor: _theme.colorScheme.primaryContainer,
-        actions: [
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) =>
-                        TaskCreation(onCreateTask: createTask),
-                  )),
-        ],
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
       body: SingleChildScrollView(

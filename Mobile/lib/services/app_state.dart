@@ -12,11 +12,17 @@ class RootAppState extends ChangeNotifier {
   final storage = new FlutterSecureStorage();
   User? user;
   int points = 0;
+  List<Task> taskList = [];
   Api api = new Api();
   AppPages page = AppPages.login;
 
   void switchPage(AppPages newPage) {
     page = newPage;
+    notifyListeners();
+  }
+
+  void AddTask(Task task) {
+    taskList.add(task);
     notifyListeners();
   }
 

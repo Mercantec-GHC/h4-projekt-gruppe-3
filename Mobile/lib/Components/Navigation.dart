@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
+import 'package:mobile/Components/QuickAction.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/config/app_pages.dart';
@@ -54,6 +55,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
   void _onItemTapped(AppPages appPage) {
     setState(() {
+      appState.taskList.clear();
       appState.switchPage(appPage);
     });
     // Close the drawer after selecting an item
@@ -64,9 +66,8 @@ class _NavigationComponentState extends State<NavigationComponent> {
   Widget build(BuildContext context) {
     appState = context.watch<RootAppState>();
     Map<AppPages, Title> titles = _getTitles();
-    bool? isLoggedIn = appState.isLoggedInSync();
   
-    if (!isLoggedIn) {
+    if (!appState.isLoggedInSync()) {
       return Scaffold(
         body: Center(child: titles[appState.page]?.page),
       );
@@ -74,38 +75,34 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
     return Scaffold(
       key: _scaffoldKey,
-      // if not logged in or root app state is null don't add drawer.
-      appBar: !isLoggedIn
-          ? null
-          : AppBar(
-              backgroundColor: CustomColorScheme.secondary,
-              title: appState.user?.isParent ?? false ?
-                null : Card(
-                  color: Colors.green,
-                  child: Row(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(appState.points.toString() + 'p'),
-                          ),
-                        ),
-                      ),
-                    ],
+      appBar: AppBar(
+        backgroundColor: CustomColorScheme.secondary,
+        title: appState.user?.isParent ?? false ?
+          null : Card(
+            color: Colors.green,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(appState.points.toString() + 'p'),
+                    ),
                   ),
                 ),
-              // actions: <Widget>[
-              //   // maybe use this for user profile -_-
-              //   IconButton(
-              //     icon: Icon(Icons.menu),
-              //     onPressed: () {
-              //       _scaffoldKey.currentState?.openDrawer();
-              //     },
-              //   ),
-              // ],
+              ],
             ),
+          ),
+        // actions: <Widget>[
+        //   // maybe use this for user profile -_-
+        //   IconButton(
+        //     icon: Icon(Icons.menu),
+        //     onPressed: () {
+        //       _scaffoldKey.currentState?.openDrawer();
+        //     },
+        //   ),
+        // ],
+      ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -132,25 +129,33 @@ class _NavigationComponentState extends State<NavigationComponent> {
             for (var title in titles.entries)
               if (title.value.show)
                 ListTile(
-                    leading: Icon(title.value.icon,
-                        color: _getSelectedColor(title.key)),
-                    title: Text(
-                      title.value.title,
-                      style: TextStyle(color: _getSelectedColor(title.key)),
-                    ),
-                    onTap: () => {
-                          if (title.value.action == null)
-                            {_onItemTapped(title.key)}
-                          else
-                            {
-                              title.value.action?.call(),
-                            }
-                        }),
+                  leading: Icon(title.value.icon,
+                    color: _getSelectedColor(title.key)),
+                  title: Text(
+                    title.value.title,
+                    style: TextStyle(color: _getSelectedColor(title.key)),
+                  ),
+                  onTap: () => {
+                    if (title.value.action == null)
+                    {
+                      _onItemTapped(title.key)
+                    }
+                    else
+                    {
+                      title.value.action?.call(),
+                    }
+                  }
+                ),
           ],
         ),
       ),
-      body: Center(
-        child: titles[appState.page]?.page,
+      body: Stack(
+        children: [
+          Center(
+            child: titles[appState.page]?.page,
+          ),
+          QuickAction()
+        ] 
       ),
     );
   }
