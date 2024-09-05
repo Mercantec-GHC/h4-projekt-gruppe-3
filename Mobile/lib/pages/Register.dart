@@ -113,6 +113,7 @@ class _RegisterState extends State<Register> {
                 if (value['statusCode'] == 201)
                   {
                     _appState.switchPage(AppPages.home),
+                    Navigator.of(context).pop(),
                   }
                 else
                   {
