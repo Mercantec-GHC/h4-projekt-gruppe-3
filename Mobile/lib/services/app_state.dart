@@ -89,6 +89,7 @@ class RootAppState extends ChangeNotifier {
           jsonData['user']['email']);
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
+      await GetFamilies();
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
@@ -103,6 +104,7 @@ class RootAppState extends ChangeNotifier {
           jsonData['user']['email']);
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
+      await GetFamilies();
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
@@ -120,6 +122,8 @@ class RootAppState extends ChangeNotifier {
           returnedFamily['name'],
         ));
       }
+      family = newFamilies[0];
+      notifyListeners();
       return {'statusCode': response.statusCode, 'family': newFamilies};
     } else {
       return {'statusCode': response.statusCode, 'error': jsonData};

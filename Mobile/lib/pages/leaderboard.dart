@@ -104,7 +104,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 
   Future<void> _getUsers() async {
-    Map<String, dynamic> response = await _appState.getLeaderboard(1);
+    Map<String, dynamic> response =
+        await _appState.getLeaderboard(_appState.family!.id);
     if (response['statusCode'] == 200) {
       setState(() {
         users.clear();
