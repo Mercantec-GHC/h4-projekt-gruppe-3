@@ -12,8 +12,8 @@ class QuickAction extends StatefulWidget {
 
 class _QuickActionState extends State<QuickAction> {
   bool _isPanelVisible = false;
-  final double width = 200;
-  final double height = 125;
+  final double panelWidth = 200;
+  final double panelHeight = 125;
 
   void _togglePanel() {
     setState(() {
@@ -45,8 +45,8 @@ class _QuickActionState extends State<QuickAction> {
           child: GestureDetector(
             onTap: () {},
             child: Container(
-              width: width,
-              height: height,
+              width: panelWidth,
+              height: panelHeight,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
