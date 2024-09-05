@@ -76,7 +76,7 @@ class Api {
         'Authorization': 'Bearer ' + jwt.toString(),
       },
       body: json.encode({
-        'title': family.name,
+        'family_name': family.name,
       }),
     );
   }

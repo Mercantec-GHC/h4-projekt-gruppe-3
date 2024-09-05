@@ -14,24 +14,32 @@ class Familycreation extends StatefulWidget {
 }
 
 class _FamilycreationState extends State<Familycreation> {
-  // Page needs to run.
   late RootAppState _appState;
   Api api = Api();
   final _formKey = GlobalKey<FormState>();
 
-  // Data storage.
   String name = '';
+
+  // TextEditingController to capture input from the TextFormField
+  final TextEditingController _nameController = TextEditingController();
 
   void _createFamily() async {
     if (_formKey.currentState!.validate()) {
-      Family family = new Family(0, name);
-      int response = (await api.createFamily(family, _appState)).statusCode;
-      if (response == 201) {
+      name = _nameController.text;
+      Family family = Family(0, name);
+      var response = await api.createFamily(family, _appState);
+      if (response.statusCode == 201) {
         Navigator.of(context).pop();
       } else {
-        CustomPopup.openErrorPopup(context, '');
+        CustomPopup.openErrorPopup(context, response.body);
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,9 +68,10 @@ class _FamilycreationState extends State<Familycreation> {
             child: Column(
               children: [
                 TextFormField(
+                  controller: _nameController,
                   maxLength: 200,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  decoration: InputDecoration(labelText: 'navn'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(labelText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Field is required and cannot be empty';

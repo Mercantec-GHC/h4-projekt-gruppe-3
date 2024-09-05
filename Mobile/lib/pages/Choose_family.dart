@@ -30,8 +30,9 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => openCreateFamily(context)),
+            icon: Icon(Icons.add),
+            onPressed: () => openCreateFamily(context),
+          ),
         ],
         title: Text('Families'),
         backgroundColor: _theme.colorScheme.primaryContainer,
@@ -57,7 +58,7 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Your families', //maybe type the family name here
+                            'Your families', 
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -79,13 +80,13 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
                           alignment: Alignment.topCenter,
                           child: FractionallySizedBox(
                             widthFactor: 1,
-                            child: Column(
-                              children: [
-                                for (Family family in families)
-                                  Familycard(
-                                    family: family,
-                                  ),
-                              ],
+                            child: ListView.builder(
+                              itemCount: families.length,
+                              itemBuilder: (context, index) {
+                                return Familycard(
+                                  family: families[index],
+                                );
+                              },
                             ),
                           ),
                         ),
