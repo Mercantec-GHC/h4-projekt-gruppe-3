@@ -1,29 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/TaskList.dart';
-import 'package:mobile/Components/TaskSelectedList.dart';
+import 'package:mobile/NavigationComponents/DrawerItem.dart';
 import 'package:mobile/config/app_pages.dart';
-import 'package:mobile/pages/home.dart';
-import 'package:mobile/pages/leaderboard.dart';
-import 'package:mobile/pages/user_profile.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/app_state.dart';
 
-class DrawerItem {
-  String title;
-  IconData icon;
-  StatefulWidget? page;
-  VoidCallback? action;
-
-  DrawerItem({
-    required this.title,
-    required this.icon,
-    this.page,
-    this.action,
-  });
-}
-
 class NavDrawer extends StatefulWidget {
-  const NavDrawer({super.key});
+  final Map<AppPages, DrawerItem> titles;
+
+  const NavDrawer({super.key, required this.titles});
 
   @override
   State<NavDrawer> createState() => _NavDrawerState();
@@ -31,13 +15,6 @@ class NavDrawer extends StatefulWidget {
 
 class _NavDrawerState extends State<NavDrawer> {
   late RootAppState _appState;
-
-  Map<AppPages, DrawerItem> _titles = {};
-
-  void _logout() {
-    _appState.logout();
-    _appState.switchPage(AppPages.login);
-  }
 
   Color? _getSelectedColor(AppPages page) {
     return _appState.page == page ? Colors.blue : null;
@@ -51,54 +28,6 @@ class _NavDrawerState extends State<NavDrawer> {
     } else {
       item.value.action?.call();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _titles = {
-      AppPages.home: DrawerItem(
-        title: 'Home',
-        icon: Icons.home,
-        page: Home(),
-      ),
-      AppPages.userProfile: DrawerItem(
-        title: 'Profile',
-        icon: Icons.person,
-        page: UserProfilePage(),
-      ),
-      AppPages.leaderboard: DrawerItem(
-        title: 'Leaderboard',
-        icon: Icons.leaderboard,
-        page: LeaderboardPage(),
-      ),
-      AppPages.AssignedTasks: DrawerItem(
-        title: 'Assigned Tasks',
-        icon: Icons.list,
-        page: TaskSelectedList(type: TasklistType.Assigned),
-      ),
-      AppPages.AvailableTasks: DrawerItem(
-        title: 'Available Tasks',
-        icon: Icons.list,
-        page: TaskSelectedList(type: TasklistType.Available),
-      ),
-      AppPages.CompletedTasks: DrawerItem(
-        title: 'Completed Tasks',
-        icon: Icons.list,
-        page: TaskSelectedList(type: TasklistType.Completed),
-      ),
-      AppPages.PendingTasks: DrawerItem(
-        title: 'Pending Tasks',
-        icon: Icons.list,
-        page: TaskSelectedList(type: TasklistType.Pending),
-      ),
-      AppPages.none: DrawerItem(
-        title: 'Logout',
-        icon: Icons.logout,
-        action: _logout,
-      ),
-    };
   }
 
   @override
@@ -127,16 +56,17 @@ class _NavDrawerState extends State<NavDrawer> {
               ],
             ),
           ),
-          for (var title in _titles.entries)
-            ListTile(
-              leading:
-                  Icon(title.value.icon, color: _getSelectedColor(title.key)),
-              title: Text(
-                title.value.title,
-                style: TextStyle(color: _getSelectedColor(title.key)),
+          for (var title in widget.titles.entries)
+            if (title.value.show)
+              ListTile(
+                leading:
+                    Icon(title.value.icon, color: _getSelectedColor(title.key)),
+                title: Text(
+                  title.value.title,
+                  style: TextStyle(color: _getSelectedColor(title.key)),
+                ),
+                onTap: () => {_onItemTapped(title)},
               ),
-              onTap: () => {_onItemTapped(title)},
-            ),
         ],
       ),
     );

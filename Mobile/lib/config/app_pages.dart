@@ -6,8 +6,8 @@ enum AppPages {
   login,
   register,
   leaderboard,
-  AssignedTasks,
-  AvailableTasks,
-  CompletedTasks,
-  PendingTasks,
+  assignedTasks,
+  availableTasks,
+  completedTasks,
+  pendingTasks,
 }
