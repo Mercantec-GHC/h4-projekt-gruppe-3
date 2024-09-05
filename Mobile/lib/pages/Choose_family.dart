@@ -58,7 +58,7 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Your families', 
+                            'Your families',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -109,7 +109,6 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
         families.clear();
         families.addAll(response['family']);
       });
-      print(families[0].name);
     } else {
       showDialog(
         context: context,

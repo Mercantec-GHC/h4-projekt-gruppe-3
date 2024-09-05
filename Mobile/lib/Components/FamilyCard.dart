@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:mobile/models/family.dart';
+import 'package:mobile/pages/home.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,9 @@ class Familycard extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<RootAppState>();
     return GestureDetector(
-      onTap: (){appState.GetFamily(family);},
+      onTap: () {
+        _chooseFamily(appState, context);
+      },
       child: Card(
         color: _getRandomColor(),
         margin: EdgeInsets.all(10.0),
@@ -54,8 +57,7 @@ class Familycard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(
-                          height: 10),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -65,5 +67,28 @@ class Familycard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _chooseFamily(RootAppState appState, context) async {
+    Map<String, dynamic> response = await appState.GetFamily(family);
+    if (response['statusCode'] == 200) {
+      appState.family = response['body'];
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Something went wrong'),
+          content: Text(response['error']['message']),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

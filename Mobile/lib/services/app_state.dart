@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
@@ -121,7 +120,6 @@ class RootAppState extends ChangeNotifier {
           returnedFamily['name'],
         ));
       }
-      print(newFamilies[0].name);
       return {'statusCode': response.statusCode, 'family': newFamilies};
     } else {
       return {'statusCode': response.statusCode, 'error': jsonData};
@@ -133,11 +131,11 @@ class RootAppState extends ChangeNotifier {
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
-      family = new Family(jsonData['family']['id'], jsonData['family']['name']);
+      family = new Family(jsonData['id'], jsonData['name']);
       notifyListeners();
       return {'statusCode': response.statusCode, 'body': family};
     } else {
-      return {'statusCode': response.statusCode, 'body': jsonData};
+      return {'statusCode': response.statusCode, 'error': jsonData};
     }
   }
 

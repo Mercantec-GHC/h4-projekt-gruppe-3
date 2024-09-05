@@ -58,7 +58,7 @@ class Api {
   Future<http.Response> GetFamily(Family family, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http
-        .get(Uri.parse(baseUrl + '/api/family/${family}'), headers: {
+        .get(Uri.parse(baseUrl + '/api/family/${family.id}'), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
       'Authorization': 'Bearer ' + jwt.toString(),
