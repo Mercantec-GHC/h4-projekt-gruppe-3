@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -117,21 +118,11 @@ class _RegisterState extends State<Register> {
                   }
                 else
                   {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Couldn\'t create user'),
-                        content: Text(value['body']['errors'].toString()),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('Close'),
-                          ),
-                        ],
-                      ),
-                    )
+                    CustomPopup.openErrorPopup(
+                      context,
+                      title: 'Couldn\'t create user',
+                      errorText: value['body']['errors'].toString(),
+                    ),
                   }
               });
     }

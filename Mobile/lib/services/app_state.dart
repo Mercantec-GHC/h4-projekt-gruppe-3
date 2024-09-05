@@ -12,11 +12,18 @@ class RootAppState extends ChangeNotifier {
   final storage = new FlutterSecureStorage();
   User? user;
   Family? family;
+  int points = 0;
+  List<Task> taskList = [];
   Api api = new Api();
   AppPages page = AppPages.login;
 
   void switchPage(AppPages newPage) {
     page = newPage;
+    notifyListeners();
+  }
+
+  void AddTask(Task task) {
+    taskList.add(task);
     notifyListeners();
   }
 
@@ -85,8 +92,11 @@ class RootAppState extends ChangeNotifier {
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 201) {
-      user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email']);
+      user = new User(
+        jsonData['user']['id'],
+        jsonData['user']['name'],
+        jsonData['user']['email'],
+      );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
       await GetFamilies();
@@ -100,8 +110,12 @@ class RootAppState extends ChangeNotifier {
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
-      user = new User(jsonData['user']['id'], jsonData['user']['name'],
-          jsonData['user']['email']);
+      user = new User(
+        jsonData['user']['id'],
+        jsonData['user']['name'],
+        jsonData['user']['email'] ?? "",
+        _getBool(jsonData['user']['is_parent']),
+      );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
       await GetFamilies();
@@ -147,7 +161,19 @@ class RootAppState extends ChangeNotifier {
     await api.Logout();
     storage.delete(key: 'auth_token');
     user = null;
+    points = 0;
     notifyListeners();
+  }
+
+  void GetUserPoints() async {
+    int familyId = 1; // still don't know where i can get it
+    final response = await api.GetUserPoints(user?.id ?? 0, familyId, this);
+    if (response.statusCode == 200) {
+      var jsonData = json.decode(response.body);
+      points = jsonData[0][
+          'points']; // you get the whole user?? and more users the more families you have
+      notifyListeners();
+    }
   }
 
   Future<Map<String, dynamic>> deleteUser() async {

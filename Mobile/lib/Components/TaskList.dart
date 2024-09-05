@@ -38,14 +38,12 @@ class Tasklist extends StatefulWidget {
 class _TasklistState extends State<Tasklist> {
   late RootAppState appState;
   late String listTitle;
-  late List<Task> tasks;
 
   @override
   void initState() {
     super.initState();
     appState = Provider.of<RootAppState>(context, listen: false);
     listTitle = Tasklist.getTitle(widget.listType);
-    tasks = [];
     _getTasks();
   }
 
@@ -61,8 +59,7 @@ class _TasklistState extends State<Tasklist> {
       // TasklistType.Pending => await appState.getTasks('/api/task/pending/${familyId}'),
 
       // to get something, it need to replaced with the one above.
-      TasklistType.Pending =>
-        await appState.getTasks('/api/task/all/${familyId}'),
+      TasklistType.Pending => await appState.getTasks('/all/${familyId}'),
     };
   }
 
@@ -70,8 +67,9 @@ class _TasklistState extends State<Tasklist> {
     Map<String, dynamic> response = await _contactServer();
     if (response['statusCode'] == 200) {
       return response['tasks'];
-    } else {
-      CustomPopup.openErrorPopup(context, response['Error']);
+    }
+    else {
+      CustomPopup.openErrorPopup(context, errorText: response['Error']);
       return [];
     }
   }
@@ -80,30 +78,24 @@ class _TasklistState extends State<Tasklist> {
     List<Task> newTasks = await _readServerData();
     setState(() {
       if (newTasks.isNotEmpty) {
-        tasks.clear();
-        tasks.addAll(newTasks);
+        appState.taskList.clear();
+        appState.taskList.addAll(newTasks);
       }
-    });
-  }
-
-  void createTask(Task newTask) {
-    setState(() {
-      _getTasks();
     });
   }
 
   void updateTask(Task updatedTask) {
     setState(() {
-      int index = tasks.indexWhere((t) => t.id == updatedTask.id);
+      int index = appState.taskList.indexWhere((t) => t.id == updatedTask.id);
       if (index != -1) {
-        tasks[index] = updatedTask;
+        appState.taskList[index] = updatedTask;
       }
     });
   }
 
   void _deleteTask(Task taskToDelete) {
     setState(() {
-      tasks.removeWhere((t) => t.id == taskToDelete.id);
+      appState.taskList.removeWhere((t) => t.id == taskToDelete.id);
     });
   }
 
@@ -146,13 +138,11 @@ class _TasklistState extends State<Tasklist> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (tasks.isNotEmpty)
-                        for (Task task in tasks)
-                          TaskCard(
-                              task: task,
-                              onUpdateTask: updateTask,
-                              onDeleteTask: _deleteTask),
-                      if (tasks.isEmpty)
+                      if (appState.taskList.isNotEmpty)
+                        for (Task task in appState.taskList)
+                          TaskCard(task: task, onUpdateTask: updateTask, onDeleteTask: _deleteTask),
+                      
+                      if (appState.taskList.isEmpty) 
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(

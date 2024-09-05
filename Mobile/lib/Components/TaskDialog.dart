@@ -44,7 +44,7 @@ class _TaskdialogState extends State<Taskdialog> {
       return response['tasks'];
     }
     else {
-      CustomPopup.openErrorPopup(context, response['Error']);
+      CustomPopup.openErrorPopup(context, errorText: response['Error']);
       return [];
     }
   }

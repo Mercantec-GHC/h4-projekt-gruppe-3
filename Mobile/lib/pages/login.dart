@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/services/app_state.dart';
@@ -94,29 +95,21 @@ class _LoginState extends State<Login> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _appState.Login(_username, _password).then((value) => {
-            if (value['statusCode'] == 200)
-              {
-                _appState.switchPage(AppPages.home),
-              }
-            else
-              {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Couldn\'t login to user'),
-                    content: Text(value['body']['error_message'].toString()),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Close'),
-                      ),
-                    ],
-                  ),
-                )
-              }
-          });
+        if (value['statusCode'] == 200)
+        {
+          if (!(_appState.user?.isParent ?? true)) {
+            _appState.GetUserPoints(),
+          },
+          _appState.switchPage(AppPages.home),
+        }
+        else
+        {
+          CustomPopup.openErrorPopup(context, 
+            title: 'Couldn\'t login to user',
+            errorText: value['body']['error_message'].toString(), 
+          ),
+        }
+      });
     }
   }
 }

@@ -57,7 +57,7 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      CustomPopup.openErrorPopup(context, '');
+      CustomPopup.openErrorPopup(context);
     }
   }
 
@@ -82,7 +82,7 @@ class _TaskEditState extends State<TaskEdit> {
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
       }
       else {
-        CustomPopup.openErrorPopup(context, '');
+        CustomPopup.openErrorPopup(context);
       }
     }
   }
@@ -211,6 +211,7 @@ class _TaskEditState extends State<TaskEdit> {
                 ),
                 SizedBox(height: 16),
                 TextFormField(
+                  initialValue: recurringInterval,
                   enabled: recurring,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Recurring Interval'),
