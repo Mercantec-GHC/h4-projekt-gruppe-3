@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
+import 'package:mobile/Components/QuickAction.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/NavigationComponents/DrawerItem.dart';
@@ -106,24 +108,34 @@ class _NavigationComponentState extends State<NavigationComponent> {
       appBar: !isLoggedIn
           ? null
           : AppBar(
-              title: Text(_titles[_appState.page]?.title ?? ''),
-              backgroundColor: Color(0xFFF5C53A),
-              actions: <Widget>[
-                // maybe use this for user profile -_-
-                // IconButton(
-                //   icon: Icon(Icons.menu),
-                //   onPressed: () {
-                //     _scaffoldKey.currentState?.openDrawer();
-                //   },
-                // ),
-              ],
+              backgroundColor: CustomColorScheme.secondary,
+              title: _appState.user?.isParent ?? false
+                  ? null
+                  : Card(
+                      color: Colors.green,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(_appState.points.toString() + 'p'),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
       drawer: NavDrawer(
         titles: _titles,
       ),
-      body: Center(
-        child: _titles[_appState.page]?.page,
-      ),
+      body: Stack(children: [
+        Center(
+          child: _titles[_appState.page]?.page,
+        ),
+        QuickAction()
+      ]),
     );
   }
 }
