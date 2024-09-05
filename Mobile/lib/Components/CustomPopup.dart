@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CustomPopup {
-  static void openErrorPopup(BuildContext context, String _errorText, {String title = 'Something went wrong'}) {
+  static void openErrorPopup(BuildContext context, { String errorText = "", String title = 'Something went wrong'}) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
-        content: _errorText.isNotEmpty ? Text(_errorText) : null,
+        content: errorText.isNotEmpty ? Text(errorText) : null,
         actions: [
           TextButton(
             onPressed: () {

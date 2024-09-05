@@ -97,14 +97,16 @@ class _LoginState extends State<Login> {
       _appState.Login(_username, _password).then((value) => {
         if (value['statusCode'] == 200)
         {
-          _appState.GetUserPoints(),
+          if (!(_appState.user?.isParent ?? true)) {
+            _appState.GetUserPoints(),
+          },
           _appState.switchPage(AppPages.home),
         }
         else
         {
           CustomPopup.openErrorPopup(context, 
-            value['body']['error_message'].toString(), 
-            title: 'Couldn\'t login to user'
+            title: 'Couldn\'t login to user',
+            errorText: value['body']['error_message'].toString(), 
           ),
         }
       });

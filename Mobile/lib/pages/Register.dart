@@ -118,8 +118,8 @@ class _RegisterState extends State<Register> {
           else
           {
             CustomPopup.openErrorPopup(context, 
-              value['body']['errors'].toString(), 
-              title: 'Couldn\'t create user'
+              title: 'Couldn\'t create user',
+              errorText: value['body']['errors'].toString(), 
             ),
           }
         });

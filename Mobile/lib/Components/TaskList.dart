@@ -67,7 +67,7 @@ class _TasklistState extends State<Tasklist> {
       return response['tasks'];
     }
     else {
-      CustomPopup.openErrorPopup(context, response['Error']);
+      CustomPopup.openErrorPopup(context, errorText: response['Error']);
       return [];
     }
   }

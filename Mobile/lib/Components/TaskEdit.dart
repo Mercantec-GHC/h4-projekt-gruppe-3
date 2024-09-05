@@ -57,7 +57,7 @@ class _TaskEditState extends State<TaskEdit> {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     }
     else {
-      CustomPopup.openErrorPopup(context, '');
+      CustomPopup.openErrorPopup(context);
     }
   }
 
@@ -82,7 +82,7 @@ class _TaskEditState extends State<TaskEdit> {
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
       }
       else {
-        CustomPopup.openErrorPopup(context, '');
+        CustomPopup.openErrorPopup(context);
       }
     }
   }
