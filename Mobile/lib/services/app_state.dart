@@ -246,13 +246,16 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 200) {
       List<UserProfile> newUsers = [];
       for (var user in jsonData) {
-        newUsers.add(new UserProfile(
+        newUsers.add(
+          new UserProfile(
             user['name'],
             user['Email'],
             user['username'],
             user['is_parrent'] ?? false,
             user['points'],
-            user['total_points']));
+            user['total_points'],
+          ),
+        );
       }
       newUsers.sort((a, b) => b.total_points.compareTo(a.total_points));
 
