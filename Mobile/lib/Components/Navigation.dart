@@ -47,7 +47,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
   void _logout() {
     appState.logout();
-    _onItemTapped(AppPages.login);
+    appState.switchPage(AppPages.login);
   }
 
   Color? _getSelectedColor(AppPages index) {
