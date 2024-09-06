@@ -4,6 +4,7 @@ import 'package:mobile/Components/QuickAction.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
 import 'package:mobile/NavigationComponents/DrawerItem.dart';
+import 'package:mobile/NavigationComponents/NavigationAppBar.dart';
 import 'package:mobile/NavigationComponents/NavigationDrawer.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
@@ -23,12 +24,17 @@ class NavigationComponent extends StatefulWidget {
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late RootAppState _appState;
+  String? jwt;
 
   Map<AppPages, DrawerItem> _titles = {};
 
   void _logout() {
     _appState.logout();
     _appState.switchPage(AppPages.login);
+  }
+
+  void getAuthToken() async {
+    jwt = await _appState.storage.read(key: 'auth_token').toString();
   }
 
   @override
@@ -95,6 +101,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
   Widget build(BuildContext context) {
     _appState = context.watch<RootAppState>();
     bool isLoggedIn = _appState.isLoggedInSync();
+    getAuthToken();
 
     if (!isLoggedIn) {
       return Scaffold(
@@ -104,28 +111,12 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
     return Scaffold(
       key: _scaffoldKey,
-      // if not logged in or root app state is null don't add drawer.
-      appBar: !isLoggedIn
+      appBar: !isLoggedIn && jwt != null
           ? null
-          : AppBar(
-              backgroundColor: CustomColorScheme.secondary,
-              title: _appState.user?.isParent ?? false
-                  ? null
-                  : Card(
-                      color: Colors.green,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(_appState.points.toString() + 'p'),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+          : NavAppBar(
+              appState: _appState,
+              page_title: _titles[_appState.page]?.title,
+              jwt: jwt,
             ),
       drawer: NavDrawer(
         titles: _titles,
