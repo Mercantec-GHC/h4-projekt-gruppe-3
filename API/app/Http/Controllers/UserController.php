@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Nette\NotImplementedException;
 
 class UserController extends Controller
@@ -100,7 +101,7 @@ class UserController extends Controller
                     'name' => "{$name}",
                     'file_name' => $file->getClientOriginalName(),
                     'mime_type' => $file->getClientMimeType(),
-                    'path' => "avatars/{$name}",
+                    'path' => "app/avatars/{$user->id}/{$name}",
                     'disk' => config('filesystems.default'),
                     'collection' => 'avatars',
                     'size' => $file->getSize(),
@@ -126,5 +127,11 @@ class UserController extends Controller
 
         $user->delete();
         return response("Successfully deleted", 204);
+    }
+
+    public function GetProfilePicture(User $user)
+    {
+        $profilePicture = $user->profilePicture()->first();
+        return response()->file(storage_path($profilePicture->path));
     }
 }
