@@ -203,8 +203,7 @@ class RootAppState extends ChangeNotifier {
 
       for (var task in jsonData) {
         newTasks.add(new Task(
-            // task['id'],
-            1, // i don't know what happen but i don't get the id with the task 😭
+            task['id'],
             task['title'],
             task['description'],
             task['reward'],
@@ -260,5 +259,22 @@ class RootAppState extends ChangeNotifier {
     }
   }
 
-  getuserAssignedToTask(int id) {}
+  Future<Map<String, dynamic>> getuserAssignedToTask(int taskId) async {
+    final response = await api.getUsersAssignToTask(taskId, this);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<User> newUsers = [];
+      if (jsonData.isEmpty) {
+        return {'statusCode': response.statusCode, 'tasks': newUsers};
+      }
+      for (var user in jsonData) {
+        newUsers.add(new User(user['id'], user['name'], user['email'],
+            _getBool(user['is_parent'])));
+      }
+      return {'statusCode': response.statusCode, 'tasks': newUsers};
+    } else {
+      return {'statusCode': response.statusCode, 'Error': jsonData['message']};
+    }
+  }
 }
