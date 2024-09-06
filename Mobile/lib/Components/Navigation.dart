@@ -21,6 +21,7 @@ class NavigationComponent extends StatefulWidget {
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late RootAppState appState;
+  bool _isPanelVisible = false;
 
   Map<AppPages, Title> _getTitles() {
     return {
@@ -38,7 +39,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
           TaskSelectedList(type: TasklistType.Completed)),
       AppPages.PendingTasks: Title('Pending Tasks', Icons.list,
           TaskSelectedList(type: TasklistType.Pending)),
-      AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
+      AppPages.none: Title('Logout', Icons.logout, Login(), false, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
       AppPages.register: Title('Logout', Icons.logout, Register(), false),
     };
@@ -51,6 +52,18 @@ class _NavigationComponentState extends State<NavigationComponent> {
 
   Color? _getSelectedColor(AppPages index) {
     return appState.page == index ? Colors.blue : null;
+  }
+
+  void _togglePanel() {
+    setState(() {
+      _isPanelVisible = !_isPanelVisible;
+    });
+  }
+
+  void _closePanel() {
+    setState(() {
+      _isPanelVisible = false;
+    });
   }
 
   void _onItemTapped(AppPages appPage) {
@@ -66,7 +79,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
   Widget build(BuildContext context) {
     appState = context.watch<RootAppState>();
     Map<AppPages, Title> titles = _getTitles();
-  
+
     if (!appState.isLoggedInSync()) {
       return Scaffold(
         body: Center(child: titles[appState.page]?.page),
@@ -77,31 +90,32 @@ class _NavigationComponentState extends State<NavigationComponent> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: CustomColorScheme.secondary,
-        title: appState.user?.isParent ?? false ?
-          null : Card(
-            color: Colors.green,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(appState.points.toString() + 'p'),
+        title: appState.user?.isParent ?? false
+            ? null
+            : Card(
+                color: Colors.green,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(appState.points.toString() + 'p'),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+        actions: <Widget>[
+          // maybe use this for user profile -_-
+          IconButton(
+            icon: Icon(Icons.family_restroom),
+            onPressed: () {
+              _togglePanel();
+            },
           ),
-        // actions: <Widget>[
-        //   // maybe use this for user profile -_-
-        //   IconButton(
-        //     icon: Icon(Icons.menu),
-        //     onPressed: () {
-        //       _scaffoldKey.currentState?.openDrawer();
-        //     },
-        //   ),
-        // ],
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -129,34 +143,104 @@ class _NavigationComponentState extends State<NavigationComponent> {
             for (var title in titles.entries)
               if (title.value.show)
                 ListTile(
-                  leading: Icon(title.value.icon,
-                    color: _getSelectedColor(title.key)),
-                  title: Text(
-                    title.value.title,
-                    style: TextStyle(color: _getSelectedColor(title.key)),
-                  ),
-                  onTap: () => {
-                    if (title.value.action == null)
-                    {
-                      _onItemTapped(title.key)
-                    }
-                    else
-                    {
-                      title.value.action?.call(),
-                    }
-                  }
-                ),
+                    leading: Icon(title.value.icon,
+                        color: _getSelectedColor(title.key)),
+                    title: Text(
+                      title.value.title,
+                      style: TextStyle(color: _getSelectedColor(title.key)),
+                    ),
+                    onTap: () => {
+                          if (title.value.action == null)
+                            {_onItemTapped(title.key)}
+                          else
+                            {
+                              title.value.action?.call(),
+                            }
+                        }),
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: titles[appState.page]?.page,
+      body: Stack(children: [
+        Center(
+          child: titles[appState.page]?.page,
+        ),
+        QuickAction(),
+        if (_isPanelVisible)
+          GestureDetector(
+            onTap: _closePanel,
+            child: Container(
+              color: Colors.transparent,
+            ),
           ),
-          QuickAction()
-        ] 
-      ),
+        AnimatedPositioned(
+          duration: Duration(milliseconds: 300),
+          top: _isPanelVisible ? kToolbarHeight - 50 : kToolbarHeight - 250,
+          right: 16,
+          child: GestureDetector(
+            onTap: () {}, // Prevents the panel from closing when tapped inside
+            child: Container(
+              width: 200,
+              height: 130,
+              decoration: BoxDecoration(
+                color: CustomColorScheme.menu,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Center(
+                        child: Text(
+                      "Profile menu",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                    SizedBox(height: 10),
+                    Container(
+                      width: 200,
+                      child: FloatingActionButton(
+                          elevation: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                titles[AppPages.none]?.title ?? '',
+                                style: TextStyle(fontSize: 17.5),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(titles[AppPages.none]?.icon),
+                            ],
+                          ),
+                          onPressed: () => {
+                                _closePanel(),
+                                if (titles[AppPages.none]?.action != null)
+                                  {
+                                    titles[AppPages.none]?.action?.call(),
+                                  }
+                              }),
+                    ),
+                    Container(
+                      height: 2,
+                      width: 150,
+                      color: Colors.grey,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
