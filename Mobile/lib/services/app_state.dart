@@ -202,7 +202,8 @@ class RootAppState extends ChangeNotifier {
       }
 
       for (var task in jsonData) {
-        newTasks.add(new Task(
+        newTasks.add(
+          new Task(
             task['id'],
             task['title'],
             task['description'],
@@ -211,7 +212,9 @@ class RootAppState extends ChangeNotifier {
             DateTime.parse(task['end_date']),
             _getBool(task['recurring']),
             task['recurring_interval'],
-            _getBool(task['single_completion'])));
+            _getBool(task['single_completion']),
+          ),
+        );
       }
 
       return {'statusCode': response.statusCode, 'tasks': newTasks};
