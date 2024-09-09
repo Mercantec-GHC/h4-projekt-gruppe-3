@@ -85,13 +85,24 @@ class RootAppState extends ChangeNotifier {
     };
   }
 
-  Future<Map<String, dynamic>> CreateUser(String name, String password,
-      String email, String password_confirmation) async {
-    final response = await api.CreateParentUser(
-        name, email, password, password_confirmation);
+  Future<Map<String, dynamic>> CreateUser(
+      String name,
+      String password,
+      String emailOrUsername,
+      String password_confirmation,
+      bool is_parent) async {
+    final response;
+    if (is_parent) {
+      response = await api.CreateParentUser(
+          name, emailOrUsername, password, password_confirmation);
+    } else {
+      final jwt = await storage.read(key: 'auth_token');
+      response = await api.CreateChildUser(name, emailOrUsername, password,
+          password_confirmation, user?.id ?? 0, jwt);
+    }
 
     var jsonData = json.decode(response.body);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 && is_parent) {
       user = new User(
         jsonData['user']['id'],
         jsonData['user']['name'],
@@ -99,7 +110,7 @@ class RootAppState extends ChangeNotifier {
       );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
-      await GetFamilies();
+      await GetFamilies(jsonData['token']);
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
@@ -118,14 +129,14 @@ class RootAppState extends ChangeNotifier {
       );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
-      await GetFamilies();
+      await GetFamilies(jsonData['token']);
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
-  Future<Map<String, dynamic>> GetFamilies() async {
-    final response = await api.GetFamilies(this);
+  Future<Map<String, dynamic>> GetFamilies(String jwt) async {
+    final response = await api.GetFamilies(jwt);
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {

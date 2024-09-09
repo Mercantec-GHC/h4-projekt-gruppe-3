@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/models/task.dart';
@@ -111,7 +112,7 @@ class _TasklistState extends State<Tasklist> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color.fromRGBO(245, 197, 58, 1),
+                color: CustomColorScheme.secondary,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0),
@@ -128,7 +129,7 @@ class _TasklistState extends State<Tasklist> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(217, 217, 217, 1),
+                  color: CustomColorScheme.menu,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),

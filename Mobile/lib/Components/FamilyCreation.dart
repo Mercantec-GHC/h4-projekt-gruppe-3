@@ -31,7 +31,7 @@ class _FamilycreationState extends State<Familycreation> {
       if (response.statusCode == 201) {
         Navigator.of(context).pop();
       } else {
-        CustomPopup.openErrorPopup(context, response.body);
+        CustomPopup.openErrorPopup(context, errorText: response.body);
       }
     }
   }

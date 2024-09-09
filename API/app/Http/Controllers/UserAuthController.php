@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FamilyResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use App\Models\Family;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserAuthController extends Controller
 {
@@ -35,11 +38,21 @@ class UserAuthController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
 
-        $family = Family::create([
-            'name' => $user->name . " family",
-            'created_by' => $user->name,
-            'owner_id' => $user->id,
-        ]);
+        // Make a new family to a parent
+        if ($data['is_parent'] == true) {
+            $family = Family::create([
+                'name' => $user->name . " family",
+                'created_by' => $user->name,
+                'owner_id' => $user->id,
+            ]);
+        } else { // Get parent family
+            $family = DB::table('user_family')
+                ->Join('families', 'families.id', '=', 'user_family.family_id')
+                ->where('user_id', $request['parentId'])
+                ->select('families.id')
+                ->first();
+        }
+
         $user->families()->attach($family, ['points' => 0, 'total_points' => 0, 'completed_tasks' => 0]);
 
         return response()->json(['user' => $user, 'token' => $token], 201);
