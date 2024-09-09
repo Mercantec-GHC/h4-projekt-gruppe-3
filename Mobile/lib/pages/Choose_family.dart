@@ -4,6 +4,7 @@ import 'package:mobile/models/family.dart';
 import 'package:provider/provider.dart';
 import '../Components/FamilyCreation.dart';
 import '../services/app_state.dart';
+import 'package:mobile/Components/GradiantMesh.dart'; // Import for MeshGradientBackground
 
 class ChooseFamilyPage extends StatefulWidget {
   const ChooseFamilyPage({super.key});
@@ -25,76 +26,71 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => openCreateFamily(context),
-          ),
-        ],
-        title: Text('Families'),
-        backgroundColor: _theme.colorScheme.primaryContainer,
-      ),
-      backgroundColor: _theme.colorScheme.primaryContainer,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: Card(
-              elevation: 4,
-              margin: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _theme.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(10.0),
+          // Background gradient
+          Positioned.fill(
+            child: MeshGradientBackground(),
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Title and action button row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Your Families',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    // Add family button
+                    IconButton(
+                      icon: Icon(
+                        Icons.add, // Adjust color for contrast
+                      ),
+                      onPressed: () => openCreateFamily(context),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Container(
+                    child: Card(
+                      elevation: 0,
+                      margin: EdgeInsets.zero,
+                      color: Colors.transparent,
+                      child: Column(
                         children: [
-                          Text(
-                            'Your families',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: ListView.builder(
+                                    itemCount: families.length,
+                                    itemBuilder: (context, index) {
+                                      return Familycard(
+                                        family: families[index],
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: FractionallySizedBox(
-                            widthFactor: 1,
-                            child: ListView.builder(
-                              itemCount: families.length,
-                              itemBuilder: (context, index) {
-                                return Familycard(
-                                  family: families[index],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

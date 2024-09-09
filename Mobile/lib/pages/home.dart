@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
+import 'package:mobile/Components/GradiantMesh.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,21 +17,33 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        backgroundColor: _theme.colorScheme.primaryContainer,
-      ),
-      backgroundColor: _theme.colorScheme.primaryContainer,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Tasklist(listType: TasklistType.All),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: MeshGradientBackground(),
+          ),
+          Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Tasklist(
+                          listType: TasklistType.All,
+                          isTransparent: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
