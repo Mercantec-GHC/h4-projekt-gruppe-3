@@ -20,7 +20,7 @@ class Tasklist extends StatefulWidget {
     super.key,
     required this.listType,
   });
-  
+
   static String getTitle(TasklistType type) {
     return switch (type) {
       TasklistType.All => 'All tasks',
@@ -48,12 +48,14 @@ class _TasklistState extends State<Tasklist> {
   }
 
   Future<Map<String, dynamic>> _contactServer() async {
-    int familyId = 1;
+    int familyId = appState.family!.id;
     return switch (widget.listType) {
       TasklistType.All => await appState.getTasks('/all/${familyId}'),
-      TasklistType.Available => await appState.getTasks('/available/${familyId}'),
+      TasklistType.Available =>
+        await appState.getTasks('/available/${familyId}'),
       TasklistType.Assigned => await appState.getTasks('/assigned/${familyId}'),
-      TasklistType.Completed => await appState.getTasks('/completed/${familyId}'),
+      TasklistType.Completed =>
+        await appState.getTasks('/completed/${familyId}'),
       // TasklistType.Pending => await appState.getTasks('/api/task/pending/${familyId}'),
 
       // to get something, it need to replaced with the one above.
@@ -90,7 +92,7 @@ class _TasklistState extends State<Tasklist> {
       }
     });
   }
-  
+
   void _deleteTask(Task taskToDelete) {
     setState(() {
       appState.taskList.removeWhere((t) => t.id == taskToDelete.id);
@@ -126,8 +128,8 @@ class _TasklistState extends State<Tasklist> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                    color: Color.fromRGBO(217, 217, 217, 1),
-                    borderRadius: BorderRadius.only(
+                  color: Color.fromRGBO(217, 217, 217, 1),
+                  borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
                   ),
