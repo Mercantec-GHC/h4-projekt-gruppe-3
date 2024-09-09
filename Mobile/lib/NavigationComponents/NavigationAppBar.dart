@@ -5,12 +5,14 @@ import 'package:mobile/services/app_state.dart';
 
 class NavAppBar extends StatelessWidget implements PreferredSizeWidget {
   final RootAppState appState;
+  final VoidCallback toggleProfileMenu;
   final String? page_title;
   final String? jwt;
 
   const NavAppBar({
     super.key,
     required this.appState,
+    required this.toggleProfileMenu,
     required this.page_title,
     required this.jwt,
   });
@@ -38,6 +40,12 @@ class NavAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
       centerTitle: true,
       actions: [
+        IconButton(
+          icon: Icon(Icons.family_restroom),
+          onPressed: () {
+            toggleProfileMenu();
+          },
+        ),
         Container(
           width: 75,
           child: Center(

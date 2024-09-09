@@ -25,6 +25,7 @@ class NavigationComponent extends StatefulWidget {
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late RootAppState _appState;
+  bool _isProfileMenuVisible = false;
   String? jwt;
 
   Map<AppPages, DrawerItem> _titles = {};
@@ -87,6 +88,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
         title: 'Logout',
         icon: Icons.logout,
         action: _logout,
+        show: false,
       ),
       AppPages.login: DrawerItem(
         title: 'Login',
@@ -101,6 +103,18 @@ class _NavigationComponentState extends State<NavigationComponent> {
         show: false,
       ),
     };
+  }
+
+  void _toggleProfileMenu() {
+    setState(() {
+      _isProfileMenuVisible = !_isProfileMenuVisible;
+    });
+  }
+
+  void _closeProfileMenu() {
+    setState(() {
+      _isProfileMenuVisible = false;
+    });
   }
 
   @override
@@ -121,6 +135,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
           ? null
           : NavAppBar(
               appState: _appState,
+              toggleProfileMenu: _toggleProfileMenu,
               page_title: _titles[_appState.page]?.title,
               jwt: jwt,
             ),
@@ -131,7 +146,84 @@ class _NavigationComponentState extends State<NavigationComponent> {
         Center(
           child: _titles[_appState.page]?.page,
         ),
-        QuickAction()
+        if (_appState.user?.isParent ?? false) QuickAction(),
+        if (_isProfileMenuVisible)
+          GestureDetector(
+            onTap: _closeProfileMenu,
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+        AnimatedPositioned(
+          duration: Duration(milliseconds: 300),
+          top: _isProfileMenuVisible
+              ? kToolbarHeight - 50
+              : kToolbarHeight - 250,
+          right: 16,
+          child: GestureDetector(
+            onTap: () {}, // Prevents the panel from closing when tapped inside
+            child: Container(
+              width: 200,
+              height: 130,
+              decoration: BoxDecoration(
+                color: CustomColorScheme.menu,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Center(
+                        child: Text(
+                      "Profile menu",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                    SizedBox(height: 10),
+                    Container(
+                      width: 200,
+                      child: FloatingActionButton(
+                          elevation: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _titles[AppPages.none]?.title ?? '',
+                                style: TextStyle(fontSize: 17.5),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(_titles[AppPages.none]?.icon),
+                            ],
+                          ),
+                          onPressed: () => {
+                                _closeProfileMenu(),
+                                if (_titles[AppPages.none]?.action != null)
+                                  {
+                                    _titles[AppPages.none]?.action?.call(),
+                                  }
+                              }),
+                    ),
+                    Container(
+                      height: 2,
+                      width: 150,
+                      color: Colors.grey,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ]),
     );
   }

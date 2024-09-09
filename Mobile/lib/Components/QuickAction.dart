@@ -48,7 +48,7 @@ class _QuickActionState extends State<QuickAction> {
               width: panelWidth,
               height: panelHeight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: CustomColorScheme.menu,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
@@ -70,25 +70,27 @@ class _QuickActionState extends State<QuickAction> {
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Create task',
-                            style: TextStyle(
-                              fontSize: 20
-                            ),
+                      SizedBox(width: 5),
+                      Container(
+                        width: 200,
+                        child: FloatingActionButton(
+                          elevation: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Create task',
+                                style: TextStyle(
+                                  fontSize: 17.5
+                                ),
+                              ),
+                              Icon(Icons.add),
+                            ],
                           ),
-                          SizedBox(width: 5),
-                          FloatingActionButton(
-                            elevation: 2,
-                            child: Icon(Icons.add),
-                            onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => TaskCreation(),
-                            ),
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (context) => TaskCreation(),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
