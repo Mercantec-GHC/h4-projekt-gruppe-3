@@ -72,16 +72,17 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) =>
-                                Childcreation(onCreation: childCreation),
-                          );
-                        },
-                      ),
+                      if (_appState.user?.isParent ?? false)
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  Childcreation(onCreation: childCreation),
+                            );
+                          },
+                        ),
                     ],
                   ),
                 ),

@@ -110,7 +110,7 @@ class RootAppState extends ChangeNotifier {
       );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
-      await GetFamilies(jsonData['token']);
+      await GetFamilies();
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
@@ -129,14 +129,14 @@ class RootAppState extends ChangeNotifier {
       );
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
-      await GetFamilies(jsonData['token']);
+      await GetFamilies();
     }
 
     return {'statusCode': response.statusCode, 'body': jsonData};
   }
 
-  Future<Map<String, dynamic>> GetFamilies(String jwt) async {
-    final response = await api.GetFamilies(jwt);
+  Future<Map<String, dynamic>> GetFamilies() async {
+    final response = await api.GetFamilies(this);
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
