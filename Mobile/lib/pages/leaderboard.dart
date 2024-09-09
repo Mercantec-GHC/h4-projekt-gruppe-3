@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/Components/GradiantMesh.dart';
-import 'package:mobile/models/user.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
-import '../services/api.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -27,78 +25,82 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
-    // Access the user from the AppState
-    final user = Provider.of<RootAppState>(context).user;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Leaderboard'),
-        backgroundColor: _theme.colorScheme.primaryContainer,
-      ),
-      backgroundColor: _theme.colorScheme.primaryContainer,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: Card(
-              elevation: 4,
-              margin: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  MeshGradientBackground(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _theme.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Leaderboard', //maybe type the family name here
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+          // Background Gradient
+          Positioned.fill(
+            child: MeshGradientBackground(),
+          ),
+          // Main Content
+          Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Leaderboard Header
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 8, right: 8, left: 8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color:
+                                Colors.transparent, // Make header transparent
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: FractionallySizedBox(
-                            widthFactor: 1,
-                            child: Column(
-                              children: [
-                                for (UserProfile userProfile in users)
-                                  Userprofilecard(
-                                    name: userProfile.name,
-                                    points: userProfile.total_points,
-                                    page: 'leaderboard',
-                                  ),
-                              ],
-                            ),
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                'Leaderboard',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ),
+                      // Users List
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .transparent, // Make the user list container transparent
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: FractionallySizedBox(
+                                widthFactor: 1,
+                                child: Column(
+                                  children: [
+                                    for (UserProfile userProfile in users)
+                                      Userprofilecard(
+                                        name: userProfile.name,
+                                        points: userProfile.total_points,
+                                        page: 'leaderboard',
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -117,14 +119,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
+          title: const Text('Something went wrong'),
           content: Text(response['Error']['message']),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         ),

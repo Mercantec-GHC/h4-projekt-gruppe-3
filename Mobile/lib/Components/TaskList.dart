@@ -15,10 +15,12 @@ enum TasklistType {
 
 class Tasklist extends StatefulWidget {
   final TasklistType listType;
+  final bool isTransparent;
 
   const Tasklist({
     super.key,
     required this.listType,
+    this.isTransparent = true,
   });
 
   static String getTitle(TasklistType type) {
@@ -48,18 +50,13 @@ class _TasklistState extends State<Tasklist> {
   }
 
   Future<Map<String, dynamic>> _contactServer() async {
-    int familyId = appState.family!.id;
+    int familyId = 1;
     return switch (widget.listType) {
-      TasklistType.All => await appState.getTasks('/all/${familyId}'),
-      TasklistType.Available =>
-        await appState.getTasks('/available/${familyId}'),
-      TasklistType.Assigned => await appState.getTasks('/assigned/${familyId}'),
-      TasklistType.Completed =>
-        await appState.getTasks('/completed/${familyId}'),
-      // TasklistType.Pending => await appState.getTasks('/api/task/pending/${familyId}'),
-
-      // to get something, it need to replaced with the one above.
-      TasklistType.Pending => await appState.getTasks('/all/${familyId}'),
+      TasklistType.All => await appState.getTasks('/all/$familyId'),
+      TasklistType.Available => await appState.getTasks('/available/$familyId'),
+      TasklistType.Assigned => await appState.getTasks('/assigned/$familyId'),
+      TasklistType.Completed => await appState.getTasks('/completed/$familyId'),
+      TasklistType.Pending => await appState.getTasks('/all/$familyId'),
     };
   }
 
@@ -67,8 +64,7 @@ class _TasklistState extends State<Tasklist> {
     Map<String, dynamic> response = await _contactServer();
     if (response['statusCode'] == 200) {
       return response['tasks'];
-    }
-    else {
+    } else {
       CustomPopup.openErrorPopup(context, errorText: response['Error']);
       return [];
     }
@@ -105,31 +101,44 @@ class _TasklistState extends State<Tasklist> {
     return SizedBox(
       height: 600,
       child: Card(
-        elevation: 4,
+        elevation: widget.isTransparent ? 0 : 4,
         margin: const EdgeInsets.all(16.0),
+        color: Colors.transparent,
         child: Column(
           children: [
+            // Header
             Container(
               decoration: BoxDecoration(
-                color: Color.fromRGBO(245, 197, 58, 1),
-                borderRadius: BorderRadius.only(
+                color: widget.isTransparent
+                    ? Colors.transparent
+                    : const Color.fromRGBO(245, 197, 58, 1),
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0),
                 ),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(listTitle),
+                  Text(
+                    listTitle,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
             ),
+            // Content Area
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(217, 217, 217, 1),
-                  borderRadius: BorderRadius.only(
+                  color: widget.isTransparent
+                      ? Colors.transparent
+                      : const Color.fromRGBO(217, 217, 217, 1),
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
                   ),
@@ -140,15 +149,18 @@ class _TasklistState extends State<Tasklist> {
                     children: [
                       if (appState.taskList.isNotEmpty)
                         for (Task task in appState.taskList)
-                          TaskCard(task: task, onUpdateTask: updateTask, onDeleteTask: _deleteTask),
-                      
-                      if (appState.taskList.isEmpty) 
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          TaskCard(
+                            task: task,
+                            onUpdateTask: updateTask,
+                            onDeleteTask: _deleteTask,
+                          ),
+                      if (appState.taskList.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Center(
                             child: Text('There are no tasks here.'),
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ),
