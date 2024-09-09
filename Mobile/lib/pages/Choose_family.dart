@@ -26,18 +26,38 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
-
     return Scaffold(
       body: Stack(
         children: [
+          // Background gradient
           Positioned.fill(
             child: MeshGradientBackground(),
           ),
+          // Main content
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                // Title and action button row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Your Families',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    // Add family button
+                    IconButton(
+                      icon: Icon(
+                        Icons.add, // Adjust color for contrast
+                      ),
+                      onPressed: () => openCreateFamily(context),
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: Container(
                     child: Card(
@@ -46,25 +66,6 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
                       color: Colors.transparent,
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8, right: 8, left: 8),
-                            child: Container(
-                              padding: EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Your families',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
