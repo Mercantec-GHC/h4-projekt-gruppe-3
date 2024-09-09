@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public function families(): BelongsToMany
     {
-        return $this->belongsToMany(Family::class)->withPivot([
+        return $this->belongsToMany(Family::class, 'user_family')->withPivot([
             'points',
             'completed_tasks',
             'total_points',

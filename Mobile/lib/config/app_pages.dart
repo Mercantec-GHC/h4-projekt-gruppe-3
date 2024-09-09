@@ -10,4 +10,5 @@ enum AppPages {
   availableTasks,
   completedTasks,
   pendingTasks,
+  changeFamily,
 }

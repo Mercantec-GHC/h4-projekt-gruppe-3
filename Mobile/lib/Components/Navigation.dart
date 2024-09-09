@@ -15,6 +15,7 @@ import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/pages/leaderboard.dart';
+import 'package:mobile/pages/Choose_family.dart';
 
 class NavigationComponent extends StatefulWidget {
   @override
@@ -76,6 +77,11 @@ class _NavigationComponentState extends State<NavigationComponent> {
         title: 'Pending Tasks',
         icon: Icons.list,
         page: TaskSelectedList(type: TasklistType.Pending),
+      ),
+      AppPages.changeFamily: DrawerItem(
+        title: 'Families',
+        icon: Icons.people,
+        page: ChooseFamilyPage(),
       ),
       AppPages.none: DrawerItem(
         title: 'Logout',
