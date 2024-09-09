@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Nette\NotImplementedException;
 
 class UserController extends Controller
 {
