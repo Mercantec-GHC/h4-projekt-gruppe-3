@@ -41,25 +41,16 @@ class NavAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: [
         IconButton(
-          icon: Icon(Icons.family_restroom),
+          icon: CircleAvatar(
+            backgroundColor: CustomColorScheme.limeGreen,
+            backgroundImage: AssetImage('assets/account_circle.png'),
+            foregroundImage: NetworkImage(
+              baseUrl + '/api/user/${appState.user?.id}/profile/picture',
+            ),
+          ),
           onPressed: () {
             toggleProfileMenu();
           },
-        ),
-        Container(
-          width: 75,
-          child: Center(
-            child: CircleAvatar(
-              radius: 15,
-              backgroundImage: appState.user != null
-                  ? NetworkImage(
-                      baseUrl +
-                          '/api/user/${appState.user?.id}/profile/picture',
-                    )
-                  : const AssetImage('assets/default_profile.png')
-                      as ImageProvider, // Default image if no URL
-            ),
-          ),
         ),
       ],
     );

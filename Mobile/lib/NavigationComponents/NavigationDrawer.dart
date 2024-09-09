@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/NavigationComponents/DrawerItem.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/app_state.dart';
+
+import '../config/general_config.dart';
 
 class NavDrawer extends StatefulWidget {
   final Map<AppPages, DrawerItem> titles;
@@ -44,7 +47,14 @@ class _NavDrawerState extends State<NavDrawer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(Icons.account_circle, size: 80.0, color: Colors.white),
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: CustomColorScheme.limeGreen,
+                  backgroundImage: AssetImage('assets/account_circle.png'),
+                  foregroundImage: NetworkImage(
+                    baseUrl + '/api/user/${_appState.user?.id}/profile/picture',
+                  ),
+                ),
                 SizedBox(height: 16.0),
                 Text(
                   _appState.user?.name.toString() ?? 'No user logged in',
