@@ -110,19 +110,21 @@ class _RegisterState extends State<Register> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _appState.CreateUser(_name, _password, _email, _password_confirmation)
-        .then((value) => {
-          if (value['statusCode'] == 201)
-            {
-              _appState.switchPage(AppPages.home),
-            }
-          else
-          {
-            CustomPopup.openErrorPopup(context, 
-              title: 'Couldn\'t create user',
-              errorText: value['body']['errors'].toString(), 
-            ),
-          }
-        });
+          .then((value) => {
+                if (value['statusCode'] == 201)
+                  {
+                    _appState.switchPage(AppPages.home),
+                    Navigator.of(context).pop(),
+                  }
+                else
+                  {
+                    CustomPopup.openErrorPopup(
+                      context,
+                      title: 'Couldn\'t create user',
+                      errorText: value['body']['errors'].toString(),
+                    ),
+                  }
+              });
     }
   }
 }

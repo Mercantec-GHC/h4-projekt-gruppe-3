@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
+import 'package:mobile/models/family.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
@@ -45,7 +46,43 @@ class Api {
     await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
-  Future<http.Response> GetUserPoints(int userId, int familyId, RootAppState appState) async {
+  Future<http.Response> GetFamilies(RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.get(Uri.parse(baseUrl + '/api/family/all/'), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + jwt.toString(),
+    });
+  }
+
+  Future<http.Response> GetFamily(Family family, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http
+        .get(Uri.parse(baseUrl + '/api/family/${family.id}'), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + jwt.toString(),
+    });
+  }
+
+  Future<http.Response> createFamily(
+      Family family, RootAppState appState) async {
+    final jwt = await appState.storage.read(key: 'auth_token');
+    return await http.post(
+      Uri.parse(baseUrl + '/api/family/create'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+      body: json.encode({
+        'family_name': family.name,
+      }),
+    );
+  }
+
+  Future<http.Response> GetUserPoints(
+      int userId, int familyId, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.get(
       Uri.parse(baseUrl + '/api/user/${familyId}/${userId}/points'),
@@ -56,6 +93,8 @@ class Api {
       },
     );
   }
+
+  void Get() {}
 
   Future<http.Response> updateUserProfile({
     required String auth_token,
@@ -132,7 +171,8 @@ class Api {
     return http.Response.fromStream(response);
   }
 
-  Future<http.Response> getUsersAssignToTask(int taskId, RootAppState appState) async {
+  Future<http.Response> getUsersAssignToTask(
+      int taskId, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.get(
       Uri.parse(baseUrl + "/api/task/users/${taskId}"),

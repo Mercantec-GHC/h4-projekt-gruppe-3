@@ -5,6 +5,8 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FamilyController;
+use App\Models\Family;
 
 Route::post('/login', [UserAuthController::class, 'login']);
 Route::post('/register', [UserAuthController::class, 'register']);
@@ -37,5 +39,15 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/assign/{task}/{user}', [TaskController::class, 'assignUserToTask']);
         Route::put('/unassign/{task}/{user}', [TaskController::class, 'unassignUserToTask']);
         Route::delete('/{task}', [TaskController::class, 'deleteTask']);
+    });
+    Route::prefix('/family')->group(function () {
+        Route::post('/create', [FamilyController::class, 'createFamily']);
+        Route::post('/add/{user}/{family}', [FamilyController::class, 'addUserToFamily']);
+        Route::get('/all', [FamilyController::class, 'getUserFamilies']);
+        Route::put('/edit/{family}', [FamilyController::class, 'editFamily']);
+        Route::put('/switchOwner/{family}', [FamilyController::class, 'switchOwner']);
+        Route::get('/{family}', [FamilyController::class, 'getFamily']);
+        Route::delete('/remove/{user}/{family}', [FamilyController::class, 'removeUserToFamily']);
+        Route::delete('/delete/{family}', [FamilyController::class, 'deleteFamily']);
     });
 });
