@@ -35,11 +35,12 @@ class _LoginState extends State<Login> {
             child: Column(
               children: [
                 // Logo
-                Image.file(
-                  File('assets\\Logo.png'),
+                Image.asset(
+                  'assets/Logo.png',
                   height: 150,
                   fit: BoxFit.cover,
                 ),
+
                 SizedBox(height: 20),
 
                 // Form
