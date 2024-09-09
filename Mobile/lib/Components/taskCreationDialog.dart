@@ -21,7 +21,7 @@ class _TaskCreationState extends State<TaskCreation> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _endDatetimestampController = TextEditingController();
   final List<AppPages> pagesNeedsToBeNotifyListenered = [
-    AppPages.AvailableTasks,
+    AppPages.availableTasks,
     AppPages.home,
   ];
 

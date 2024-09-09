@@ -3,6 +3,9 @@ import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/QuickAction.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
+import 'package:mobile/NavigationComponents/DrawerItem.dart';
+import 'package:mobile/NavigationComponents/NavigationAppBar.dart';
+import 'package:mobile/NavigationComponents/NavigationDrawer.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
@@ -21,155 +24,207 @@ class NavigationComponent extends StatefulWidget {
 
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late RootAppState appState;
+  late RootAppState _appState;
+  bool _isProfileMenuVisible = false;
+  String? jwt;
 
-  Map<AppPages, Title> _getTitles() {
-    return {
-      AppPages.home: Title('Home', Icons.home, Home()),
-      AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
-      AppPages.updateUserProfile:
-          Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
-      AppPages.leaderboard:
-          Title('Leaderboard', Icons.leaderboard, LeaderboardPage()),
-      AppPages.AssignedTasks: Title('Assigned Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Assigned)),
-      AppPages.AvailableTasks: Title('Available Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Available)),
-      AppPages.CompletedTasks: Title('Completed Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Completed)),
-      AppPages.PendingTasks: Title('Pending Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Pending)),
-      AppPages.ChangeFamily:
-          Title('Families', Icons.people, ChooseFamilyPage()),
-      AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
-      AppPages.login: Title('Logout', Icons.logout, Login(), false),
-      AppPages.register: Title('Logout', Icons.logout, Register(), false),
+  Map<AppPages, DrawerItem> _titles = {};
+
+  void _logout() {
+    _appState.logout();
+    _appState.switchPage(AppPages.login);
+  }
+
+  void getAuthToken() async {
+    jwt = await _appState.storage.read(key: 'auth_token').toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titles = {
+      AppPages.home: DrawerItem(
+        title: 'Home',
+        icon: Icons.home,
+        page: Home(),
+      ),
+      AppPages.userProfile: DrawerItem(
+        title: 'Profile',
+        icon: Icons.person,
+        page: UserProfilePage(),
+      ),
+      AppPages.leaderboard: DrawerItem(
+        title: 'Leaderboard',
+        icon: Icons.leaderboard,
+        page: LeaderboardPage(),
+      ),
+      AppPages.assignedTasks: DrawerItem(
+        title: 'Assigned Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Assigned),
+      ),
+      AppPages.availableTasks: DrawerItem(
+        title: 'Available Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Available),
+      ),
+      AppPages.completedTasks: DrawerItem(
+        title: 'Completed Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Completed),
+      ),
+      AppPages.pendingTasks: DrawerItem(
+        title: 'Pending Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Pending),
+      ),
+      AppPages.changeFamily: DrawerItem(
+        title: 'Families',
+        icon: Icons.people,
+        page: ChooseFamilyPage(),
+      ),
+      AppPages.none: DrawerItem(
+        title: 'Logout',
+        icon: Icons.logout,
+        action: _logout,
+        show: false,
+      ),
+      AppPages.login: DrawerItem(
+        title: 'Login',
+        icon: Icons.logout,
+        page: Login(),
+        show: false,
+      ),
+      AppPages.register: DrawerItem(
+        title: 'Register',
+        icon: Icons.logout,
+        page: Register(),
+        show: false,
+      ),
     };
   }
 
-  void _logout() {
-    appState.logout();
-    _onItemTapped(AppPages.login);
-  }
-
-  Color? _getSelectedColor(AppPages index) {
-    return appState.page == index ? Colors.blue : null;
-  }
-
-  void _onItemTapped(AppPages appPage) {
+  void _toggleProfileMenu() {
     setState(() {
-      appState.taskList.clear();
-      appState.switchPage(appPage);
+      _isProfileMenuVisible = !_isProfileMenuVisible;
     });
-    // Close the drawer after selecting an item
-    Navigator.pop(context);
+  }
+
+  void _closeProfileMenu() {
+    setState(() {
+      _isProfileMenuVisible = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    appState = context.watch<RootAppState>();
-    Map<AppPages, Title> titles = _getTitles();
-  
-    if (!appState.isLoggedInSync()) {
+    _appState = context.watch<RootAppState>();
+    bool isLoggedIn = _appState.isLoggedInSync();
+    getAuthToken();
+
+    if (!isLoggedIn) {
       return Scaffold(
-        body: Center(child: titles[appState.page]?.page),
+        body: Center(child: _titles[_appState.page]?.page),
       );
     }
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: CustomColorScheme.secondary,
-        title: appState.user?.isParent ?? false ?
-          null : Card(
-            color: Colors.green,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(appState.points.toString() + 'p'),
-                    ),
-                  ),
-                ),
-              ],
+      appBar: !isLoggedIn && jwt != null
+          ? null
+          : NavAppBar(
+              appState: _appState,
+              toggleProfileMenu: _toggleProfileMenu,
+              page_title: _titles[_appState.page]?.title,
+              jwt: jwt,
+            ),
+      drawer: NavDrawer(
+        titles: _titles,
+      ),
+      body: Stack(children: [
+        Center(
+          child: _titles[_appState.page]?.page,
+        ),
+        if (_appState.user?.isParent ?? false) QuickAction(),
+        if (_isProfileMenuVisible)
+          GestureDetector(
+            onTap: _closeProfileMenu,
+            child: Container(
+              color: Colors.transparent,
             ),
           ),
-        // actions: <Widget>[
-        //   // maybe use this for user profile -_-
-        //   IconButton(
-        //     icon: Icon(Icons.menu),
-        //     onPressed: () {
-        //       _scaffoldKey.currentState?.openDrawer();
-        //     },
-        //   ),
-        // ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
+        AnimatedPositioned(
+          duration: Duration(milliseconds: 300),
+          top: _isProfileMenuVisible
+              ? kToolbarHeight - 50
+              : kToolbarHeight - 250,
+          right: 16,
+          child: GestureDetector(
+            onTap: () {}, // Prevents the panel from closing when tapped inside
+            child: Container(
+              width: 200,
+              height: 130,
               decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Icon(Icons.account_circle, size: 80.0, color: Colors.white),
-                  SizedBox(height: 16.0),
-                  Text(
-                    appState.user?.name.toString() ?? 'No user logged in',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.0,
-                    ),
+                color: CustomColorScheme.menu,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
-            ),
-            for (var title in titles.entries)
-              if (title.value.show)
-                ListTile(
-                  leading: Icon(title.value.icon,
-                    color: _getSelectedColor(title.key)),
-                  title: Text(
-                    title.value.title,
-                    style: TextStyle(color: _getSelectedColor(title.key)),
-                  ),
-                  onTap: () => {
-                    if (title.value.action == null)
-                    {
-                      _onItemTapped(title.key)
-                    }
-                    else
-                    {
-                      title.value.action?.call(),
-                    }
-                  }
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Center(
+                        child: Text(
+                      "Profile menu",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                    SizedBox(height: 10),
+                    Container(
+                      width: 200,
+                      child: FloatingActionButton(
+                          elevation: 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _titles[AppPages.none]?.title ?? '',
+                                style: TextStyle(fontSize: 17.5),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(_titles[AppPages.none]?.icon),
+                            ],
+                          ),
+                          onPressed: () => {
+                                _closeProfileMenu(),
+                                if (_titles[AppPages.none]?.action != null)
+                                  {
+                                    _titles[AppPages.none]?.action?.call(),
+                                  }
+                              }),
+                    ),
+                    Container(
+                      height: 2,
+                      width: 150,
+                      color: Colors.grey,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ],
                 ),
-          ],
-        ),
-      ),
-      body: Stack(
-        children: [
-          Center(
-            child: titles[appState.page]?.page,
+              ),
+            ),
           ),
-          QuickAction()
-        ] 
-      ),
+        ),
+      ]),
     );
   }
-}
-
-class Title {
-  String title;
-  IconData icon;
-  bool show = true;
-  StatefulWidget page;
-  VoidCallback? action;
-
-  Title(this.title, this.icon, this.page, [this.show = true, this.action]);
 }
