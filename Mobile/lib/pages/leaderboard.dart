@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:mobile/models/UserProfile.dart';
+import 'package:mobile/Components/GradiantMesh.dart';
 import 'package:mobile/models/user.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
@@ -45,6 +46,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               margin: EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  MeshGradientBackground(),
                   Padding(
                     padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
                     child: Container(

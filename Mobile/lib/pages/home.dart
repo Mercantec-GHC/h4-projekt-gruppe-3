@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
+import 'package:mobile/Components/GradiantMesh.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -19,10 +20,6 @@ class _HomeState extends State<Home> {
     final _theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        backgroundColor: _theme.colorScheme.primaryContainer,
-      ),
       backgroundColor: _theme.colorScheme.primaryContainer,
       body: SingleChildScrollView(
         child: Column(

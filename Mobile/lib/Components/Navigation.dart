@@ -66,7 +66,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
   Widget build(BuildContext context) {
     appState = context.watch<RootAppState>();
     Map<AppPages, Title> titles = _getTitles();
-  
+
     if (!appState.isLoggedInSync()) {
       return Scaffold(
         body: Center(child: titles[appState.page]?.page),
@@ -77,22 +77,23 @@ class _NavigationComponentState extends State<NavigationComponent> {
       key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: CustomColorScheme.secondary,
-        title: appState.user?.isParent ?? false ?
-          null : Card(
-            color: Colors.green,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(appState.points.toString() + 'p'),
+        title: appState.user?.isParent ?? false
+            ? null
+            : Card(
+                color: Colors.green,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(appState.points.toString() + 'p'),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
         // actions: <Widget>[
         //   // maybe use this for user profile -_-
         //   IconButton(
@@ -129,34 +130,29 @@ class _NavigationComponentState extends State<NavigationComponent> {
             for (var title in titles.entries)
               if (title.value.show)
                 ListTile(
-                  leading: Icon(title.value.icon,
-                    color: _getSelectedColor(title.key)),
-                  title: Text(
-                    title.value.title,
-                    style: TextStyle(color: _getSelectedColor(title.key)),
-                  ),
-                  onTap: () => {
-                    if (title.value.action == null)
-                    {
-                      _onItemTapped(title.key)
-                    }
-                    else
-                    {
-                      title.value.action?.call(),
-                    }
-                  }
-                ),
+                    leading: Icon(title.value.icon,
+                        color: _getSelectedColor(title.key)),
+                    title: Text(
+                      title.value.title,
+                      style: TextStyle(color: _getSelectedColor(title.key)),
+                    ),
+                    onTap: () => {
+                          if (title.value.action == null)
+                            {_onItemTapped(title.key)}
+                          else
+                            {
+                              title.value.action?.call(),
+                            }
+                        }),
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: titles[appState.page]?.page,
-          ),
-          QuickAction()
-        ] 
-      ),
+      body: Stack(children: [
+        Center(
+          child: titles[appState.page]?.page,
+        ),
+        QuickAction()
+      ]),
     );
   }
 }
