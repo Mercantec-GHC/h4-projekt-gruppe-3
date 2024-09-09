@@ -25,12 +25,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
-
     return Scaffold(
       body: Stack(
         children: [
-          // Background Gradient
           Positioned.fill(
             child: MeshGradientBackground(),
           ),
@@ -48,8 +45,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             const EdgeInsets.only(top: 8, right: 8, left: 8),
                         child: Container(
                           decoration: BoxDecoration(
-                            color:
-                                Colors.transparent, // Make header transparent
+                            color: Colors.transparent,
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           padding: const EdgeInsets.all(16),
