@@ -41,11 +41,12 @@ class _RegisterState extends State<Register> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.file(
-                  File('assets\\Logo.png'),
+                Image.asset(
+                  'assets/Logo.png',
                   height: 150,
                   fit: BoxFit.cover,
                 ),
+
                 SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Name'),
