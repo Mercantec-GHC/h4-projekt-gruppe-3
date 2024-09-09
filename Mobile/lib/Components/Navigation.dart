@@ -108,7 +108,6 @@ class _NavigationComponentState extends State<NavigationComponent> {
                 ),
               ),
         actions: <Widget>[
-          // maybe use this for user profile -_-
           IconButton(
             icon: Icon(Icons.family_restroom),
             onPressed: () {
@@ -164,7 +163,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
         Center(
           child: titles[appState.page]?.page,
         ),
-        QuickAction(),
+        if (appState.user?.isParent ?? false) QuickAction(),
         if (_isPanelVisible)
           GestureDetector(
             onTap: _closePanel,
