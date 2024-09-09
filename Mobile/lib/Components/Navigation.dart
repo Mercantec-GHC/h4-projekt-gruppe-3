@@ -3,6 +3,9 @@ import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/QuickAction.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/TaskSelectedList.dart';
+import 'package:mobile/NavigationComponents/DrawerItem.dart';
+import 'package:mobile/NavigationComponents/NavigationAppBar.dart';
+import 'package:mobile/NavigationComponents/NavigationDrawer.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
@@ -21,162 +24,141 @@ class NavigationComponent extends StatefulWidget {
 
 class _NavigationComponentState extends State<NavigationComponent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late RootAppState appState;
-  bool _isPanelVisible = false;
+  late RootAppState _appState;
+  bool _isProfileMenuVisible = false;
+  String? jwt;
 
-  Map<AppPages, Title> _getTitles() {
-    return {
-      AppPages.home: Title('Home', Icons.home, Home()),
-      AppPages.userProfile: Title('Profile', Icons.person, UserProfilePage()),
-      AppPages.updateUserProfile:
-          Title('Edit Profile', Icons.settings, UpdateUserProfilePage(), false),
-      AppPages.leaderboard:
-          Title('Leaderboard', Icons.leaderboard, LeaderboardPage()),
-      AppPages.AssignedTasks: Title('Assigned Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Assigned)),
-      AppPages.AvailableTasks: Title('Available Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Available)),
-      AppPages.CompletedTasks: Title('Completed Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Completed)),
-      AppPages.PendingTasks: Title('Pending Tasks', Icons.list,
-          TaskSelectedList(type: TasklistType.Pending)),
-      AppPages.ChangeFamily:
-          Title('Families', Icons.people, ChooseFamilyPage()),
-      AppPages.none: Title('Logout', Icons.logout, Login(), false, _logout),
-      AppPages.login: Title('Logout', Icons.logout, Login(), false),
-      AppPages.register: Title('Logout', Icons.logout, Register(), false),
+  Map<AppPages, DrawerItem> _titles = {};
+
+  void _logout() {
+    _appState.logout();
+    _appState.switchPage(AppPages.login);
+  }
+
+  void getAuthToken() async {
+    jwt = await _appState.storage.read(key: 'auth_token').toString();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titles = {
+      AppPages.home: DrawerItem(
+        title: 'Home',
+        icon: Icons.home,
+        page: Home(),
+      ),
+      AppPages.userProfile: DrawerItem(
+        title: 'Profile',
+        icon: Icons.person,
+        page: UserProfilePage(),
+      ),
+      AppPages.leaderboard: DrawerItem(
+        title: 'Leaderboard',
+        icon: Icons.leaderboard,
+        page: LeaderboardPage(),
+      ),
+      AppPages.assignedTasks: DrawerItem(
+        title: 'Assigned Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Assigned),
+      ),
+      AppPages.availableTasks: DrawerItem(
+        title: 'Available Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Available),
+      ),
+      AppPages.completedTasks: DrawerItem(
+        title: 'Completed Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Completed),
+      ),
+      AppPages.pendingTasks: DrawerItem(
+        title: 'Pending Tasks',
+        icon: Icons.list,
+        page: TaskSelectedList(type: TasklistType.Pending),
+      ),
+      AppPages.changeFamily: DrawerItem(
+        title: 'Families',
+        icon: Icons.people,
+        page: ChooseFamilyPage(),
+      ),
+      AppPages.none: DrawerItem(
+        title: 'Logout',
+        icon: Icons.logout,
+        action: _logout,
+        show: false,
+      ),
+      AppPages.login: DrawerItem(
+        title: 'Login',
+        icon: Icons.logout,
+        page: Login(),
+        show: false,
+      ),
+      AppPages.register: DrawerItem(
+        title: 'Register',
+        icon: Icons.logout,
+        page: Register(),
+        show: false,
+      ),
     };
   }
 
-  void _logout() {
-    appState.logout();
-    appState.switchPage(AppPages.login);
-  }
-
-  Color? _getSelectedColor(AppPages index) {
-    return appState.page == index ? Colors.blue : null;
-  }
-
-  void _togglePanel() {
+  void _toggleProfileMenu() {
     setState(() {
-      _isPanelVisible = !_isPanelVisible;
+      _isProfileMenuVisible = !_isProfileMenuVisible;
     });
   }
 
-  void _closePanel() {
+  void _closeProfileMenu() {
     setState(() {
-      _isPanelVisible = false;
+      _isProfileMenuVisible = false;
     });
-  }
-
-  void _onItemTapped(AppPages appPage) {
-    setState(() {
-      appState.taskList.clear();
-      appState.switchPage(appPage);
-    });
-    // Close the drawer after selecting an item
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    appState = context.watch<RootAppState>();
-    Map<AppPages, Title> titles = _getTitles();
+    _appState = context.watch<RootAppState>();
+    bool isLoggedIn = _appState.isLoggedInSync();
+    getAuthToken();
 
-    if (!appState.isLoggedInSync()) {
+    if (!isLoggedIn) {
       return Scaffold(
-        body: Center(child: titles[appState.page]?.page),
+        body: Center(child: _titles[_appState.page]?.page),
       );
     }
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: CustomColorScheme.secondary,
-        title: appState.user?.isParent ?? false
-            ? null
-            : Card(
-                color: Colors.green,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(appState.points.toString() + 'p'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.family_restroom),
-            onPressed: () {
-              _togglePanel();
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Icon(Icons.account_circle, size: 80.0, color: Colors.white),
-                  SizedBox(height: 16.0),
-                  Text(
-                    appState.user?.name.toString() ?? 'No user logged in',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.0,
-                    ),
-                  ),
-                ],
-              ),
+      appBar: !isLoggedIn && jwt != null
+          ? null
+          : NavAppBar(
+              appState: _appState,
+              toggleProfileMenu: _toggleProfileMenu,
+              page_title: _titles[_appState.page]?.title,
+              jwt: jwt,
             ),
-            for (var title in titles.entries)
-              if (title.value.show)
-                ListTile(
-                    leading: Icon(title.value.icon,
-                        color: _getSelectedColor(title.key)),
-                    title: Text(
-                      title.value.title,
-                      style: TextStyle(color: _getSelectedColor(title.key)),
-                    ),
-                    onTap: () => {
-                          if (title.value.action == null)
-                            {_onItemTapped(title.key)}
-                          else
-                            {
-                              title.value.action?.call(),
-                            }
-                        }),
-          ],
-        ),
+      drawer: NavDrawer(
+        titles: _titles,
       ),
       body: Stack(children: [
         Center(
-          child: titles[appState.page]?.page,
+          child: _titles[_appState.page]?.page,
         ),
-        if (appState.user?.isParent ?? false) QuickAction(),
-        if (_isPanelVisible)
+        if (_appState.user?.isParent ?? false) QuickAction(),
+        if (_isProfileMenuVisible)
           GestureDetector(
-            onTap: _closePanel,
+            onTap: _closeProfileMenu,
             child: Container(
               color: Colors.transparent,
             ),
           ),
         AnimatedPositioned(
           duration: Duration(milliseconds: 300),
-          top: _isPanelVisible ? kToolbarHeight - 50 : kToolbarHeight - 250,
+          top: _isProfileMenuVisible
+              ? kToolbarHeight - 50
+              : kToolbarHeight - 250,
           right: 16,
           child: GestureDetector(
             onTap: () {}, // Prevents the panel from closing when tapped inside
@@ -213,20 +195,20 @@ class _NavigationComponentState extends State<NavigationComponent> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                titles[AppPages.none]?.title ?? '',
+                                _titles[AppPages.none]?.title ?? '',
                                 style: TextStyle(fontSize: 17.5),
                               ),
                               SizedBox(
                                 width: 5,
                               ),
-                              Icon(titles[AppPages.none]?.icon),
+                              Icon(_titles[AppPages.none]?.icon),
                             ],
                           ),
                           onPressed: () => {
-                                _closePanel(),
-                                if (titles[AppPages.none]?.action != null)
+                                _closeProfileMenu(),
+                                if (_titles[AppPages.none]?.action != null)
                                   {
-                                    titles[AppPages.none]?.action?.call(),
+                                    _titles[AppPages.none]?.action?.call(),
                                   }
                               }),
                     ),
@@ -245,14 +227,4 @@ class _NavigationComponentState extends State<NavigationComponent> {
       ]),
     );
   }
-}
-
-class Title {
-  String title;
-  IconData icon;
-  bool show = true;
-  StatefulWidget page;
-  VoidCallback? action;
-
-  Title(this.title, this.icon, this.page, [this.show = true, this.action]);
 }
