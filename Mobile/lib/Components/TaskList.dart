@@ -50,7 +50,7 @@ class _TasklistState extends State<Tasklist> {
   }
 
   Future<Map<String, dynamic>> _contactServer() async {
-    int familyId = 1;
+    int familyId = appState.family!.id;
     return switch (widget.listType) {
       TasklistType.All => await appState.getTasks('/all/$familyId'),
       TasklistType.Available => await appState.getTasks('/available/$familyId'),
