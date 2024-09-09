@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/UserProfileCard.dart';
-import 'package:mobile/models/UserProfile.dart';
-import 'package:mobile/Components/GradiantMesh.dart';
-import 'package:mobile/models/user.dart';
+import 'package:mobile/Components/FamilyCard.dart';
+import 'package:mobile/models/family.dart';
 import 'package:provider/provider.dart';
+import '../Components/FamilyCreation.dart';
 import '../services/app_state.dart';
-import '../services/api.dart';
 
-class LeaderboardPage extends StatefulWidget {
-  const LeaderboardPage({super.key});
+class ChooseFamilyPage extends StatefulWidget {
+  const ChooseFamilyPage({super.key});
 
   @override
-  State<LeaderboardPage> createState() => _LeaderboardPageState();
+  State<ChooseFamilyPage> createState() => _ChooseFamilyPageState();
 }
 
-class _LeaderboardPageState extends State<LeaderboardPage> {
+class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
   late RootAppState _appState;
-  List<UserProfile> users = [];
+  List<Family> families = [];
 
   @override
   void initState() {
     super.initState();
     _appState = Provider.of<RootAppState>(context, listen: false);
-    _getUsers();
+    _getFamilies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
-    // Access the user from the AppState
-    final user = Provider.of<RootAppState>(context).user;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Leaderboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => openCreateFamily(context),
+          ),
+        ],
+        title: Text('Families'),
         backgroundColor: _theme.colorScheme.primaryContainer,
       ),
       backgroundColor: _theme.colorScheme.primaryContainer,
@@ -46,7 +46,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               margin: EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  MeshGradientBackground(),
                   Padding(
                     padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
                     child: Container(
@@ -59,7 +58,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Leaderboard', //maybe type the family name here
+                            'Your families',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -81,15 +80,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           alignment: Alignment.topCenter,
                           child: FractionallySizedBox(
                             widthFactor: 1,
-                            child: Column(
-                              children: [
-                                for (UserProfile userProfile in users)
-                                  Userprofilecard(
-                                    name: userProfile.name,
-                                    points: userProfile.total_points,
-                                    page: 'leaderboard',
-                                  ),
-                              ],
+                            child: ListView.builder(
+                              itemCount: families.length,
+                              itemBuilder: (context, index) {
+                                return Familycard(
+                                  family: families[index],
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -105,20 +102,19 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     );
   }
 
-  Future<void> _getUsers() async {
-    Map<String, dynamic> response =
-        await _appState.getLeaderboard(_appState.family!.id);
+  Future<void> _getFamilies() async {
+    Map<String, dynamic> response = await _appState.GetFamilies();
     if (response['statusCode'] == 200) {
       setState(() {
-        users.clear();
-        users.addAll(response['users']);
+        families.clear();
+        families.addAll(response['family']);
       });
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Something went wrong'),
-          content: Text(response['Error']['message']),
+          content: Text(response['error']['message']),
           actions: [
             TextButton(
               onPressed: () {
@@ -130,5 +126,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         ),
       );
     }
+  }
+
+  static void openCreateFamily(BuildContext context) {
+    showDialog(context: context, builder: (context) => Familycreation());
   }
 }

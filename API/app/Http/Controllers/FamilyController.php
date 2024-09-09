@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Family;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\FamilyResource;
 
 class FamilyController extends Controller
 {
@@ -22,9 +24,15 @@ class FamilyController extends Controller
         return $family;
     }
 
-    public function getUserFamilies(User $user)
+    public function getUserFamilies()
     {
-        return $user->families()->get();
+        $user = auth()->user();
+        $family = DB::table('user_family')
+            ->where('user_id', $user->id)
+            ->Join('families', 'families.id', '=', 'user_family.family_id')
+            ->get()->mapInto(FamilyResource::class);
+
+        return response()->json($family->toArray());
     }
 
     public function getLeaderboard(Family $family)
@@ -46,9 +54,16 @@ class FamilyController extends Controller
             'owner_id' => $user->id,
         ]);
 
-        $family->users()->attach($user);
+        DB::table('user_family')->insert([
+            'user_id' => $user->id,
+            'family_id' => $family->id,
+            'points' => 0,
+            'total_points' => 0,
+            'completed_tasks' => 0,
+        ]);
 
-        return response()->json($family->toArray(), 201);
+        $family->family_id = $family->id; //othervise the family_id will be returned as null
+        return new FamilyResource($family);
     }
 
     public function editFamily(Request $request, Family $family)

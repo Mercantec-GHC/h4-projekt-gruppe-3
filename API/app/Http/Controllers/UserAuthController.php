@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Family;
 
 class UserAuthController extends Controller
 {
@@ -33,6 +34,13 @@ class UserAuthController extends Controller
         $user = User::create(Arr::except($data, 'photo'));
 
         $token = $user->createToken('API Token')->accessToken;
+
+        $family = Family::create([
+            'name' => $user->name . " family",
+            'created_by' => $user->name,
+            'owner_id' => $user->id,
+        ]);
+        $user->families()->attach($family, ['points' => 0, 'total_points' => 0, 'completed_tasks' => 0]);
 
         return response()->json(['user' => $user, 'token' => $token], 201);
     }
