@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
               children: [
                 // Logo
                 Image.file(
-                  File('lib\\Assets\\Logo.png'),
+                  File('assets\\Logo.png'),
                   height: 150,
                   fit: BoxFit.cover,
                 ),

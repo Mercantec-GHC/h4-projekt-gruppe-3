@@ -42,7 +42,7 @@ class _RegisterState extends State<Register> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.file(
-                  File('lib\\Assets\\Logo.png'),
+                  File('assets\\Logo.png'),
                   height: 150,
                   fit: BoxFit.cover,
                 ),
