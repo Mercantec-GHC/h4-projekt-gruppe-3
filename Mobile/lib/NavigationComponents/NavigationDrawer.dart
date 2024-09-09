@@ -4,8 +4,7 @@ import 'package:mobile/NavigationComponents/DrawerItem.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/services/app_state.dart';
-
-import '../config/general_config.dart';
+import 'package:mobile/config/general_config.dart';
 
 class NavDrawer extends StatefulWidget {
   final Map<AppPages, DrawerItem> titles;
