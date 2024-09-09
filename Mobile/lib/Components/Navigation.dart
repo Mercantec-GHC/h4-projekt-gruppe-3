@@ -42,7 +42,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
           TaskSelectedList(type: TasklistType.Pending)),
       AppPages.ChangeFamily:
           Title('Families', Icons.people, ChooseFamilyPage()),
-      AppPages.none: Title('Logout', Icons.logout, Login(), true, _logout),
+      AppPages.none: Title('Logout', Icons.logout, Login(), false, _logout),
       AppPages.login: Title('Logout', Icons.logout, Login(), false),
       AppPages.register: Title('Logout', Icons.logout, Register(), false),
     };
