@@ -19,7 +19,7 @@ class RequestLogger
         Log::info('Request logged', [
             'url' => $request->url(),
             'method' => $request->method(),
-            'data' => $request->all()
+            'data' => $request->all(),
         ]);
         return $next($request);
     }
