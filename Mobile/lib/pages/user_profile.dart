@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
+import 'package:mobile/Components/GradiantMesh.dart'; // Import for MeshGradientBackground
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -13,72 +14,75 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final appState = context.watch<RootAppState>();
     final _theme = Theme.of(context);
 
     // Access the user from the AppState
     final user = Provider.of<RootAppState>(context).user;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        backgroundColor: _theme.colorScheme.primaryContainer,
-      ),
-      backgroundColor: _theme.colorScheme.primaryContainer,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: Card(
-              elevation: 4,
-              margin: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8, left: 8),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _theme.colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          // Full-screen gradient background
+          Positioned.fill(
+            child:
+                MeshGradientBackground(), // Use the custom MeshGradientBackground
+          ),
+          // Main content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Profile Card with gradient background
+                Expanded(
+                  child: Container(
+                    child: Card(
+                      elevation: 0,
+                      margin: EdgeInsets.zero,
+                      color: Colors.transparent,
+                      child: Column(
                         children: [
-                          Text(
-                            'Profile Cards',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, right: 8, left: 8),
+                            child: Container(
+                              padding: EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Profile Cards',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: Userprofilecard(
+                                    userId: user!.id,
+                                    email: user.email,
+                                    name: user.name,
+                                    page: 'user_profile',
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: FractionallySizedBox(
-                            widthFactor: 1,
-                            child: Userprofilecard(
-                                userId: user!.id,
-                                email: user.email,
-                                name: user.name,
-                                page: 'user_profile'),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
