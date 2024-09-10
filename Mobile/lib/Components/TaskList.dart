@@ -56,7 +56,7 @@ class _TasklistState extends State<Tasklist> {
       TasklistType.Available => await appState.getTasks('/available/$familyId'),
       TasklistType.Assigned => await appState.getTasks('/assigned/$familyId'),
       TasklistType.Completed => await appState.getTasks('/completed/$familyId'),
-      TasklistType.Pending => await appState.getTasks('/all/$familyId'),
+      TasklistType.Pending => await appState.getTasks('/pending/$familyId'),
     };
   }
 
