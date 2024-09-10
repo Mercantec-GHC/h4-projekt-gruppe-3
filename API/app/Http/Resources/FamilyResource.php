@@ -17,6 +17,7 @@ class FamilyResource extends JsonResource
         return [
             'family_id' => $this->family_id,
             'name' => $this->name,
+            'owner_id' => $this->owner_id
         ];
     }
 }
