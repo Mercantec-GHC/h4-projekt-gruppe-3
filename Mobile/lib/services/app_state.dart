@@ -302,7 +302,7 @@ class RootAppState extends ChangeNotifier {
           new User(
             user['id'],
             user['name'],
-            user['Email'],
+            user['email'],
             user['is_parrent'] ?? false,
           ),
         );

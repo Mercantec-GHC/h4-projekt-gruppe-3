@@ -319,7 +319,7 @@ class Api {
     int? family_id,
   }) async {
     return await http.put(
-      Uri.parse(baseUrl + 'api/family/switchOwner/${family_id}'),
+      Uri.parse(baseUrl + '/api/family/switchOwner/${family_id}'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',

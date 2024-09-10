@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/taskCreationDialog.dart';
 
-
 class QuickAction extends StatefulWidget {
   const QuickAction({super.key});
 
@@ -26,14 +25,14 @@ class _QuickActionState extends State<QuickAction> {
       _isPanelVisible = false;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         if (_isPanelVisible)
           GestureDetector(
-            onTap: _closePanel,  // Close panel when tapping outside
+            onTap: _closePanel, // Close panel when tapping outside
             child: Container(
               color: Colors.transparent,
             ),
@@ -64,24 +63,23 @@ class _QuickActionState extends State<QuickAction> {
                   child: Column(
                     children: [
                       SizedBox(height: 5),
-                      Text('Quick Actions',
+                      Text(
+                        'Quick Actions',
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 5),
                       Container(
                         width: 200,
                         child: FloatingActionButton(
+                          heroTag: 'quickActionButton',
                           elevation: 2,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('Create task',
-                                style: TextStyle(
-                                  fontSize: 17.5
-                                ),
+                              Text(
+                                'Create task',
+                                style: TextStyle(fontSize: 17.5),
                               ),
                               Icon(Icons.add),
                             ],

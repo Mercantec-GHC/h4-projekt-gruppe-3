@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/ChangePasswordDialog.dart';
 import 'package:mobile/Components/FormInputField.dart';
 import 'package:mobile/config/app_pages.dart';
-import 'package:mobile/services/api.dart';
+import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 
 class UpdateFamilyProfilePage extends StatefulWidget {
   @override
@@ -18,12 +16,13 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
   String _name = '';
   int _owner_id = 0;
   late RootAppState _appState;
-  List<Map<String, dynamic>> _users = []; // List to store users
-  Map<String, dynamic>? _selectedUser; // Variable to store the selected user
+  List<User> _users = [];
+  User? _selectedUser; // Variable to store the selected user
 
   @override
   void initState() {
     super.initState();
+    _appState = Provider.of<RootAppState>(context, listen: false);
     _getUsers();
   }
 
@@ -36,6 +35,9 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         _users.addAll(response['users']);
         if (_users.isNotEmpty) {
           _owner_id = _appState.family!.ownerId;
+          int owner =
+              _users.indexWhere((u) => u.id == _appState.family!.ownerId);
+          _selectedUser = _users[owner];
         }
       });
     } else {
@@ -104,7 +106,6 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
   @override
   Widget build(BuildContext context) {
     _appState = context.watch<RootAppState>();
-    final currentUser = _appState.user;
 
     return Scaffold(
       appBar: AppBar(
@@ -149,7 +150,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
                     FormInputField(
                       fieldLabel: 'Name',
                       placeholder: 'Family name',
-                      initialValue: currentUser?.name,
+                      initialValue: _appState.family!.name,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Name is required and cannot be empty';
@@ -163,18 +164,18 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
                     SizedBox(height: 20),
 
                     // Dropdown to select the new owner
-                    DropdownButtonFormField<Map<String, dynamic>>(
+                    DropdownButtonFormField<User>(
                       value: _selectedUser,
                       items: _users
                           .map((user) => DropdownMenuItem(
                                 value: user,
-                                child: Text(user['name']),
+                                child: Text(user.name),
                               ))
                           .toList(),
                       onChanged: (value) {
                         setState(() {
                           _selectedUser = value;
-                          _owner_id = value!['id'];
+                          _owner_id = value!.id;
                         });
                       },
                       decoration: InputDecoration(
