@@ -26,8 +26,7 @@ class UserController extends Controller
         $users = DB::table('user_family')
             ->where('family_id', $family->id)
             ->Join('users', 'user_family.user_id', '=', 'users.id')
-            ->get()
-            ->mapInto(UserResource::class);
+            ->get();
 
         return response()->json($users->toArray());
     }
