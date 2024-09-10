@@ -40,8 +40,7 @@ class UserController extends Controller
             ->join('users', 'user_family.user_id', '=', 'users.id')
             ->where('family_id', $family->id)
             ->where('user_id', '=', $user->id)
-            ->get()
-            ->mapInto(UserResource::class);
+            ->first();
 
         return response()->json($userPoints);
     }
