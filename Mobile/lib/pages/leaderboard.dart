@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ChildCreationDialog.dart';
-import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:mobile/models/UserProfile.dart';

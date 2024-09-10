@@ -112,7 +112,7 @@ class _TasklistState extends State<Tasklist> {
               decoration: BoxDecoration(
                 color: widget.isTransparent
                     ? Colors.transparent
-                    : const Color.fromRGBO(245, 197, 58, 1),
+                    : CustomColorScheme.secondary,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0),
@@ -138,7 +138,7 @@ class _TasklistState extends State<Tasklist> {
                 decoration: BoxDecoration(
                   color: widget.isTransparent
                       ? Colors.transparent
-                      : const Color.fromRGBO(217, 217, 217, 1),
+                      : CustomColorScheme.menu,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
