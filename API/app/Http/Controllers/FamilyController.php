@@ -87,6 +87,7 @@ class FamilyController extends Controller
 
         $this->checkFamilyOwner($family->owner_id);
         $family->owner_id = $data['user_id'];
+        $family->save();
         return response()->json(['message' => 'Owner changed'], 200);
     }
 
