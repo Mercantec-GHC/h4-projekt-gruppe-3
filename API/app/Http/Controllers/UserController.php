@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\Family;
 use App\Models\Media;
@@ -26,7 +27,8 @@ class UserController extends Controller
         $users = DB::table('user_family')
             ->where('family_id', $family->id)
             ->Join('users', 'user_family.user_id', '=', 'users.id')
-            ->get();
+            ->get()
+            ->mapInto(UserProfileResource::class);
 
         return response()->json($users->toArray());
     }
@@ -39,7 +41,8 @@ class UserController extends Controller
             ->join('users', 'user_family.user_id', '=', 'users.id')
             ->where('family_id', $family->id)
             ->where('user_id', '=', $user->id)
-            ->first();
+            ->first()
+            ->mapInto(UserProfileResource::class);
 
         return response()->json($userPoints);
     }
