@@ -157,8 +157,11 @@ class RootAppState extends ChangeNotifier {
     if (response.statusCode == 200) {
       List<Family> newFamilies = [];
       for (var returnedFamily in jsonData) {
-        newFamilies.add(new Family(returnedFamily['family_id'],
-            returnedFamily['name'], returnedFamily['owner_id']));
+        newFamilies.add(new Family(
+          returnedFamily['family_id'],
+          returnedFamily['name'],
+          returnedFamily['owner_id'],
+        ));
       }
       if (family == null) {
         family = newFamilies[0];
