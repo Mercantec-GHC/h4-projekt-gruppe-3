@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
+import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
@@ -23,10 +24,6 @@ class _TaskCreationState extends State<TaskCreation> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _endDatetimestampController =
       TextEditingController();
-  final List<AppPages> pagesNeedsToBeNotifyListenered = [
-    AppPages.availableTasks,
-    AppPages.home,
-  ];
 
   // Data storage.
   String title = '';
@@ -45,9 +42,7 @@ class _TaskCreationState extends State<TaskCreation> {
           endDate, recurring, recurringInterval, singleCompletion);
       int response = await _appState.createTask(task);
       if (response == 201) {
-        if (pagesNeedsToBeNotifyListenered.contains(_appState.page)) {
-          _appState.AddTask(task);
-        }
+        _appState.AddTask(task, TasklistType.Available);
         Navigator.of(context).pop();
       } else {
         CustomPopup.openErrorPopup(context);

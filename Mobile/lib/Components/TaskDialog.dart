@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
+import 'package:mobile/Components/TaskCompletionDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
@@ -72,6 +73,11 @@ class _TaskdialogState extends State<Taskdialog> {
           },
           child: OutlinedText(text: 'Close'),
         ),
+        if (appState.user?.isParent == false)
+          TextButton(
+            onPressed: _openCompleteTaskDialog,
+            child: OutlinedText(text: 'Complete'),
+          ),
         if (appState.user?.isParent ?? false)
           TextButton(
             onPressed: () => _editTask(context),
@@ -156,5 +162,15 @@ class _TaskdialogState extends State<Taskdialog> {
 
       Navigator.of(context).pop();
     }
+  }
+
+  void _openCompleteTaskDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => TaskCompletionDialog(task: widget.task),
+    );
+
+    //close the task dialog after the completion dialog is closed
+    Navigator.of(context).pop();
   }
 }

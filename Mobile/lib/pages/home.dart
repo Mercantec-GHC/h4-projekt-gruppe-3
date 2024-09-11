@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/GradiantMesh.dart';
+import 'package:mobile/services/app_state.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,13 +12,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  late RootAppState _appState;
 
   @override
   Widget build(BuildContext context) {
+    _appState = context.watch<RootAppState>();
     return Scaffold(
       body: Stack(
         children: [
@@ -32,8 +32,13 @@ class _HomeState extends State<Home> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        if (_appState.user?.isParent ?? false)
+                          Tasklist(
+                            listType: TasklistType.Pending,
+                            isTransparent: false,
+                          ),
                         Tasklist(
-                          listType: TasklistType.All,
+                          listType: TasklistType.Available,
                           isTransparent: false,
                         ),
                       ],
