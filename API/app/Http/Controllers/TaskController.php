@@ -79,13 +79,22 @@ class TaskController extends Controller
     public function getCompletedTasks(Family $family)
     {
         $user = auth()->user();
-
-        $tasks = DB::table('tasks')
-            ->where('family_id', $family->id)
-            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
-            ->where('user_task.user_id', '=', $user->id)
-            ->Where('user_task.state', 'done')
-            ->get()->mapInto(TaskResource::class);
+        if ($user->is_parent) {
+            $tasks = DB::table('tasks')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->Where('user_task.state', 'done')
+                ->get()
+                ->mapInto(TaskResource::class);
+        } else {
+            $tasks = DB::table('tasks')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.user_id', '=', $user->id)
+                ->Where('user_task.state', 'done')
+                ->get()
+                ->mapInto(TaskResource::class);
+        }
 
         return response()->json($tasks->toArray());
     }
@@ -93,13 +102,22 @@ class TaskController extends Controller
     public function getPendingTasks(Family $family)
     {
         $user = auth()->user();
-
-        $tasks = DB::table('tasks')
-            ->where('family_id', $family->id)
-            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
-            ->where('user_task.user_id', '=', $user->id)
-            ->where('user_task.state', 'pending')
-            ->get()->mapInto(TaskResource::class);
+        if ($user->is_parent) {
+            $tasks = DB::table('tasks')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.state', 'pending')
+                ->get()
+                ->mapInto(TaskResource::class);
+        } else {
+            $tasks = DB::table('tasks')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.user_id', '=', $user->id)
+                ->where('user_task.state', 'pending')
+                ->get()
+                ->mapInto(TaskResource::class);
+        }
 
         return response()->json($tasks->toArray());
     }
