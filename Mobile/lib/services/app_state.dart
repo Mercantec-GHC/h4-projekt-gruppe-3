@@ -160,9 +160,12 @@ class RootAppState extends ChangeNotifier {
         newFamilies.add(new Family(
           returnedFamily['family_id'],
           returnedFamily['name'],
+          returnedFamily['owner_id'],
         ));
       }
-      family = newFamilies[0];
+      if (family == null) {
+        family = newFamilies[0];
+      }
       notifyListeners();
       return {'statusCode': response.statusCode, 'family': newFamilies};
     } else {
@@ -175,7 +178,11 @@ class RootAppState extends ChangeNotifier {
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
-      family = new Family(jsonData['id'], jsonData['name']);
+      family = new Family(
+        jsonData['id'],
+        jsonData['name'],
+        jsonData['owner_id'],
+      );
       notifyListeners();
       return {'statusCode': response.statusCode, 'body': family};
     } else {
@@ -266,7 +273,7 @@ class RootAppState extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> getLeaderboard(int familyId) async {
-    final response = await api.getLeaderboard(familyId, this);
+    final response = await api.getUserProfiles(familyId, this);
 
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -301,12 +308,92 @@ class RootAppState extends ChangeNotifier {
         return {'statusCode': response.statusCode, 'tasks': newUsers};
       }
       for (var user in jsonData) {
-        newUsers.add(new User(user['id'], user['name'], user['email'],
-            _getBool(user['is_parent'])));
+        newUsers.add(new User(
+            user['id'],
+            user['name'],
+            user['email'],
+            _getBool(
+              user['is_parent'],
+            )));
       }
       return {'statusCode': response.statusCode, 'tasks': newUsers};
     } else {
       return {'statusCode': response.statusCode, 'Error': jsonData['message']};
     }
+  }
+
+  Future<Map<String, dynamic>> getUsers(int familyId) async {
+    final response = await api.getUserProfiles(familyId, this);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<User> newUsers = [];
+      for (var user in jsonData) {
+        newUsers.add(
+          new User(
+            user['id'],
+            user['name'],
+            user['email'],
+            user['is_parrent'] ?? false,
+          ),
+        );
+      }
+
+      return {'statusCode': response.statusCode, 'users': newUsers};
+    } else {
+      return {'statusCode': response.statusCode, 'Error': jsonData};
+    }
+  }
+
+  Future<Map<String, dynamic>> switchFamilyOwner({
+    required String auth_token,
+    int? owner_id,
+  }) async {
+    if (owner_id != null) {
+      family?.ownerId = owner_id;
+    }
+    var response = await api.switchFamiyOwner(
+      auth_token: auth_token,
+      new_owner_id: owner_id,
+      family_id: this.family?.id,
+    );
+    notifyListeners();
+
+    if (response.statusCode == 200) {
+      return {
+        'statusCode': response.statusCode,
+      };
+    }
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
+  }
+
+  Future<Map<String, dynamic>> updateFamilyName({
+    required String auth_token,
+    String? name,
+  }) async {
+    if (name != null) {
+      family?.name = name;
+    }
+    var response = await api.updateFamilyName(
+      auth_token: auth_token,
+      name: name,
+      family_id: this.family?.id,
+    );
+    notifyListeners();
+
+    if (response.statusCode == 200) {
+      return {
+        'statusCode': response.statusCode,
+      };
+    }
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
   }
 }

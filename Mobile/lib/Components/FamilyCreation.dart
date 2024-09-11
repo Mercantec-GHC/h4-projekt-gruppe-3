@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
+import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class _FamilycreationState extends State<Familycreation> {
   void _createFamily() async {
     if (_formKey.currentState!.validate()) {
       name = _nameController.text;
-      Family family = Family(0, name);
+      Family family = Family(0, name, _appState.user!.id);
       var response = await api.createFamily(family, _appState);
       if (response.statusCode == 201) {
         Navigator.of(context).pop();

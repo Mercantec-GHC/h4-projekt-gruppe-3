@@ -306,7 +306,7 @@ class Api {
     return await http.Response.fromStream(response);
   }
 
-  Future<http.Response> getLeaderboard(
+  Future<http.Response> getUserProfiles(
       int familyId, RootAppState appState) async {
     final jwt = await appState.storage.read(key: 'auth_token');
     return await http.get(
@@ -316,6 +316,42 @@ class Api {
         'Accept': 'application/json',
         'Authorization': 'Bearer ' + jwt.toString(),
       },
+    );
+  }
+
+  Future<http.Response> updateFamilyName({
+    required String auth_token,
+    String? name,
+    int? family_id,
+  }) async {
+    return await http.put(
+      Uri.parse(baseUrl + '/api/family/edit/${family_id}'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+      body: json.encode({
+        'family_name': name,
+      }),
+    );
+  }
+
+  Future<http.Response> switchFamiyOwner({
+    required String auth_token,
+    int? new_owner_id,
+    int? family_id,
+  }) async {
+    return await http.put(
+      Uri.parse(baseUrl + '/api/family/switchOwner/${family_id}'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+      body: json.encode({
+        'user_id': new_owner_id,
+      }),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:mobile/models/family.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/pages/update_family_profile.dart';
 
 class Familycard extends StatelessWidget {
   const Familycard({
@@ -15,6 +16,7 @@ class Familycard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<RootAppState>();
+
     return GestureDetector(
       onTap: () {
         _chooseFamily(appState, context);
@@ -44,6 +46,20 @@ class Familycard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
+                      // Conditionally display the button if the user is the owner
+                      if (appState.user!.id == family.ownerId)
+                        ElevatedButton(
+                          onPressed: () async {
+                            await _chooseFamily(appState, context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UpdateFamilyProfilePage(),
+                              ),
+                            );
+                          },
+                          child: Text('Edit Family'),
+                        ),
                     ],
                   ),
                 ),
