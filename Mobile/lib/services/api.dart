@@ -15,7 +15,7 @@ class Api {
       Uri.parse(baseUrl + '/api/register'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
       },
       body: json.encode({
         'name': name,
@@ -24,6 +24,31 @@ class Api {
         'email': email,
         'password': password,
         'password_confirmation': password_confirmation,
+      }),
+    );
+  }
+
+  Future<http.Response> CreateChildUser(
+      String name,
+      String username,
+      String password,
+      String password_confirmation,
+      int parentId,
+      String? jwt) async {
+    return await http.post(
+      Uri.parse(baseUrl + '/api/register'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + jwt.toString(),
+      },
+      body: json.encode({
+        'name': name,
+        'is_parent': false,
+        'username': username,
+        'password': password,
+        'password_confirmation': password_confirmation,
+        'parentId': parentId,
       }),
     );
   }
