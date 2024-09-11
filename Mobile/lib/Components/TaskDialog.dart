@@ -4,10 +4,12 @@ import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
 import 'package:mobile/Components/TaskCompletionDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
+import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class Taskdialog extends StatefulWidget {
   const Taskdialog({
@@ -110,9 +112,12 @@ class _TaskdialogState extends State<Taskdialog> {
             OutlinedText(text: widget.task.description),
             SizedBox(height: 20),
             OutlinedText(
-                text: "Starting date: " + widget.task.startDate.toString()),
+                text: "Starting date: " +
+                    DateFormat(timeFormat).format(widget.task.startDate)),
             SizedBox(height: 20),
-            OutlinedText(text: "End date: " + widget.task.endDate.toString()),
+            OutlinedText(
+                text: "End date: " +
+                    DateFormat(timeFormat).format(widget.task.endDate)),
             SizedBox(height: 20),
             OutlinedText(
                 text: "Recurring: " + (widget.task.recurring ? "Yes" : "No")),
