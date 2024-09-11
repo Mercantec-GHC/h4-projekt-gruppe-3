@@ -2,17 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
-
-enum TasklistType {
-  All,
-  Available,
-  Assigned,
-  Completed,
-  Pending,
-}
 
 class Tasklist extends StatefulWidget {
   final TasklistType listType;
@@ -146,6 +139,7 @@ class _TasklistState extends State<Tasklist> {
                             task: task,
                             onUpdateTask: updateTask,
                             onDeleteTask: _deleteTask,
+                            currentListType: widget.listType,
                           ),
                       if (appState.taskList.isEmpty)
                         const Padding(
