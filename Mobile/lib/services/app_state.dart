@@ -33,15 +33,12 @@ class RootAppState extends ChangeNotifier {
   }
 
   void addListOfTasks(List<Task> newTasks, TasklistType type) {
-    print('tasklist');
-    print(taskList);
     if (taskList.containsKey(type)) {
       taskList[type]!.clear();
       taskList[type]!.addAll(newTasks);
     } else {
       taskList[type] = newTasks;
     }
-    print(taskList);
     notifyListeners();
   }
 
@@ -203,7 +200,7 @@ class RootAppState extends ChangeNotifier {
     final response = await api.GetUserPoints(user?.id ?? 0, familyId, this);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
-      points = jsonData[0][
+      points = jsonData[
           'points']; // you get the whole user?? and more users the more families you have
       notifyListeners();
     }
