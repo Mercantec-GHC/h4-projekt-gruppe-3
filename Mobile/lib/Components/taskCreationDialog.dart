@@ -3,9 +3,11 @@ import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class TaskCreation extends StatefulWidget {
   const TaskCreation({
@@ -54,7 +56,8 @@ class _TaskCreationState extends State<TaskCreation> {
     if (newDateTime != null) {
       setState(() {
         endDate = newDateTime;
-        _endDatetimestampController.text = newDateTime.toString();
+        _endDatetimestampController.text =
+            DateFormat(timeFormat).format(newDateTime);
       });
     }
   }
