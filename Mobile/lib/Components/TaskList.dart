@@ -49,7 +49,7 @@ class _TasklistState extends State<Tasklist> {
     _getTasks();
   }
 
-  Future<Map<String, dynamic>> _getTasksServer() async {
+  Future<Map<String, dynamic>> _getTasksFromServer() async {
     int familyId = appState.family!.id;
     return switch (widget.listType) {
       TasklistType.All => await appState.getTasks('/all/$familyId'),
@@ -61,7 +61,7 @@ class _TasklistState extends State<Tasklist> {
   }
 
   void _getTasks() async {
-    Map<String, dynamic> response = await _getTasksServer();
+    Map<String, dynamic> response = await _getTasksFromServer();
     if (response['statusCode'] == 200) {
       setState(() {
         appState.taskList.clear();
