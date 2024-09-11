@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/models/task.dart';
@@ -49,49 +50,40 @@ class _TasklistState extends State<Tasklist> {
     _getTasks();
   }
 
-  Future<Map<String, dynamic>> _contactServer() async {
+  Future<Map<String, dynamic>> _getTasksFromServer() async {
     int familyId = appState.family!.id;
     return switch (widget.listType) {
       TasklistType.All => await appState.getTasks('/all/$familyId'),
       TasklistType.Available => await appState.getTasks('/available/$familyId'),
       TasklistType.Assigned => await appState.getTasks('/assigned/$familyId'),
       TasklistType.Completed => await appState.getTasks('/completed/$familyId'),
-      TasklistType.Pending => await appState.getTasks('/all/$familyId'),
+      TasklistType.Pending => await appState.getTasks('/pending/$familyId'),
     };
   }
 
-  Future<List<Task>> _readServerData() async {
-    Map<String, dynamic> response = await _contactServer();
+  void _getTasks() async {
+    Map<String, dynamic> response = await _getTasksFromServer();
     if (response['statusCode'] == 200) {
-      return response['tasks'];
+      appState.addListOfTasks(response['tasks'], widget.listType);
     } else {
       CustomPopup.openErrorPopup(context, errorText: response['Error']);
-      return [];
     }
-  }
-
-  void _getTasks() async {
-    List<Task> newTasks = await _readServerData();
-    setState(() {
-      if (newTasks.isNotEmpty) {
-        appState.taskList.clear();
-        appState.taskList.addAll(newTasks);
-      }
-    });
   }
 
   void updateTask(Task updatedTask) {
     setState(() {
-      int index = appState.taskList.indexWhere((t) => t.id == updatedTask.id);
-      if (index != -1) {
-        appState.taskList[index] = updatedTask;
+      int? index = appState.taskList[widget.listType]
+          ?.indexWhere((t) => t.id == updatedTask.id);
+      if (index != -1 && index != null) {
+        appState.taskList[widget.listType]?[index] = updatedTask;
       }
     });
   }
 
   void _deleteTask(Task taskToDelete) {
     setState(() {
-      appState.taskList.removeWhere((t) => t.id == taskToDelete.id);
+      appState.taskList[widget.listType]
+          ?.removeWhere((t) => t.id == taskToDelete.id);
     });
   }
 
@@ -111,7 +103,7 @@ class _TasklistState extends State<Tasklist> {
               decoration: BoxDecoration(
                 color: widget.isTransparent
                     ? Colors.transparent
-                    : const Color.fromRGBO(245, 197, 58, 1),
+                    : CustomColorScheme.secondary,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   topRight: Radius.circular(10.0),
@@ -137,7 +129,7 @@ class _TasklistState extends State<Tasklist> {
                 decoration: BoxDecoration(
                   color: widget.isTransparent
                       ? Colors.transparent
-                      : const Color.fromRGBO(217, 217, 217, 1),
+                      : CustomColorScheme.menu,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),
@@ -148,7 +140,8 @@ class _TasklistState extends State<Tasklist> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (appState.taskList.isNotEmpty)
-                        for (Task task in appState.taskList)
+                        for (Task task
+                            in appState.taskList[widget.listType] ?? [])
                           TaskCard(
                             task: task,
                             onUpdateTask: updateTask,

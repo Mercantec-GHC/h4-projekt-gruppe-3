@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
@@ -13,7 +14,7 @@ class RootAppState extends ChangeNotifier {
   User? user;
   Family? family;
   int points = 0;
-  List<Task> taskList = [];
+  Map<TasklistType, List<Task>> taskList = new Map<TasklistType, List<Task>>();
   Api api = new Api();
   AppPages page = AppPages.login;
 
@@ -22,8 +23,22 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void AddTask(Task task) {
-    taskList.add(task);
+  void AddTask(Task task, TasklistType type) {
+    if (taskList.containsKey(type)) {
+      taskList[type]!.add(task);
+    } else {
+      taskList[type]!.add(task);
+    }
+    notifyListeners();
+  }
+
+  void addListOfTasks(List<Task> newTasks, TasklistType type) {
+    if (taskList.containsKey(type)) {
+      taskList[type]!.clear();
+      taskList[type]!.addAll(newTasks);
+    } else {
+      taskList[type] = newTasks;
+    }
     notifyListeners();
   }
 
@@ -85,13 +100,24 @@ class RootAppState extends ChangeNotifier {
     };
   }
 
-  Future<Map<String, dynamic>> CreateUser(String name, String password,
-      String email, String password_confirmation) async {
-    final response = await api.CreateParentUser(
-        name, email, password, password_confirmation);
+  Future<Map<String, dynamic>> CreateUser(
+      String name,
+      String password,
+      String emailOrUsername,
+      String password_confirmation,
+      bool is_parent) async {
+    final response;
+    if (is_parent) {
+      response = await api.CreateParentUser(
+          name, emailOrUsername, password, password_confirmation);
+    } else {
+      final jwt = await storage.read(key: 'auth_token');
+      response = await api.CreateChildUser(name, emailOrUsername, password,
+          password_confirmation, user?.id ?? 0, jwt);
+    }
 
     var jsonData = json.decode(response.body);
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 && is_parent) {
       user = new User(
         jsonData['user']['id'],
         jsonData['user']['name'],
@@ -170,7 +196,7 @@ class RootAppState extends ChangeNotifier {
     final response = await api.GetUserPoints(user?.id ?? 0, familyId, this);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
-      points = jsonData[0][
+      points = jsonData[
           'points']; // you get the whole user?? and more users the more families you have
       notifyListeners();
     }

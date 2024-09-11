@@ -38,7 +38,7 @@ class TaskController extends Controller
         return response()->json($tasks->toArray());
     }
 
-    public function getUsersByTask(Task $task) 
+    public function getUsersByTask(Task $task)
     {
         $users = DB::table('tasks')
             ->where('tasks.id', $task->id)
@@ -69,7 +69,8 @@ class TaskController extends Controller
             ->where('family_id', $family->id)
             ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
             ->where('user_task.user_id', '=', $user->id)
-            ->Where('user_task.state', '!=', 'done')
+            ->WhereNot('user_task.state', 'done')
+            ->WhereNot('user_task.state', 'pending')
             ->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
@@ -83,7 +84,7 @@ class TaskController extends Controller
             ->where('family_id', $family->id)
             ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
             ->where('user_task.user_id', '=', $user->id)
-            ->Where('user_task.state', '!=', 'done')
+            ->Where('user_task.state', 'done')
             ->get()->mapInto(TaskResource::class);
 
         return response()->json($tasks->toArray());
@@ -91,17 +92,16 @@ class TaskController extends Controller
 
     public function getPendingTasks(Family $family)
     {
-        abort(501);
         $user = auth()->user();
 
-        if ($user->is_parent) {
-            // $users = $family->users()->where('is_parent', 0)->get();
+        $tasks = DB::table('tasks')
+            ->where('family_id', $family->id)
+            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->where('user_task.user_id', '=', $user->id)
+            ->where('user_task.state', 'pending')
+            ->get()->mapInto(TaskResource::class);
 
-            $tasks = $family->through('users')->has('tasks')->where('users.is_parent', 0)->get();
-
-            $tasks = $family->tasks()->wherePivot('state', 'pending')->get()->mapInto(TaskResource::class);
-            return response()->json($tasks->toArray());
-        }
+        return response()->json($tasks->toArray());
     }
 
     public function createTask(Request $request)
@@ -236,7 +236,7 @@ class TaskController extends Controller
                     'name' => "{$name}",
                     'file_name' => $file->getClientOriginalName(),
                     'mime_type' => $file->getClientMimeType(),
-                    'path' => "task/completion/{$name}",
+                    'path' => "app/task/completion/{$name}",
                     'disk' => config('filesystems.default'),
                     'collection' => 'tasks',
                     'size' => $file->getSize(),
@@ -250,6 +250,59 @@ class TaskController extends Controller
 
             $user->tasks()->updateExistingPivot($task->id, ['latitude' => $request->latitude, 'longitude' => $request->longitude, 'state' => 'pending', 'media_id' => $media->id]);
         }
+
+        return response()->json([], 204);
+    }
+
+    public function getTaskCompletionInfo(Request $request, Task $task)
+    {
+        $this->checkIfParent();
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $task_info = DB::table('user_task')
+            ->where('task_id', $task->id)
+            ->where('user_id', $request->user_id)
+            ->where('state', 'pending')
+            ->first();
+
+        return response()->json($task_info->toArray());
+    }
+
+    public function getTaskCompletionPhoto(Request $request, Task $task)
+    {
+        $this->checkIfParent();
+
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $media_id = DB::table('user_task')
+            ->where('task_id', $task->id)
+            ->where('user_id', $request->user_id)
+            ->where('state', 'pending')
+            ->first(['media_id']);
+
+        $completionPhoto = Media::where('id', $media_id)->first();
+
+        return response()->file(storage_path($completionPhoto->path));
+    }
+
+    public function approveTaskCompletion(Request $request, Task $task)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        $this->checkIfParent();
+
+        DB::table('user_task')
+            ->where('task_id', $task->id)
+            ->where('user_id', $request->user_id)
+            ->where('state', 'pending')
+            ->update(['state' => 'completed']);
 
         return response()->json([], 204);
     }
