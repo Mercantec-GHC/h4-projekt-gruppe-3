@@ -17,16 +17,12 @@ class TaskSelectedList extends StatefulWidget {
 class _TaskSelectedListState extends State<TaskSelectedList> {
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
-    final String title = Tasklist.getTitle(widget.type);
-
     return Scaffold(
       body: Stack(
         children: [
-          // Full-screen gradient background
           Positioned.fill(
             child:
-                MeshGradientBackground(), // Your custom MeshGradientBackground
+                MeshGradientBackground(),
           ),
           // Main content
           Column(

@@ -16,7 +16,7 @@ class CustomPopup {
       ),
     );
   }
-  
+
   static void _openRealPopup(BuildContext context, String title, String text, { TextButton? extraButton }) {
     showDialog(
       context: context,

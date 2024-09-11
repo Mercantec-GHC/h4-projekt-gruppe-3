@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ChildCreationDialog.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/Components/GradiantMesh.dart';
@@ -23,76 +25,79 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     _getUsers();
   }
 
+  void childCreation(UserProfile profile) {
+    setState(() {
+      users.add(profile);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _appState = context.watch<RootAppState>();
+    final _theme = Theme.of(context);
+
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Leaderboard'),
+        backgroundColor: _theme.colorScheme.primaryContainer,
+      ),
+      backgroundColor: _theme.colorScheme.primaryContainer,
       body: Stack(
         children: [
           Positioned.fill(
             child: MeshGradientBackground(),
           ),
-          // Main Content
           Column(
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Leaderboard',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    if (_appState.user?.isParent ?? false)
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                Childcreation(onCreation: childCreation),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      // Leaderboard Header
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 8, right: 8, left: 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (UserProfile userProfile in users)
+                          Userprofilecard(
+                            name: userProfile.name,
+                            points: userProfile.total_points,
+                            page: 'leaderboard',
                           ),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Leaderboard',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Users List
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors
-                                  .transparent, // Make the user list container transparent
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: FractionallySizedBox(
-                                widthFactor: 1,
-                                child: Column(
-                                  children: [
-                                    for (UserProfile userProfile in users)
-                                      Userprofilecard(
-                                        name: userProfile.name,
-                                        points: userProfile.total_points,
-                                        page: 'leaderboard',
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -112,21 +117,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         users.addAll(response['users']);
       });
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Something went wrong'),
-          content: Text(response['Error']['message']),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        ),
-      );
+      CustomPopup.openErrorPopup(context,
+          errorText: response['Error']['message']);
     }
   }
 }
