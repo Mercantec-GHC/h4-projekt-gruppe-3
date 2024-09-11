@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/models/task.dart';
@@ -13,7 +14,7 @@ class RootAppState extends ChangeNotifier {
   User? user;
   Family? family;
   int points = 0;
-  List<Task> taskList = [];
+  Map<TasklistType, List<Task>> taskList = new Map<TasklistType, List<Task>>();
   Api api = new Api();
   AppPages page = AppPages.login;
 
@@ -22,8 +23,25 @@ class RootAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void AddTask(Task task) {
-    taskList.add(task);
+  void AddTask(Task task, TasklistType type) {
+    if (taskList.containsKey(type)) {
+      taskList[type]!.add(task);
+    } else {
+      taskList[type]!.add(task);
+    }
+    notifyListeners();
+  }
+
+  void addListOfTasks(List<Task> newTasks, TasklistType type) {
+    print('tasklist');
+    print(taskList);
+    if (taskList.containsKey(type)) {
+      taskList[type]!.clear();
+      taskList[type]!.addAll(newTasks);
+    } else {
+      taskList[type] = newTasks;
+    }
+    print(taskList);
     notifyListeners();
   }
 
