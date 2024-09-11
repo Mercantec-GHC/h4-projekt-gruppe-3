@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/ColorScheme.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/FormInputField.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
@@ -41,21 +43,8 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         }
       });
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Something went wrong'),
-          content: Text(response['Error']['message']),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        ),
-      );
+      CustomPopup.openErrorPopup(context,
+          errorText: response['Error']['message']);
     }
   }
 
@@ -112,9 +101,9 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Family'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: CustomColorScheme.primary,
       ),
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: CustomColorScheme.primary,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

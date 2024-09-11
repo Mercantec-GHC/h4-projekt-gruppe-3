@@ -332,7 +332,6 @@ class Api {
         'Authorization': 'Bearer ' + auth_token
       },
       body: json.encode({
-        'family_id': family_id,
         'family_name': name,
       }),
     );
@@ -351,7 +350,6 @@ class Api {
         'Authorization': 'Bearer ' + auth_token
       },
       body: json.encode({
-        'family_id': family_id,
         'user_id': new_owner_id,
       }),
     );
