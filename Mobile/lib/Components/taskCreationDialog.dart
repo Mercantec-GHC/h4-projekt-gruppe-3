@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class TaskCreation extends StatefulWidget {
   const TaskCreation({
@@ -19,7 +21,8 @@ class _TaskCreationState extends State<TaskCreation> {
   // Page needs to run.
   late RootAppState _appState;
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _endDatetimestampController = TextEditingController();
+  final TextEditingController _endDatetimestampController =
+      TextEditingController();
   final List<AppPages> pagesNeedsToBeNotifyListenered = [
     AppPages.availableTasks,
     AppPages.home,
@@ -38,15 +41,15 @@ class _TaskCreationState extends State<TaskCreation> {
     if (_formKey.currentState!.validate()) {
       int reward = int.parse(this.reward);
       int recurringInterval = int.tryParse(this.recurringInterval) ?? 0;
-      Task task = new Task(0, title, description, reward, DateTime.now(), endDate, recurring, recurringInterval, singleCompletion);
+      Task task = new Task(0, title, description, reward, DateTime.now(),
+          endDate, recurring, recurringInterval, singleCompletion);
       int response = await _appState.createTask(task);
       if (response == 201) {
         if (pagesNeedsToBeNotifyListenered.contains(_appState.page)) {
           _appState.AddTask(task);
         }
         Navigator.of(context).pop();
-      }
-      else {
+      } else {
         CustomPopup.openErrorPopup(context);
       }
     }
@@ -55,10 +58,11 @@ class _TaskCreationState extends State<TaskCreation> {
   Future<void> _selectDateTime(BuildContext context) async {
     DateTime? newDateTime = await Selectdatetime.SelectDateTime(context);
 
-    if(newDateTime != null) {
+    if (newDateTime != null) {
       setState(() {
         endDate = newDateTime;
-        _endDatetimestampController.text = newDateTime.toString();
+        _endDatetimestampController.text =
+            DateFormat(timeFormat).format(newDateTime);
       });
     }
   }
@@ -88,39 +92,45 @@ class _TaskCreationState extends State<TaskCreation> {
             key: _formKey,
             child: Column(
               children: [
-                CustomTextFormField(labelText: 'Title', AddPadding: false, maxLength: 100,
+                CustomTextFormField(
+                  labelText: 'Title',
+                  AddPadding: false,
+                  maxLength: 100,
                   onChanged: (value) {
                     title = value!;
                   },
                 ),
-                CustomTextFormField(labelText: 'Description', 
-                  maxLength: 255, maxLines: 3,
-                  onChanged: (value) {
-                    description = value!;
-                  }
-                ),
-                CustomTextFormField(labelText: 'Reward', keyboardType: TextInputType.number, 
+                CustomTextFormField(
+                    labelText: 'Description',
+                    maxLength: 255,
+                    maxLines: 3,
+                    onChanged: (value) {
+                      description = value!;
+                    }),
+                CustomTextFormField(
+                  labelText: 'Reward',
+                  keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Field is required and cannot be empty';
                     }
-      
+
                     if (double.tryParse(value) == null) {
                       return 'Please enter a whole number';
                     }
-      
+
                     if (int.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
-      
+
                     return null;
                   },
                   onChanged: (value) {
                     reward = value!;
                   },
                 ),
-      
-                CustomTextFormField(labelText: 'End Date & Time', 
+                CustomTextFormField(
+                  labelText: 'End Date & Time',
                   onChanged: null,
                   controller: _endDatetimestampController,
                   onTap: () => _selectDateTime(context),
@@ -131,50 +141,51 @@ class _TaskCreationState extends State<TaskCreation> {
                     return null;
                   },
                 ),
-      
-                CustomBooleanField(value: recurring, labelText: 'Recurring', 
+                CustomBooleanField(
+                  value: recurring,
+                  labelText: 'Recurring',
                   onChanged: (bool value) {
                     setState(() {
                       recurring = value;
                     });
                   },
                 ),
-      
-                CustomTextFormField(labelText: 'Recurring Interval (days)', 
-                  enabled: recurring, 
+                CustomTextFormField(
+                  labelText: 'Recurring Interval (days)',
+                  enabled: recurring,
                   keyboardType: TextInputType.number,
                   paddingAmount: 8,
                   validator: (value) {
                     if (!recurring) {
                       return null;
                     }
-      
+
                     if (value == null || value.isEmpty) {
                       return 'Field is required and cannot be empty';
                     }
-      
+
                     if (double.tryParse(value) == null) {
                       return 'Please enter a whole number';
                     }
-      
+
                     if (int.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
-      
+
                     return null;
                   },
                   onChanged: (value) {
                     description = value!;
                   },
                 ),
-      
-                CustomBooleanField(value: singleCompletion, labelText: 'Single completion', 
-                  onChanged: (bool value) {
-                    setState(() {
-                      singleCompletion = value;
-                    });
-                  }
-                ),
+                CustomBooleanField(
+                    value: singleCompletion,
+                    labelText: 'Single completion',
+                    onChanged: (bool value) {
+                      setState(() {
+                        singleCompletion = value;
+                      });
+                    }),
               ],
             ),
           ),
@@ -257,12 +268,14 @@ class CustomTextFormField extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUnfocus,
         keyboardType: keyboardType,
         decoration: InputDecoration(labelText: labelText),
-        validator: validator != null ? validator : (value) {
-          if (value == null || value.isEmpty) {
-            return 'Field is required and cannot be empty';
-          }
-          return null;
-        },
+        validator: validator != null
+            ? validator
+            : (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Field is required and cannot be empty';
+                }
+                return null;
+              },
         onChanged: onChanged,
         onTap: onTap,
         readOnly: controller != null,

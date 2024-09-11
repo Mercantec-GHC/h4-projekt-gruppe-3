@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
+import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +21,10 @@ class TaskEdit extends StatefulWidget {
 
 class _TaskEditState extends State<TaskEdit> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _endDatetimestampController = TextEditingController();
+  final TextEditingController _endDatetimestampController =
+      TextEditingController();
   late RootAppState _appState;
-  
+
   late int id;
   late String title;
   late String description;
@@ -30,7 +33,7 @@ class _TaskEditState extends State<TaskEdit> {
   late bool recurring;
   late String recurringInterval;
   late bool singleCompletion;
-  
+
   @override
   void initState() {
     super.initState();
@@ -55,8 +58,7 @@ class _TaskEditState extends State<TaskEdit> {
     int statusCode = await _appState.deleteTask(id);
     if (statusCode == 204) {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
-    }
-    else {
+    } else {
       CustomPopup.openErrorPopup(context);
     }
   }
@@ -65,10 +67,19 @@ class _TaskEditState extends State<TaskEdit> {
     if (_formKey.currentState!.validate()) {
       int reward = int.parse(this.reward);
       int recurringInterval = int.parse(this.recurringInterval);
-      Task task = new Task(id, title, description, reward, widget.task.startDate, endDate, recurring, recurringInterval, singleCompletion);
-      
+      Task task = new Task(
+          id,
+          title,
+          description,
+          reward,
+          widget.task.startDate,
+          endDate,
+          recurring,
+          recurringInterval,
+          singleCompletion);
+
       int response = await _appState.updateTask(task);
-      if(response == 200) {
+      if (response == 200) {
         setState(() {
           // Can't override task because it is a final
           widget.task.title = title;
@@ -80,8 +91,7 @@ class _TaskEditState extends State<TaskEdit> {
           widget.task.singleCompletion = singleCompletion;
         });
         Navigator.of(context).pop({'action': 'update', 'task': widget.task});
-      }
-      else {
+      } else {
         CustomPopup.openErrorPopup(context);
       }
     }
@@ -90,10 +100,11 @@ class _TaskEditState extends State<TaskEdit> {
   Future<void> _selectDateTime() async {
     DateTime? newDateTime = await Selectdatetime.SelectDateTime(context);
 
-    if(newDateTime != null) {
+    if (newDateTime != null) {
       setState(() {
         endDate = newDateTime;
-        _endDatetimestampController.text = newDateTime.toString();
+        _endDatetimestampController.text =
+            DateFormat(timeFormat).format(newDateTime);
       });
     }
   }
@@ -112,7 +123,7 @@ class _TaskEditState extends State<TaskEdit> {
             child: Text('Delete'),
           ),
         ],
-      ), 
+      ),
       actions: [
         TextButton(
           onPressed: () {
@@ -171,15 +182,15 @@ class _TaskEditState extends State<TaskEdit> {
                     if (value == null || value.isEmpty) {
                       return 'Field is required and cannot be empty';
                     }
-      
+
                     if (double.tryParse(value) == null) {
                       return 'Please enter a whole number';
                     }
-      
+
                     if (int.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
-      
+
                     return null;
                   },
                 ),
@@ -228,7 +239,7 @@ class _TaskEditState extends State<TaskEdit> {
                     if (double.tryParse(value) == null) {
                       return 'Please enter a whole number';
                     }
-      
+
                     if (int.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
