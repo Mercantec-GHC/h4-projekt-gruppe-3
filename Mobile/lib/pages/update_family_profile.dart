@@ -76,6 +76,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
       );
 
       if (result['statusCode'] == 200) {
+        _appState.switchPage(AppPages.home);
         Navigator.pop(context);
       }
     }
@@ -98,6 +99,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
       );
 
       if (result['statusCode'] == 200) {
+        _appState.switchPage(AppPages.home);
         Navigator.pop(context);
       }
     }

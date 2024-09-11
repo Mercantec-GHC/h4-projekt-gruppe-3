@@ -134,7 +134,9 @@ class RootAppState extends ChangeNotifier {
         newFamilies.add(new Family(returnedFamily['family_id'],
             returnedFamily['name'], returnedFamily['owner_id']));
       }
-      family = newFamilies[0];
+      if (family == null) {
+        family = newFamilies[0];
+      }
       notifyListeners();
       return {'statusCode': response.statusCode, 'family': newFamilies};
     } else {
