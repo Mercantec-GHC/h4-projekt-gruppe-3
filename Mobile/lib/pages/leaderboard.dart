@@ -92,6 +92,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       children: [
                         for (UserProfile userProfile in users)
                           Userprofilecard(
+                            userId: userProfile.id,
                             name: userProfile.name,
                             points: userProfile.total_points,
                             page: 'leaderboard',

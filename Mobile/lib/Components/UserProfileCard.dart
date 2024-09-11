@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/pages/update_user_profile.dart';
-import 'package:mobile/services/app_state.dart';
-import 'package:provider/provider.dart';
 
 class Userprofilecard extends StatelessWidget {
   const Userprofilecard({
@@ -25,7 +23,6 @@ class Userprofilecard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RootAppState appState = context.watch<RootAppState>();
     return GestureDetector(
       onTap: page == 'user_profile'
           ? () {
@@ -84,8 +81,7 @@ class Userprofilecard extends StatelessWidget {
                   foregroundImage: NetworkImage(
                     profileImageUrl != null
                         ? profileImageUrl ?? ''
-                        : baseUrl +
-                            '/api/user/${appState.user?.id}/profile/picture',
+                        : baseUrl + '/api/user/${userId}/profile/picture',
                   ),
                 ),
               ],

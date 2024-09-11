@@ -274,6 +274,7 @@ class RootAppState extends ChangeNotifier {
       for (var user in jsonData) {
         newUsers.add(
           new UserProfile(
+            user['id'],
             user['name'],
             user['Email'],
             user['username'],
