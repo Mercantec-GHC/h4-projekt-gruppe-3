@@ -170,7 +170,7 @@ class RootAppState extends ChangeNotifier {
     final response = await api.GetUserPoints(user?.id ?? 0, familyId, this);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
-      points = jsonData[0][
+      points = jsonData[
           'points']; // you get the whole user?? and more users the more families you have
       notifyListeners();
     }

@@ -49,35 +49,27 @@ class _TasklistState extends State<Tasklist> {
     _getTasks();
   }
 
-  Future<Map<String, dynamic>> _contactServer() async {
+  Future<Map<String, dynamic>> _getTasksFromServer() async {
     int familyId = appState.family!.id;
     return switch (widget.listType) {
       TasklistType.All => await appState.getTasks('/all/$familyId'),
       TasklistType.Available => await appState.getTasks('/available/$familyId'),
       TasklistType.Assigned => await appState.getTasks('/assigned/$familyId'),
       TasklistType.Completed => await appState.getTasks('/completed/$familyId'),
-      TasklistType.Pending => await appState.getTasks('/all/$familyId'),
+      TasklistType.Pending => await appState.getTasks('/pending/$familyId'),
     };
   }
 
-  Future<List<Task>> _readServerData() async {
-    Map<String, dynamic> response = await _contactServer();
+  void _getTasks() async {
+    Map<String, dynamic> response = await _getTasksFromServer();
     if (response['statusCode'] == 200) {
-      return response['tasks'];
+      setState(() {
+        appState.taskList.clear();
+        appState.taskList.addAll(response['tasks']);
+      });
     } else {
       CustomPopup.openErrorPopup(context, errorText: response['Error']);
-      return [];
     }
-  }
-
-  void _getTasks() async {
-    List<Task> newTasks = await _readServerData();
-    setState(() {
-      if (newTasks.isNotEmpty) {
-        appState.taskList.clear();
-        appState.taskList.addAll(newTasks);
-      }
-    });
   }
 
   void updateTask(Task updatedTask) {

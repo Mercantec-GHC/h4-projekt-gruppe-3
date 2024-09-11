@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
+import 'package:mobile/Components/TaskCompletionDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
@@ -39,11 +40,11 @@ class _TaskdialogState extends State<Taskdialog> {
   }
 
   Future<List<User>> _getuserAssignedToThisTask() async {
-    Map<String, dynamic> response = await appState.getuserAssignedToTask(widget.task.id);
+    Map<String, dynamic> response =
+        await appState.getuserAssignedToTask(widget.task.id);
     if (response['statusCode'] == 200) {
       return response['tasks'];
-    }
-    else {
+    } else {
       CustomPopup.openErrorPopup(context, errorText: response['Error']);
       return [];
     }
@@ -70,28 +71,30 @@ class _TaskdialogState extends State<Taskdialog> {
           },
           child: OutlinedText(text: 'Close'),
         ),
+        if (appState.user?.isParent == false)
+          TextButton(
+            onPressed: _openCompleteTaskDialog,
+            child: OutlinedText(text: 'Complete'),
+          ),
         if (appState.user?.isParent ?? false)
-        TextButton(
-          onPressed: () => _editTask(context),
-          child: OutlinedText(text: 'Edit'),
-        ),
+          TextButton(
+            onPressed: () => _editTask(context),
+            child: OutlinedText(text: 'Edit'),
+          ),
       ],
-
       titlePadding: EdgeInsets.only(left: 20, top: 20, right: 20),
       contentPadding: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 20),
-    
       title: Container(
         width: double.maxFinite,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             OutlinedText(
-              text:  widget.task.title,
+              text: widget.task.title,
               style: TextStyle(
-                fontSize: 23,
-                color: Colors.white,
-                fontWeight: FontWeight.bold
-              ),
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
             OutlinedText(
               text: "Reward: " + widget.task.reward.toString(),
@@ -102,27 +105,33 @@ class _TaskdialogState extends State<Taskdialog> {
       ),
       content: SingleChildScrollView(
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             OutlinedText(text: widget.task.description),
             SizedBox(height: 20),
-            OutlinedText(text: "Starting date: " + widget.task.startDate.toString()),
+            OutlinedText(
+                text: "Starting date: " + widget.task.startDate.toString()),
             SizedBox(height: 20),
             OutlinedText(text: "End date: " + widget.task.endDate.toString()),
             SizedBox(height: 20),
-            OutlinedText(text: "Recurring: " + (widget.task.recurring ? "Yes" : "No")),
-            OutlinedText(text: "Recurring Interval: " + widget.task.recurringInterval.toString() + " day(s)"),
+            OutlinedText(
+                text: "Recurring: " + (widget.task.recurring ? "Yes" : "No")),
+            OutlinedText(
+                text: "Recurring Interval: " +
+                    widget.task.recurringInterval.toString() +
+                    " day(s)"),
             SizedBox(height: 20),
-            OutlinedText(text: "Single Completion: " + (widget.task.singleCompletion ? "Yes" : "No")),
-            
+            OutlinedText(
+                text: "Single Completion: " +
+                    (widget.task.singleCompletion ? "Yes" : "No")),
             SizedBox(height: 25),
             if (userAssignedToThisTask.isNotEmpty)
               OutlinedText(text: 'Children assigned:'),
-              for (User user in userAssignedToThisTask)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 5, left: 5),
-                  child: OutlinedText(text: user.name),
-                ),
+            for (User user in userAssignedToThisTask)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5, left: 5),
+                child: OutlinedText(text: user.name),
+              ),
             if (userAssignedToThisTask.isEmpty)
               OutlinedText(text: 'This task is not assigned to anyone.'),
           ],
@@ -130,7 +139,7 @@ class _TaskdialogState extends State<Taskdialog> {
       ),
     );
   }
-  
+
   void _editTask(BuildContext context) async {
     final result = await Navigator.push(
       context,
@@ -145,8 +154,18 @@ class _TaskdialogState extends State<Taskdialog> {
       } else if (action == 'delete') {
         widget.onDeleteTask(updatedTask);
       }
-      
+
       Navigator.of(context).pop();
     }
+  }
+
+  void _openCompleteTaskDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => TaskCompletionDialog(task: widget.task),
+    );
+
+    //close the task dialog after the completion dialog is closed
+    Navigator.of(context).pop();
   }
 }
