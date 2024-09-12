@@ -139,7 +139,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         users.addAll(newUsers);
       });
     } else {
-      CustomPopup.openErrorPopup(context, errorText: jsonData);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 }

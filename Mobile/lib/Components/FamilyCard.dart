@@ -86,7 +86,7 @@ class Familycard extends StatelessWidget {
       );
       appState.family = family;
     } else {
-      CustomPopup.openErrorPopup(context, errorText: jsonData);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 }

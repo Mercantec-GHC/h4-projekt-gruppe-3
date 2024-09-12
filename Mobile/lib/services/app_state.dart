@@ -116,8 +116,8 @@ class RootAppState extends ChangeNotifier {
         getBool(jsonData['user']['is_parent']),
       );
       await storage.write(key: 'auth_token', value: jsonData['token']);
-      notifyListeners();
       await GetFamilies();
+      notifyListeners();
       if (!(user?.isParent ?? true)) {
         GetUserPoints();
       }

@@ -45,6 +45,10 @@ class _TaskdialogState extends State<Taskdialog> {
 
   Future<List<User>> _getuserAssignedToThisTask() async {
     String? jwt = await appState.storage.read(key: 'auth_token');
+    if (widget.task.id == 0) {
+      return [];
+    }
+
     final response = await Api().getUsersAssignToTask(widget.task.id, jwt);
 
     var jsonData = json.decode(response.body);
@@ -64,7 +68,7 @@ class _TaskdialogState extends State<Taskdialog> {
       }
       return newUsers;
     } else {
-      CustomPopup.openErrorPopup(context, errorText: jsonData);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
       return [];
     }
   }

@@ -42,7 +42,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
           new User(
             user['id'],
             user['name'],
-            user['email'],
+            user['email'] ?? '',
             user['is_parrent'] ?? false,
           ),
         );
@@ -59,7 +59,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         }
       });
     } else {
-      CustomPopup.openErrorPopup(context, errorText: jsonData);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 
