@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
+import 'package:mobile/Components/TaskApprovalDialog.dart';
 import 'package:mobile/Components/TaskCompletionDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/config/general_config.dart';
@@ -91,7 +92,7 @@ class _TaskdialogState extends State<Taskdialog> {
         if (appState.user?.isParent == true &&
             widget.currentListType == TasklistType.Pending)
           TextButton(
-            onPressed: () => _editTask(context),
+            onPressed: _openApproveTaskDialog,
             child: OutlinedText(text: 'Approve'),
           ),
       ],
@@ -179,6 +180,16 @@ class _TaskdialogState extends State<Taskdialog> {
     await showDialog(
       context: context,
       builder: (context) => TaskCompletionDialog(task: widget.task),
+    );
+
+    //close the task dialog after the completion dialog is closed
+    Navigator.of(context).pop();
+  }
+
+  void _openApproveTaskDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => TaskApprovalDialog(task: widget.task),
     );
 
     //close the task dialog after the completion dialog is closed
