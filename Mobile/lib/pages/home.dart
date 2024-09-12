@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/Components/GradiantMesh.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 

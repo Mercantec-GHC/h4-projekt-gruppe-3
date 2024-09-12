@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
@@ -79,13 +80,26 @@ class TaskController extends Controller
     public function getCompletedTasks(Family $family)
     {
         $user = auth()->user();
-
-        $tasks = DB::table('tasks')
-            ->where('family_id', $family->id)
-            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
-            ->where('user_task.user_id', '=', $user->id)
-            ->Where('user_task.state', 'done')
-            ->get()->mapInto(TaskResource::class);
+        if ($user->is_parent) {
+            $tasks = DB::table('tasks')
+                ->select('tasks.*')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->Where('user_task.state', 'done')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
+                ->get()
+                ->mapInto(TaskResource::class);
+        } else {
+            $tasks = DB::table('tasks')
+                ->select('tasks.*')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.user_id', '=', $user->id)
+                ->Where('user_task.state', 'done')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
+                ->get()
+                ->mapInto(TaskResource::class);
+        }
 
         return response()->json($tasks->toArray());
     }
@@ -93,13 +107,26 @@ class TaskController extends Controller
     public function getPendingTasks(Family $family)
     {
         $user = auth()->user();
-
-        $tasks = DB::table('tasks')
-            ->where('family_id', $family->id)
-            ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
-            ->where('user_task.user_id', '=', $user->id)
-            ->where('user_task.state', 'pending')
-            ->get()->mapInto(TaskResource::class);
+        if ($user->is_parent) {
+            $tasks = DB::table('tasks')
+                ->select('tasks.*')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.state', 'pending')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
+                ->get()
+                ->mapInto(TaskResource::class);
+        } else {
+            $tasks = DB::table('tasks')
+                ->select('tasks.*')
+                ->where('family_id', $family->id)
+                ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
+                ->where('user_task.user_id', '=', $user->id)
+                ->where('user_task.state', 'pending')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
+                ->get()
+                ->mapInto(TaskResource::class);
+        }
 
         return response()->json($tasks->toArray());
     }
@@ -254,56 +281,56 @@ class TaskController extends Controller
         return response()->json([], 204);
     }
 
-    public function getTaskCompletionInfo(Request $request, Task $task)
+    public function getTaskCompletionInfo(Task $task, User $user)
     {
         $this->checkIfParent();
 
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
-
         $task_info = DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
             ->first();
 
         return response()->json($task_info->toArray());
     }
 
-    public function getTaskCompletionPhoto(Request $request, Task $task)
+    public function getTaskCompletionPhoto(Task $task, User $user)
     {
         $this->checkIfParent();
 
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
-
-        $media_id = DB::table('user_task')
+        $user_task = DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
-            ->first(['media_id']);
+            ->first();
 
-        $completionPhoto = Media::where('id', $media_id)->first();
+        $completionPhoto = Media::where('id', $user_task->media_id)->first();
 
         return response()->file(storage_path($completionPhoto->path));
     }
 
-    public function approveTaskCompletion(Request $request, Task $task)
+    public function approveTaskCompletion(Task $task, User $user)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
-
         $this->checkIfParent();
 
         DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
-            ->update(['state' => 'completed']);
+            ->update(['state' => 'done']);
 
         return response()->json([], 204);
+    }
+
+    public function getPendingTaskUsers(Task $task)
+    {
+        $users = DB::table('tasks')
+            ->where('tasks.id', $task->id)
+            ->join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->join('users', 'user_task.user_id', '=', 'users.id')
+            ->where('user_task.state', 'pending')
+            ->get();
+
+        return response()->json($users->toArray());
     }
 }

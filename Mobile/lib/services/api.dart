@@ -337,4 +337,33 @@ class Api {
       }),
     );
   }
+
+  Future<http.Response> getPendingTaskUsers({
+    required String auth_token,
+    required int task_id,
+  }) {
+    return http.get(
+      Uri.parse(baseUrl + '/api/task/${task_id}/pending/users'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+    );
+  }
+
+  Future<http.Response> approveTaskForUser({
+    required String auth_token,
+    required int task_id,
+    required int user_id,
+  }) {
+    return http.post(
+      Uri.parse(baseUrl + '/api/task/${task_id}/approve/${user_id}'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + auth_token
+      },
+    );
+  }
 }

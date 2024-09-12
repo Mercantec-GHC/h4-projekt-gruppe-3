@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/OutlinedText.dart';
+import 'package:mobile/Components/TaskApprovalDialog.dart';
 import 'package:mobile/Components/TaskCompletionDialog.dart';
 import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/config/general_config.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/services/api.dart';
@@ -19,11 +21,13 @@ class Taskdialog extends StatefulWidget {
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
+    required this.currentListType,
   });
 
   final Task task;
   final Function(Task) onUpdateTask;
   final Function(Task) onDeleteTask;
+  final TasklistType currentListType;
 
   @override
   State<Taskdialog> createState() => _TaskdialogState();
@@ -99,10 +103,18 @@ class _TaskdialogState extends State<Taskdialog> {
             onPressed: _openCompleteTaskDialog,
             child: OutlinedText(text: 'Complete'),
           ),
-        if (appState.user?.isParent ?? false)
+        if (appState.user?.isParent == true &&
+            widget.currentListType != TasklistType.Completed &&
+            widget.currentListType != TasklistType.Pending)
           TextButton(
             onPressed: () => _editTask(context),
             child: OutlinedText(text: 'Edit'),
+          ),
+        if (appState.user?.isParent == true &&
+            widget.currentListType == TasklistType.Pending)
+          TextButton(
+            onPressed: _openApproveTaskDialog,
+            child: OutlinedText(text: 'Approve'),
           ),
       ],
       titlePadding: EdgeInsets.only(left: 20, top: 20, right: 20),
@@ -192,6 +204,16 @@ class _TaskdialogState extends State<Taskdialog> {
     );
 
     //close the task dialog after the completion dialog is closed
+    Navigator.of(context).pop();
+  }
+
+  void _openApproveTaskDialog() async {
+    await showDialog(
+      context: context,
+      builder: (context) => TaskApprovalDialog(task: widget.task),
+    );
+
+    //close the task dialog after the approve dialog is closed
     Navigator.of(context).pop();
   }
 }

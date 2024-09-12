@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/Components/TaskList.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
 import 'package:mobile/models/family.dart';

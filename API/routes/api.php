@@ -37,8 +37,10 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/{task}', [TaskController::class, 'updateTask']);
         Route::put('/{task}/state', [TaskController::class, 'updateTaskState']);
         Route::post('/{task}/add/completion-info', [TaskController::class, 'addTaskCompletionInfo']);
-        Route::get('/{task}/completion-info', [TaskController::class, 'getTaskCompletionInfo']);
-        Route::post('/{task}/approve', [TaskController::class, 'approveTaskCompletion']);
+        Route::get('/{task}/user/{user}/completion-info', [TaskController::class, 'getTaskCompletionInfo']);
+        Route::get('/{task}/user/{user}/completion-photo', [TaskController::class, 'getTaskCompletionPhoto']);
+        Route::get('/{task}/pending/users', [TaskController::class, 'getPendingTaskUsers']);
+        Route::post('/{task}/approve/{user}', [TaskController::class, 'approveTaskCompletion']);
         Route::put('/assign/{task}/{user}', [TaskController::class, 'assignUserToTask']);
         Route::put('/unassign/{task}/{user}', [TaskController::class, 'unassignUserToTask']);
         Route::delete('/{task}', [TaskController::class, 'deleteTask']);
