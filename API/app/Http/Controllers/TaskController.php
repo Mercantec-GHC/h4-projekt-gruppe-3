@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
@@ -81,17 +82,21 @@ class TaskController extends Controller
         $user = auth()->user();
         if ($user->is_parent) {
             $tasks = DB::table('tasks')
+                ->select('tasks.*')
                 ->where('family_id', $family->id)
                 ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
                 ->Where('user_task.state', 'done')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
                 ->get()
                 ->mapInto(TaskResource::class);
         } else {
             $tasks = DB::table('tasks')
+                ->select('tasks.*')
                 ->where('family_id', $family->id)
                 ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
                 ->where('user_task.user_id', '=', $user->id)
                 ->Where('user_task.state', 'done')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
                 ->get()
                 ->mapInto(TaskResource::class);
         }
@@ -104,17 +109,21 @@ class TaskController extends Controller
         $user = auth()->user();
         if ($user->is_parent) {
             $tasks = DB::table('tasks')
+                ->select('tasks.*')
                 ->where('family_id', $family->id)
                 ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
                 ->where('user_task.state', 'pending')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
                 ->get()
                 ->mapInto(TaskResource::class);
         } else {
             $tasks = DB::table('tasks')
+                ->select('tasks.*')
                 ->where('family_id', $family->id)
                 ->Join('user_task', 'tasks.id', '=', 'user_task.task_id')
                 ->where('user_task.user_id', '=', $user->id)
                 ->where('user_task.state', 'pending')
+                ->groupBy(DB::raw(implode(',', Schema::getColumnListing('tasks'))))
                 ->get()
                 ->mapInto(TaskResource::class);
         }
