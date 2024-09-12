@@ -1,4 +1,5 @@
 class UserProfile {
+  int id;
   String name;
   String? email;
   String username;
@@ -7,7 +8,8 @@ class UserProfile {
   int total_points;
 
   UserProfile(
-    this.name, 
+    this.id,
+    this.name,
     this.email, 
     this.username, 
     this.is_parent,
