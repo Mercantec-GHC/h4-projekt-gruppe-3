@@ -21,8 +21,7 @@ class _TaskSelectedListState extends State<TaskSelectedList> {
       body: Stack(
         children: [
           Positioned.fill(
-            child:
-                MeshGradientBackground(),
+            child: MeshGradientBackground(),
           ),
           // Main content
           Column(

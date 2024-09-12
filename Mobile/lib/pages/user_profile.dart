@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
-import 'package:mobile/Components/GradiantMesh.dart'; // Import for MeshGradientBackground
+import 'package:mobile/Components/GradiantMesh.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -20,17 +20,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Full-screen gradient background
           Positioned.fill(
             child:
-                MeshGradientBackground(), // Use the custom MeshGradientBackground
+                MeshGradientBackground(),
           ),
           // Main content
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Profile Card with gradient background
+                // Profile Card
                 Expanded(
                   child: Container(
                     child: Card(

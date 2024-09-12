@@ -10,7 +10,7 @@ class TaskCard extends StatelessWidget {
     required this.onUpdateTask,
     required this.onDeleteTask,
   });
-  
+
   final Task task;
   final Function(Task) onDeleteTask;
   final Function(Task) onUpdateTask;
@@ -59,7 +59,8 @@ class TaskCard extends StatelessWidget {
   void OpenDetailedDescription(BuildContext context) async {
     showDialog(
       context: context,
-      builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask),      
+      builder: (context) => Taskdialog(
+          task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask),
     );
   }
 

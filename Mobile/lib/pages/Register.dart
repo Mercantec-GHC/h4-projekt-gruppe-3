@@ -45,7 +45,6 @@ class _RegisterState extends State<Register> {
                   height: 150,
                   fit: BoxFit.cover,
                 ),
-
                 SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Name'),
@@ -121,7 +120,8 @@ class _RegisterState extends State<Register> {
   void tryRegister() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      _appState.CreateUser(_name, _password, _email, _password_confirmation, true)
+      _appState.CreateUser(
+              _name, _password, _email, _password_confirmation, true)
           .then((value) => {
                 if (value['statusCode'] == 201)
                   {

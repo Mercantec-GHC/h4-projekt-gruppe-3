@@ -24,7 +24,7 @@ class _FamilycreationState extends State<Familycreation> {
   void _createFamily() async {
     if (_formKey.currentState!.validate()) {
       name = _nameController.text;
-      Family family = Family(0, name, _appState.user!.id);    
+      Family family = Family(0, name, _appState.user!.id);
       final jwt = await _appState.storage.read(key: 'auth_token');
       var response = await Api().createFamily(family, jwt);
       if (response.statusCode == 201) {
