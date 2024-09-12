@@ -272,34 +272,26 @@ class TaskController extends Controller
         return response()->json([], 204);
     }
 
-    public function getTaskCompletionInfo(Request $request, Task $task)
+    public function getTaskCompletionInfo(Task $task, User $user)
     {
         $this->checkIfParent();
 
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
-
         $task_info = DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
             ->first();
 
         return response()->json($task_info->toArray());
     }
 
-    public function getTaskCompletionPhoto(Request $request, Task $task)
+    public function getTaskCompletionPhoto(Task $task, User $user)
     {
         $this->checkIfParent();
 
-        // $request->validate([
-        //     'user_id' => 'required|exists:users,id'
-        // ]);
-
         $user_task = DB::table('user_task')
             ->where('task_id', $task->id)
-            // ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
             ->first();
 
@@ -308,20 +300,28 @@ class TaskController extends Controller
         return response()->file(storage_path($completionPhoto->path));
     }
 
-    public function approveTaskCompletion(Request $request, Task $task)
+    public function approveTaskCompletion(Task $task, User $user)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
-
         $this->checkIfParent();
 
         DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            ->where('user_id', $user->id)
             ->where('state', 'pending')
-            ->update(['state' => 'completed']);
+            ->update(['state' => 'done']);
 
         return response()->json([], 204);
+    }
+
+    public function getPendingTaskUsers(Task $task)
+    {
+        $users = DB::table('tasks')
+            ->where('tasks.id', $task->id)
+            ->join('user_task', 'tasks.id', '=', 'user_task.task_id')
+            ->join('users', 'user_task.user_id', '=', 'users.id')
+            ->where('user_task.state', 'pending')
+            ->get();
+
+        return response()->json($users->toArray());
     }
 }
