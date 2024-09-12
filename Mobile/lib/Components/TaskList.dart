@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/TaskCard.dart';
 import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class Tasklist extends StatefulWidget {
   final TasklistType listType;
@@ -43,23 +46,42 @@ class _TasklistState extends State<Tasklist> {
     _getTasks();
   }
 
-  Future<Map<String, dynamic>> _getTasksFromServer() async {
+  Future<http.Response> _getTasksFromServer() async {
+    Api api = Api();
     int familyId = appState.family!.id;
+    String? jwt = await appState.storage.read(key: 'auth_token');
     return switch (widget.listType) {
-      TasklistType.All => await appState.getTasks('/all/$familyId'),
-      TasklistType.Available => await appState.getTasks('/available/$familyId'),
-      TasklistType.Assigned => await appState.getTasks('/assigned/$familyId'),
-      TasklistType.Completed => await appState.getTasks('/completed/$familyId'),
-      TasklistType.Pending => await appState.getTasks('/pending/$familyId'),
+      TasklistType.All => await api.getTasks('all/$familyId', jwt),
+      TasklistType.Available => await api.getTasks('available/$familyId', jwt),
+      TasklistType.Assigned => await api.getTasks('assigned/$familyId', jwt),
+      TasklistType.Completed => await api.getTasks('completed/$familyId', jwt),
+      TasklistType.Pending => await api.getTasks('pending/$familyId', jwt),
     };
   }
 
   void _getTasks() async {
-    Map<String, dynamic> response = await _getTasksFromServer();
-    if (response['statusCode'] == 200) {
-      appState.addListOfTasks(response['tasks'], widget.listType);
+    http.Response response = await _getTasksFromServer();
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<Task> newTasks = [];
+      for (var task in jsonData) {
+        newTasks.add(
+          new Task(
+            task['id'],
+            task['title'],
+            task['description'],
+            task['reward'],
+            DateTime.parse(task['start_date']),
+            DateTime.parse(task['end_date']),
+            appState.getBool(task['recurring']),
+            task['recurring_interval'],
+            appState.getBool(task['single_completion']),
+          ),
+        );
+      }
+      appState.addListOfTasks(newTasks, widget.listType);
     } else {
-      CustomPopup.openErrorPopup(context, errorText: response['Error']);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 

@@ -4,8 +4,10 @@ import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/FormInputField.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class UpdateFamilyProfilePage extends StatefulWidget {
   @override
@@ -29,12 +31,26 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
   }
 
   Future<void> _getUsers() async {
-    Map<String, dynamic> response =
-        await _appState.getUsers(_appState.family!.id);
-    if (response['statusCode'] == 200) {
+    String? jwt = await _appState.storage.read(key: 'auth_token');
+    final response = await Api().getUserProfiles(_appState.family!.id, jwt);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<User> newUsers = [];
+      for (var user in jsonData) {
+        newUsers.add(
+          new User(
+            user['id'],
+            user['name'],
+            user['email'] ?? '',
+            user['is_parrent'] ?? false,
+          ),
+        );
+      }
+
       setState(() {
         _users.clear();
-        _users.addAll(response['users']);
+        _users.addAll(newUsers);
         if (_users.isNotEmpty) {
           _owner_id = _appState.family!.ownerId;
           int owner =
@@ -43,8 +59,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         }
       });
     } else {
-      CustomPopup.openErrorPopup(context,
-          errorText: response['Error']['message']);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 
@@ -59,12 +74,17 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         return;
       }
 
-      var result = await _appState.switchFamilyOwner(
+      setState(() {
+        _appState.family?.ownerId = _owner_id;
+      });
+
+      var response = await Api().switchFamiyOwner(
         auth_token: _auth_token,
-        owner_id: _owner_id,
+        new_owner_id: _owner_id,
+        family_id: _appState.family?.id,
       );
 
-      if (result['statusCode'] == 200) {
+      if (response.statusCode == 200) {
         _appState.switchPage(AppPages.home);
         Navigator.pop(context);
       }
@@ -82,12 +102,17 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
         return;
       }
 
-      var result = await _appState.updateFamilyName(
+      setState(() {
+        _appState.family?.name = _name;
+      });
+
+      var response = await Api().updateFamilyName(
         auth_token: _auth_token,
         name: _name,
+        family_id: _appState.family?.id,
       );
 
-      if (result['statusCode'] == 200) {
+      if (response.statusCode == 200) {
         _appState.switchPage(AppPages.home);
         Navigator.pop(context);
       }

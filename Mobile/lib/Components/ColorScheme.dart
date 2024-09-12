@@ -3,7 +3,7 @@ import 'dart:math';
 
 class CustomColorScheme {
   static final random = Random();
-  
+
   static Color primary = const Color.fromRGBO(194, 232, 255, 1);
   static Color secondary = const Color.fromRGBO(245, 197, 58, 1);
   static Color error = const Color.fromRGBO(238, 100, 118, 1);
@@ -16,7 +16,6 @@ class CustomColorScheme {
     limeGreen,
     tangerineOrange,
   ];
-
 
   static Color getRandomColor() {
     int index = random.nextInt(taskCardColorSheme.length);

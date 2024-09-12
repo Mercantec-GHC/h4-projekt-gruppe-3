@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/services/api.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/services/app_state.dart';
@@ -27,14 +28,14 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         return;
       }
 
-      var result = await _appState.updateUserPassword(
+      var response = await Api().updateUserPassword(
         auth_token: _auth_token,
         current_password: _current_password,
         new_password: _new_password,
         new_password_confirmation: _new_password_confirmation,
       );
 
-      if (result['statusCode'] == 204) {
+      if (response.statusCode == 204) {
         Navigator.of(context).pop();
         Navigator.of(context).pop();
         _appState.logout();

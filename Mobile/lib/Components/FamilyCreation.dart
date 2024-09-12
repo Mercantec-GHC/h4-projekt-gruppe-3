@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
-import 'package:mobile/models/user.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
-
 import '../models/family.dart';
 import '../services/api.dart';
 
@@ -16,7 +14,6 @@ class Familycreation extends StatefulWidget {
 
 class _FamilycreationState extends State<Familycreation> {
   late RootAppState _appState;
-  Api api = Api();
   final _formKey = GlobalKey<FormState>();
 
   String name = '';
@@ -28,7 +25,8 @@ class _FamilycreationState extends State<Familycreation> {
     if (_formKey.currentState!.validate()) {
       name = _nameController.text;
       Family family = Family(0, name, _appState.user!.id);
-      var response = await api.createFamily(family, _appState);
+      final jwt = await _appState.storage.read(key: 'auth_token');
+      var response = await Api().createFamily(family, jwt);
       if (response.statusCode == 201) {
         Navigator.of(context).pop();
       } else {

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ChildCreationDialog.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/UserProfileCard.dart';
 import 'package:mobile/models/UserProfile.dart';
 import 'package:mobile/Components/GradiantMesh.dart';
+import 'package:mobile/services/api.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 
@@ -110,16 +112,34 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 
   Future<void> _getUsers() async {
-    Map<String, dynamic> response =
-        await _appState.getLeaderboard(_appState.family!.id);
-    if (response['statusCode'] == 200) {
+    Api api = Api();
+    String? jwt = await _appState.storage.read(key: 'auth_token');
+    final response = await api.getUserProfiles(_appState.family?.id ?? 0, jwt);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<UserProfile> newUsers = [];
+      for (var user in jsonData) {
+        newUsers.add(
+          new UserProfile(
+            user['id'],
+            user['name'],
+            user['Email'],
+            user['username'],
+            user['is_parrent'] ?? false,
+            user['points'],
+            user['total_points'],
+          ),
+        );
+      }
+      newUsers.sort((a, b) => b.total_points.compareTo(a.total_points));
+
       setState(() {
         users.clear();
-        users.addAll(response['users']);
+        users.addAll(newUsers);
       });
     } else {
-      CustomPopup.openErrorPopup(context,
-          errorText: response['Error']['message']);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 }

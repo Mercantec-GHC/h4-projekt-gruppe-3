@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/family.dart';
 import 'package:mobile/models/task.dart';
-import 'package:mobile/models/user.dart';
-import 'package:mobile/services/app_state.dart';
 
 class Api {
   Future<http.Response> CreateParentUser(String name, String email,
@@ -71,8 +69,7 @@ class Api {
     await http.post(Uri.parse(baseUrl + '/logout'));
   }
 
-  Future<http.Response> GetFamilies(RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> GetFamilies(String? jwt) async {
     return await http.get(Uri.parse(baseUrl + '/api/family/all/'), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
@@ -80,8 +77,7 @@ class Api {
     });
   }
 
-  Future<http.Response> GetFamily(Family family, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> GetFamily(Family family, String? jwt) async {
     return await http
         .get(Uri.parse(baseUrl + '/api/family/${family.id}'), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
@@ -90,9 +86,7 @@ class Api {
     });
   }
 
-  Future<http.Response> createFamily(
-      Family family, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> createFamily(Family family, String? jwt) async {
     return await http.post(
       Uri.parse(baseUrl + '/api/family/create'),
       headers: {
@@ -107,8 +101,7 @@ class Api {
   }
 
   Future<http.Response> GetUserPoints(
-      int userId, int familyId, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+      int userId, int familyId, String? jwt) async {
     return await http.get(
       Uri.parse(baseUrl + '/api/user/${familyId}/${userId}/points'),
       headers: {
@@ -118,8 +111,6 @@ class Api {
       },
     );
   }
-
-  void Get() {}
 
   Future<http.Response> updateUserProfile({
     required String auth_token,
@@ -163,8 +154,7 @@ class Api {
     );
   }
 
-  Future<http.Response> DeleteUser(int? id, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> DeleteUser(int? id, String? jwt) async {
     return await http.delete(
       Uri.parse(baseUrl + '/api/user/' + id.toString()),
       headers: {
@@ -196,9 +186,7 @@ class Api {
     return http.Response.fromStream(response);
   }
 
-  Future<http.Response> getUsersAssignToTask(
-      int taskId, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> getUsersAssignToTask(int taskId, String? jwt) async {
     return await http.get(
       Uri.parse(baseUrl + "/api/task/users/${taskId}"),
       headers: {
@@ -209,8 +197,8 @@ class Api {
     );
   }
 
-  Future<http.Response> createTask(Task task, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> createTask(
+      Task task, int modifiedBy, String? jwt) async {
     return await http.post(
       Uri.parse(baseUrl + '/api/task/create'),
       headers: {
@@ -226,17 +214,16 @@ class Api {
         'start_date': DateTime.now().toString(),
         'recurring': task.recurring,
         'recurring_interval': task.recurringInterval,
-        'modified_by': appState.user?.id,
+        'modified_by': modifiedBy,
         'family_id': 1,
         'single_completion': task.singleCompletion,
       }),
     );
   }
 
-  Future<http.Response> getTasks(String path, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> getTasks(String path, String? jwt) async {
     return await http.get(
-      Uri.parse(baseUrl + path),
+      Uri.parse(baseUrl + '/api/task/' + path),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',
@@ -245,8 +232,7 @@ class Api {
     );
   }
 
-  Future<http.Response> updateTask(Task task, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> updateTask(Task task, String? jwt) async {
     return await http.put(
       Uri.parse(baseUrl + '/api/task/${task.id}'),
       headers: {
@@ -267,8 +253,7 @@ class Api {
     );
   }
 
-  Future<http.Response> deleteTask(int id, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> deleteTask(int id, String? jwt) async {
     return await http.delete(
       Uri.parse(baseUrl + '/api/task/${id}'),
       headers: {
@@ -306,9 +291,7 @@ class Api {
     return await http.Response.fromStream(response);
   }
 
-  Future<http.Response> getUserProfiles(
-      int familyId, RootAppState appState) async {
-    final jwt = await appState.storage.read(key: 'auth_token');
+  Future<http.Response> getUserProfiles(int familyId, String? jwt) async {
     return await http.get(
       Uri.parse(baseUrl + '/api/user/family/${familyId}/profiles'),
       headers: {
