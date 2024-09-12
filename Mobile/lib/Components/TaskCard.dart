@@ -5,12 +5,13 @@ import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard(
-      {super.key,
-      required this.task,
-      required this.onUpdateTask,
-      required this.onDeleteTask,
-      required this.currentListType});
+  const TaskCard({
+    super.key,
+    required this.task,
+    required this.onUpdateTask,
+    required this.onDeleteTask,
+    required this.currentListType,
+  });
 
   final Task task;
   final Function(Task) onDeleteTask;

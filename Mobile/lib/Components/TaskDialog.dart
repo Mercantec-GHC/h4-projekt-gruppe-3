@@ -192,7 +192,7 @@ class _TaskdialogState extends State<Taskdialog> {
       builder: (context) => TaskApprovalDialog(task: widget.task),
     );
 
-    //close the task dialog after the completion dialog is closed
+    //close the task dialog after the approve dialog is closed
     Navigator.of(context).pop();
   }
 }
