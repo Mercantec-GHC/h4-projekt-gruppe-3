@@ -7,6 +7,7 @@ import 'package:mobile/NavigationComponents/DrawerItem.dart';
 import 'package:mobile/NavigationComponents/NavigationAppBar.dart';
 import 'package:mobile/NavigationComponents/NavigationDrawer.dart';
 import 'package:mobile/config/app_pages.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
 import 'package:mobile/pages/login.dart';

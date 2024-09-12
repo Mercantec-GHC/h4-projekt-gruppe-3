@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/TaskDialog.dart';
+import 'package:mobile/config/task_list_types.dart';
 import 'package:mobile/models/task.dart';
 
 class TaskCard extends StatelessWidget {
@@ -9,11 +10,13 @@ class TaskCard extends StatelessWidget {
     required this.task,
     required this.onUpdateTask,
     required this.onDeleteTask,
+    required this.currentListType,
   });
-  
+
   final Task task;
   final Function(Task) onDeleteTask;
   final Function(Task) onUpdateTask;
+  final TasklistType currentListType;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,12 @@ class TaskCard extends StatelessWidget {
   void OpenDetailedDescription(BuildContext context) async {
     showDialog(
       context: context,
-      builder: (context) => Taskdialog(task: task, onUpdateTask: onUpdateTask, onDeleteTask: onDeleteTask),      
+      builder: (context) => Taskdialog(
+        task: task,
+        onUpdateTask: onUpdateTask,
+        onDeleteTask: onDeleteTask,
+        currentListType: currentListType,
+      ),
     );
   }
 
