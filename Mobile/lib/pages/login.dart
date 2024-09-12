@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/config/app_pages.dart';
@@ -117,10 +116,6 @@ class _LoginState extends State<Login> {
       _appState.Login(_username, _password).then((value) => {
             if (value['statusCode'] == 200)
               {
-                if (!(_appState.user?.isParent ?? true))
-                  {
-                    _appState.GetUserPoints(),
-                  },
                 _appState.switchPage(AppPages.home),
               }
             else

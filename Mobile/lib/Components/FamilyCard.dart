@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:mobile/Components/ColorScheme.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/models/family.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,25 +75,18 @@ class Familycard extends StatelessWidget {
   }
 
   Future<void> _chooseFamily(RootAppState appState, context) async {
-    Map<String, dynamic> response = await appState.GetFamily(family);
-    if (response['statusCode'] == 200) {
-      appState.family = response['body'];
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
-          content: Text(response['error']['message']),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
+    String? jwt = await appState.storage.read(key: 'auth_token').toString();
+    final response = await Api().GetFamily(family, jwt);
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      Family family = new Family(
+        jsonData['id'],
+        jsonData['name'],
+        jsonData['owner_id'],
       );
+      appState.family = family;
+    } else {
+      CustomPopup.openErrorPopup(context, errorText: jsonData);
     }
   }
 }

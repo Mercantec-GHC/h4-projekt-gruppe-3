@@ -10,7 +10,6 @@ import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/pages/Register.dart';
 import 'package:mobile/pages/home.dart';
 import 'package:mobile/pages/login.dart';
-import 'package:mobile/pages/update_user_profile.dart';
 import 'package:mobile/pages/user_profile.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';

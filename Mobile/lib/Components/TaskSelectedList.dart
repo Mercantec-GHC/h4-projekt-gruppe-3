@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/TaskList.dart';
-import 'package:mobile/Components/GradiantMesh.dart'; // Make sure this import is correct and refers to your gradient
+import 'package:mobile/Components/GradiantMesh.dart';
 
 class TaskSelectedList extends StatefulWidget {
   const TaskSelectedList({

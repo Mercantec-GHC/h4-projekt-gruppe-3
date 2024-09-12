@@ -14,8 +14,6 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final _theme = Theme.of(context);
-
     // Access the user from the AppState
     final user = Provider.of<RootAppState>(context).user;
 

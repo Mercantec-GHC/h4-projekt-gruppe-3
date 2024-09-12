@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/FamilyCard.dart';
 import 'package:mobile/models/family.dart';
 import 'package:provider/provider.dart';
 import '../Components/FamilyCreation.dart';
 import '../services/app_state.dart';
-import 'package:mobile/Components/GradiantMesh.dart'; // Import for MeshGradientBackground
+import 'package:mobile/Components/GradiantMesh.dart';
 
 class ChooseFamilyPage extends StatefulWidget {
   const ChooseFamilyPage({super.key});
@@ -106,21 +107,7 @@ class _ChooseFamilyPageState extends State<ChooseFamilyPage> {
         families.addAll(response['family']);
       });
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Something went wrong'),
-          content: Text(response['error']['message']),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Close'),
-            ),
-          ],
-        ),
-      );
+      CustomPopup.openErrorPopup(context, errorText: response['error']['message']);
     }
   }
 

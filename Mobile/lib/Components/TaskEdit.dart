@@ -4,6 +4,7 @@ import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +56,8 @@ class _TaskEditState extends State<TaskEdit> {
   }
 
   void _deleteTask() async {
-    int statusCode = await _appState.deleteTask(id);
+    String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+    int statusCode = (await Api().deleteTask(id, jwt)).statusCode;
     if (statusCode == 204) {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
     } else {
@@ -78,7 +80,8 @@ class _TaskEditState extends State<TaskEdit> {
           recurringInterval,
           singleCompletion);
 
-      int response = await _appState.updateTask(task);
+      String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+      int response = (await Api().updateTask(task, jwt)).statusCode;
       if (response == 200) {
         setState(() {
           // Can't override task because it is a final

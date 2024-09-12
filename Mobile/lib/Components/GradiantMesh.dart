@@ -1,5 +1,3 @@
-// lib/mesh_gradient_background.dart
-
 import 'package:flutter/material.dart';
 import 'package:mesh_gradient/mesh_gradient.dart';
 import 'package:mobile/Components/ColorScheme.dart';
@@ -24,13 +22,12 @@ class MeshGradientBackground extends StatelessWidget {
         color: CustomColorScheme.tangerineOrange,
       ),
     ],
-    options: MeshGradientOptions(), // Add any specific options here if needed
+    options: MeshGradientOptions(),
   );
   MeshGradientBackground({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Positioned.fill(child: meshGradient);
   }
 }

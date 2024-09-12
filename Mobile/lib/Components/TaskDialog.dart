@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/Components/ColorScheme.dart';
 import 'package:mobile/Components/CustomPopup.dart';
@@ -7,6 +8,7 @@ import 'package:mobile/Components/TaskEdit.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
 import 'package:mobile/models/user.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -42,12 +44,27 @@ class _TaskdialogState extends State<Taskdialog> {
   }
 
   Future<List<User>> _getuserAssignedToThisTask() async {
-    Map<String, dynamic> response =
-        await appState.getuserAssignedToTask(widget.task.id);
-    if (response['statusCode'] == 200) {
-      return response['tasks'];
+    String? jwt = await appState.storage.read(key: 'auth_token').toString();
+    final response = await Api().getUsersAssignToTask(widget.task.id, jwt);
+
+    var jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      List<User> newUsers = [];
+      if (jsonData.isEmpty) {
+        return newUsers;
+      }
+      for (var user in jsonData) {
+        newUsers.add(new User(
+            user['id'],
+            user['name'],
+            user['email'],
+            appState.getBool(
+              user['is_parent'],
+            )));
+      }
+      return newUsers;
     } else {
-      CustomPopup.openErrorPopup(context, errorText: response['Error']);
+      CustomPopup.openErrorPopup(context, errorText: jsonData);
       return [];
     }
   }

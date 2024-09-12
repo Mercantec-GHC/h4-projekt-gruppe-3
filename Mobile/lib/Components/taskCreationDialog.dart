@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile/Components/CustomPopup.dart';
 import 'package:mobile/Components/SelectDateTime.dart';
 import 'package:mobile/Components/TaskList.dart';
-import 'package:mobile/config/app_pages.dart';
 import 'package:mobile/config/general_config.dart';
 import 'package:mobile/models/task.dart';
+import 'package:mobile/services/api.dart';
 import 'package:mobile/services/app_state.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +40,9 @@ class _TaskCreationState extends State<TaskCreation> {
       int recurringInterval = int.tryParse(this.recurringInterval) ?? 0;
       Task task = new Task(0, title, description, reward, DateTime.now(),
           endDate, recurring, recurringInterval, singleCompletion);
-      int response = await _appState.createTask(task);
+      String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+      int response =
+          (await Api().createTask(task, _appState.user!.id, jwt)).statusCode;
       if (response == 201) {
         _appState.AddTask(task, TasklistType.Available);
         Navigator.of(context).pop();
