@@ -64,10 +64,6 @@ class _TasklistState extends State<Tasklist> {
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {
       List<Task> newTasks = [];
-      if (jsonData.isEmpty) {
-        appState.addListOfTasks(newTasks, widget.listType);
-      }
-
       for (var task in jsonData) {
         newTasks.add(
           new Task(
