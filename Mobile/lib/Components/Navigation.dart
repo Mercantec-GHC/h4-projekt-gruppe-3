@@ -163,7 +163,7 @@ class _NavigationComponentState extends State<NavigationComponent> {
             onTap: () {}, // Prevents the panel from closing when tapped inside
             child: Container(
               width: 200,
-              height: 130,
+              height: _appState.family!.name.length < 11 ? 160 : 190,
               decoration: BoxDecoration(
                 color: CustomColorScheme.menu,
                 borderRadius: BorderRadius.circular(10),
@@ -182,6 +182,12 @@ class _NavigationComponentState extends State<NavigationComponent> {
                     Center(
                         child: Text(
                       "Profile menu",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                    Center(
+                        child: Text(
+                      "family: " + _appState.family!.name,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     )),
