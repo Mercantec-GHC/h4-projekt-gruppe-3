@@ -33,7 +33,7 @@ class _ChildcreationState extends State<Childcreation> {
                 if (value['statusCode'] == 201)
                   {
                     widget.onCreation(
-                        UserProfile(_name, null, _username, false, 0, 0)),
+                        UserProfile(0, _name, null, _username, false, 0, 0)),
                     Navigator.of(context).pop(),
                   }
                 else
