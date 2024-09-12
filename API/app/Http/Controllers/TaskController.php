@@ -293,17 +293,17 @@ class TaskController extends Controller
     {
         $this->checkIfParent();
 
-        $request->validate([
-            'user_id' => 'required|exists:users,id'
-        ]);
+        // $request->validate([
+        //     'user_id' => 'required|exists:users,id'
+        // ]);
 
-        $media_id = DB::table('user_task')
+        $user_task = DB::table('user_task')
             ->where('task_id', $task->id)
-            ->where('user_id', $request->user_id)
+            // ->where('user_id', $request->user_id)
             ->where('state', 'pending')
-            ->first(['media_id']);
+            ->first();
 
-        $completionPhoto = Media::where('id', $media_id)->first();
+        $completionPhoto = Media::where('id', $user_task->media_id)->first();
 
         return response()->file(storage_path($completionPhoto->path));
     }
