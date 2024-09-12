@@ -40,7 +40,7 @@ class _TaskCreationState extends State<TaskCreation> {
       int recurringInterval = int.tryParse(this.recurringInterval) ?? 0;
       Task task = new Task(0, title, description, reward, DateTime.now(),
           endDate, recurring, recurringInterval, singleCompletion);
-      String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+      String? jwt = await _appState.storage.read(key: 'auth_token');
       int response =
           (await Api().createTask(task, _appState.user!.id, jwt)).statusCode;
       if (response == 201) {

@@ -113,7 +113,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   Future<void> _getUsers() async {
     Api api = Api();
-    String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await _appState.storage.read(key: 'auth_token');
     final response = await api.getUserProfiles(_appState.family?.id ?? 0, jwt);
 
     var jsonData = json.decode(response.body);
@@ -122,6 +122,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       for (var user in jsonData) {
         newUsers.add(
           new UserProfile(
+            user['id'],
             user['name'],
             user['Email'],
             user['username'],

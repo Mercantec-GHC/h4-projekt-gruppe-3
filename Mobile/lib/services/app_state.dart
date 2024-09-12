@@ -118,8 +118,7 @@ class RootAppState extends ChangeNotifier {
       await storage.write(key: 'auth_token', value: jsonData['token']);
       notifyListeners();
       await GetFamilies();
-      if (!(user?.isParent ?? true))
-      {
+      if (!(user?.isParent ?? true)) {
         GetUserPoints();
       }
     }
@@ -128,7 +127,7 @@ class RootAppState extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> GetFamilies() async {
-    String? jwt = await storage.read(key: 'auth_token').toString();
+    String? jwt = await storage.read(key: 'auth_token');
     final response = await api.GetFamilies(jwt);
 
     var jsonData = json.decode(response.body);
@@ -160,12 +159,12 @@ class RootAppState extends ChangeNotifier {
   }
 
   void GetUserPoints() async {
-    String? jwt = await storage.read(key: 'auth_token').toString();
-    final response = await api.GetUserPoints(user?.id ?? 0, family?.id ?? 0, jwt);
+    String? jwt = await storage.read(key: 'auth_token');
+    final response =
+        await api.GetUserPoints(user?.id ?? 0, family?.id ?? 0, jwt);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
-      points = jsonData[
-          'points'];
+      points = jsonData['points'];
       notifyListeners();
     }
   }

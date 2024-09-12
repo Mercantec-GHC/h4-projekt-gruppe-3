@@ -223,7 +223,7 @@ class Api {
 
   Future<http.Response> getTasks(String path, String? jwt) async {
     return await http.get(
-      Uri.parse(baseUrl + path),
+      Uri.parse(baseUrl + '/api/task/' + path),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': 'application/json',

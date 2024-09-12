@@ -31,7 +31,7 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
   }
 
   Future<void> _getUsers() async {
-    String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await _appState.storage.read(key: 'auth_token');
     final response = await Api().getUserProfiles(_appState.family!.id, jwt);
 
     var jsonData = json.decode(response.body);

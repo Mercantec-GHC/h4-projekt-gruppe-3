@@ -75,7 +75,7 @@ class Familycard extends StatelessWidget {
   }
 
   Future<void> _chooseFamily(RootAppState appState, context) async {
-    String? jwt = await appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await appState.storage.read(key: 'auth_token');
     final response = await Api().GetFamily(family, jwt);
     var jsonData = json.decode(response.body);
     if (response.statusCode == 200) {

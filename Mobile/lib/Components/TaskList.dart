@@ -56,13 +56,13 @@ class _TasklistState extends State<Tasklist> {
   Future<http.Response> _getTasksFromServer() async {
     Api api = Api();
     int familyId = appState.family!.id;
-    String? jwt = await appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await appState.storage.read(key: 'auth_token');
     return switch (widget.listType) {
-      TasklistType.All => await api.getTasks('/all/$familyId', jwt),
-      TasklistType.Available => await api.getTasks('/available/$familyId', jwt),
-      TasklistType.Assigned => await api.getTasks('/assigned/$familyId', jwt),
-      TasklistType.Completed => await api.getTasks('/completed/$familyId', jwt),
-      TasklistType.Pending => await api.getTasks('/pending/$familyId', jwt),
+      TasklistType.All => await api.getTasks('all/$familyId', jwt),
+      TasklistType.Available => await api.getTasks('available/$familyId', jwt),
+      TasklistType.Assigned => await api.getTasks('assigned/$familyId', jwt),
+      TasklistType.Completed => await api.getTasks('completed/$familyId', jwt),
+      TasklistType.Pending => await api.getTasks('pending/$familyId', jwt),
     };
   }
 
@@ -92,7 +92,7 @@ class _TasklistState extends State<Tasklist> {
       }
       appState.addListOfTasks(newTasks, widget.listType);
     } else {
-      CustomPopup.openErrorPopup(context, errorText: jsonData);
+      CustomPopup.openErrorPopup(context, errorText: jsonData['message']);
     }
   }
 

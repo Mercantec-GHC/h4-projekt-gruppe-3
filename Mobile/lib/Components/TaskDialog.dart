@@ -44,7 +44,7 @@ class _TaskdialogState extends State<Taskdialog> {
   }
 
   Future<List<User>> _getuserAssignedToThisTask() async {
-    String? jwt = await appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await appState.storage.read(key: 'auth_token');
     final response = await Api().getUsersAssignToTask(widget.task.id, jwt);
 
     var jsonData = json.decode(response.body);

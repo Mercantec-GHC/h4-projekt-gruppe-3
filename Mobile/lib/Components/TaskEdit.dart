@@ -56,7 +56,7 @@ class _TaskEditState extends State<TaskEdit> {
   }
 
   void _deleteTask() async {
-    String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+    String? jwt = await _appState.storage.read(key: 'auth_token');
     int statusCode = (await Api().deleteTask(id, jwt)).statusCode;
     if (statusCode == 204) {
       Navigator.of(context).pop({'action': 'delete', 'task': widget.task});
@@ -80,7 +80,7 @@ class _TaskEditState extends State<TaskEdit> {
           recurringInterval,
           singleCompletion);
 
-      String? jwt = await _appState.storage.read(key: 'auth_token').toString();
+      String? jwt = await _appState.storage.read(key: 'auth_token');
       int response = (await Api().updateTask(task, jwt)).statusCode;
       if (response == 200) {
         setState(() {
