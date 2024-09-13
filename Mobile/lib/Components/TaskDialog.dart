@@ -65,7 +65,7 @@ class _TaskdialogState extends State<Taskdialog> {
         newUsers.add(new User(
             user['id'],
             user['name'],
-            user['email'],
+            user['email'] ?? '',
             appState.getBool(
               user['is_parent'],
             )));
