@@ -30,7 +30,7 @@ This server will be taken down after 20 September.
 3. Setup backend project:
 
    - Copy the `.env.example` file and rename the copied file to `.env`
-   - Open the `.env` file in a text editor of your choice, and set configure the following variables:
+   - Open the `.env` file in a text editor of your choice, and update the following variables:
 
    ```env
    SERVER_HOST=127.0.0.1 # Your local ip address
