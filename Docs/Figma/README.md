@@ -1,5 +1,3 @@
 # Figma
 
-Vi skal lave en mockup af vores APP i Figma, den skal laves af udviklerne og PO (Product Owner) skal afholde et kundemøde omkring designet og yderligere krav ændringer!
-
-Der skal være en statisk fil af Figma siden i mappen her, samt et link til Figma live-versionen!
+[Figma design link](https://www.figma.com/design/w1bAKXfq8Pt2rIW6B4UIZE/Gruppe-3---ChoreCash?node-id=0-1&t=VhRCGg88H76f3Rdf-1)
