@@ -17,14 +17,19 @@ This server will be taken down after 20 September.
 
    - For Windows:
      - Download the VS16 x64 Non Thread Safe zip folder from https://windows.php.net/download#php-8.3
-   - For linux:
-     - WIP
+   - For Ubuntu:
+     - start by updating the installed packages: `sudo apt update && sudo apt upgrade -y`.
+     - To install php on Ubuntu, first add the repository to apt registry: `sudo add-apt-repository ppa:ondrej/php`.
+     - Update the apt package registry: `sudo apt update`.
+     - Install php8.3 and the most commonly used php packages: `sudo apt-get install -y php8.3 php8.3-cli php8.3-common php8.3-fpm php8.3-mysql php8.3-zip php8.3-gd php8.3-mbstring php8.3-curl php8.3-xml php8.3-bcmath openssl php8.3-tokenizer`
+   - After installing all the php and/or packages, then you'll need to ensure that the php packages are enabled, to do this, start by finding the primary php.ini, `php --ini` will return all php.ini files, once you've found the primary one, open it and look at the extension section, confirm that all the installed packages are enabled, to enable a extension, just remove the `;`at the beginning of the line.
+   - To run laravel you'll need to have enabled all extensions mentioned in <https://laravel.com/docs/11.x/deployment#server-requirements>
 
 2. Download and install composer:
 
    - For Windows:
      - Follow this guide for installing composer on windows https://getcomposer.org/doc/00-intro.md#installation-windows
-   - For linux:
+   - For Ubuntu:
      - Follow the setup here https://getcomposer.org/download/
 
 3. Setup backend project:
