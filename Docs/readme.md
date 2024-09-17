@@ -1,5 +1,7 @@
 # Docs - Dokumentation af H4
 
+Link to API docs: https://krc-coding.dk/docs 
+
 # Scrum logbooks:
 
 KC: [logbook](https://github.com/Mercantec-GHC/h4-projekt-gruppe-3/wiki/KC%E2%80%90logbook)
