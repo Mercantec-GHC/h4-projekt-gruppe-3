@@ -38,12 +38,13 @@ class _UpdateFamilyProfilePageState extends State<UpdateFamilyProfilePage> {
     if (response.statusCode == 200) {
       List<User> newUsers = [];
       for (var user in jsonData) {
+        if (user['is_parent'] == 0) continue;
         newUsers.add(
           new User(
             user['id'],
             user['name'],
             user['email'] ?? '',
-            user['is_parrent'] ?? false,
+            _appState.getBool(user['is_parent']),
           ),
         );
       }
